@@ -2,128 +2,116 @@
 
 This project implements a path planning simulation for robots using Python and integrates with Arduino for physical robot control. The system enables optimal path planning in environments with obstacles using algorithms like A* and RRT, providing visualizations and animations of robot movement.
 
-## Project Structure
+## Project Overview
 
-The project is organized into modules following object-oriented design principles and software development best practices:
+The goal of this project is to create a system that allows an Arduino robot to autonomously navigate in an environment with obstacles. The project is divided into two main components:
 
-```
-.
-├── config/               # Configuration files
-├── data/                 # Simulation data
-├── docs/                 # Documentation
-├── scripts/              # Utility scripts
-├── src/                  # Source code
-│   ├── environment/      # Environment simulation management
-│   ├── planning/         # Path planning algorithms
-│   ├── robot/            # Robot simulation and sensors
-│   ├── visualization/    # Visualization and rendering
-│   └── communication/    # Arduino interface
-├── tests/                # Unit tests
-├── main.py               # Main entry point
-├── requirements.txt      # Python dependencies
-└── README.md             # Documentation
-```
+1. **Python Simulation**: A virtual environment that simulates the robot's behavior and plans its path.
+2. **Arduino Control**: An interface to communicate with a physical robot and make it follow the planned path.
 
-## Main Components
-
-### Environment
-
-The `environment` module manages the simulation environment representation:
-- 2D grid with free cells and obstacles
-- Robot and goal positioning
-- Position validity checking
+## Theoretical Concepts
 
 ### Path Planning
 
-The `planning` module implements algorithms for path planning:
-- **A\* (A-star)**: Search algorithm that finds the optimal path by minimizing a cost function
-- **RRT** (Rapidly-exploring Random Tree): Algorithm that efficiently explores the space by building a tree of configurations
+Path planning is the process of determining an optimal path from a starting point to a goal point while avoiding obstacles. In this project, we primarily use the A* algorithm for this purpose.
 
-### Robot
+#### A* Algorithm
 
-The `robot` module implements:
-- Robot movement simulation
-- Virtual sensors for obstacle detection
-- Speed and orientation control
+A* is an informed search algorithm that combines:
 
-### Visualization
+- **g(n)**: The cost of the path from the start point to the current node n
+- **h(n)**: A heuristic that estimates the cost from node n to the goal
 
-The `visualization` module provides:
-- Environment and obstacle visualization
-- Robot movement animation
-- Path graphs and statistics
+For each node, A* calculates `f(n) = g(n) + h(n)` and always selects the node with the lowest f(n) value, thus ensuring an optimal path when the heuristic is admissible.
 
-### Communication
+The A* process can be summarized as:
+1. Initialize an open list with the start node
+2. While the open list is not empty:
+   - Select the node with the lowest f(n)
+   - If it's the goal, you've found the optimal path
+   - Otherwise, expand its neighbors and update them in the open list
 
-The `communication` module manages:
-- Serial interface with Arduino
-- Command transmission protocol
-- Sensor feedback reception
+#### Manhattan Distance
 
-## A* Path Planning Algorithm
-
-The A* algorithm is an informed search algorithm that finds the optimal path between two points. The algorithm combines:
-
-1. **Path cost**: Distance already traveled from the start node
-2. **Heuristic**: Estimated distance remaining to the goal
-
-For each node, A* calculates:
+In our project, we use the Manhattan distance as a heuristic:
 ```
-f(n) = g(n) + h(n)
+h(n) = |x1 - x2| + |y1 - y2|
 ```
-where:
-- `g(n)` is the path cost from the start node to node `n`
-- `h(n)` is the heuristic that estimates the cost from node `n` to the goal
+This is an appropriate choice for grid-based environments where movement is limited to the four cardinal directions.
 
-The algorithm uses a priority queue to explore nodes with the lowest `f(n)` value, ensuring the optimality of the found path when the heuristic is admissible (does not overestimate the actual cost).
+### Environment Representation
 
-## Arduino Integration
+The environment is represented as a 2D grid where:
+- `0` represents a free space
+- `1` represents an obstacle
 
-The project supports integration with Arduino robots through serial communication:
+This simple yet effective representation allows for:
+- Easy verification of obstacle presence
+- Direct calculation of a node's neighbors
+- Intuitive visualization of the environment
 
-1. **Path Planning**: The A* algorithm calculates the optimal path
-2. **Path Translation**: The path is converted into movement commands for the motors
-3. **Command Transmission**: Commands are sent to the robot via serial connection
-4. **Feedback**: The robot sends sensor information to verify position and detect unexpected obstacles
+### Arduino Integration
 
-The communication protocol includes:
-- `PATH_LEN:n` - Specifies the path length
-- `PATH_POINT:i,x,y` - Defines the coordinates of the i-th point
-- `PATH_FOLLOW` - Starts following the path
+Communication between Python and Arduino occurs via a serial connection. The communication protocol includes:
 
-## Usage
+1. **Path Transmission**: Python sends the sequence of coordinates that form the optimal path
+2. **Movement Control**: Arduino interprets these coordinates and controls the motors to follow the path
+3. **Feedback**: Arduino sends sensor information to confirm position and detect unexpected obstacles
 
-### Installation
+## Project Structure
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+The project is organized into modules following object-oriented design principles:
 
-### Execution
-
-To start the simulation:
 ```
+.
+├── src/                  # Source code
+│   ├── environment/      # Environment representation
+│   ├── planning/         # Path planning algorithms
+│   ├── robot/            # Robot simulation
+│   ├── visualization/    # Environment visualization
+│   └── communication/    # Arduino interface
+├── scripts/              # Utility scripts
+├── tests/                # Unit tests
+└── main.py               # Program entry point
+```
+
+### Main Components
+
+1. **Environment**: Manages the environment representation, including obstacles, robot position, and goal.
+2. **PathPlanner**: Implements path planning algorithms, primarily A*.
+3. **RobotSimulation**: Simulates robot movement and animates the visualization.
+4. **ArduinoInterface**: Manages communication with Arduino for physical robot control.
+
+## Future Extensions
+
+The project can be extended in various directions:
+
+1. **Advanced planning algorithms**: Implementation of RRT, D*, Theta* to compare performance in different scenarios.
+2. **Dynamic mapping**: Real-time map updates based on sensor readings.
+3. **Virtual sensors**: Simulation of sensors like LIDAR or ultrasonic for more realistic obstacle detection.
+4. **Dynamic planning**: Path recalculation in the presence of moving or unexpected obstacles.
+5. **Path optimization**: Implementation of smoothing algorithms to generate more natural paths.
+
+## How to Use
+
+To run the simulation:
+
+```bash
 python main.py
 ```
 
-Available options:
-```
+To customize the simulation, various options are available:
+
+```bash
 python main.py --width 30 --height 30 --robot-x 5 --robot-y 5 --goal-x 25 --goal-y 25
 ```
 
 To test the Arduino connection:
+
+```bash
+python scripts/test_arduino.py --port /dev/ttyUSB0
 ```
-python scripts/test_arduino.py --port /dev/ttyUSB0 --baud 9600
-```
 
-## Future Extensions
+## Conclusion
 
-The project can be extended with:
-
-1. **Advanced algorithms**: Implementation of RRT*, D*, Theta* to compare performance in different scenarios
-2. **Dynamic mapping**: Real-time map updates based on sensor readings
-3. **Advanced control**: PID control implementation for smoother movements
-4. **User interface**: Development of a GUI for interaction with the simulation
-5. **Multirobots**: Extension to support multiple robots simultaneously
+This project demonstrates the practical application of path planning algorithms in robotics, combining software simulation and hardware control. It provides a solid foundation for the development of more complex autonomous navigation systems.
