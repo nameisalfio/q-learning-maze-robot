@@ -12,7 +12,7 @@ var visited = []
 func _ready():
 	generate_maze()
 	build_floor()
-	#build_maze()
+	build_maze()
 
 func generate_maze():
 	maze = []
