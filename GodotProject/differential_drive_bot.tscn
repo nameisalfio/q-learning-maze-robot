@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://dn3hlyumlcl0t"]
+
+[ext_resource type="PackedScene" uid="uid://dajyu2mfea2cm" path="res://differential_drive_bot.glb" id="1_oi6kk"]
+
+[node name="differential_drive_bot" instance=ExtResource("1_oi6kk")]
