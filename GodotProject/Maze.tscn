@@ -22,5 +22,25 @@ transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 script = ExtResource("1_byshg")
 
 [node name="Robot" parent="." instance=ExtResource("2_vg3ne")]
-transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
+transform = Transform3D(0.04, 0, 0, 0, 0.04, 0, 0, 0, 0.04, 0, 0, 0)
 script = ExtResource("4_m0p1e")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+
+[node name="XYLabel" type="Label" parent="CanvasGroup"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 155.0
+offset_bottom = 79.0
+theme_override_font_sizes/font_size = 32
+text = "(X,Y) = "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="XY" type="TextEdit" parent="CanvasGroup"]
+offset_left = 138.0
+offset_top = 13.0
+offset_right = 368.0
+offset_bottom = 79.0
+theme_override_font_sizes/font_size = 32
+editable = false
