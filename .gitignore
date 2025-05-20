@@ -43,3 +43,6 @@ Thumbs.db
 data/*.csv
 config/*.conf
 *.log
+
+# Godot Project
+GodotProject/.godot
