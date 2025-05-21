@@ -13,8 +13,8 @@ func _ready():
 	DDS.subscribe("Y")
 	DDS.subscribe("Theta")
 	
-	print(theRobot.global_position.x, " ", -theRobot.global_position.z, " ", theRobot.global_rotation.y)
-	_edit_xy_text(theRobot.global_position.x, -theRobot.global_position.y)
+	#print(theRobot.global_position.x, " ", -theRobot.global_position.z, " ", theRobot.global_rotation.y)
+	_edit_xy_text(theRobot.global_position.x, -theRobot.global_position.z)
 
 func _physics_process(delta):
 	pass

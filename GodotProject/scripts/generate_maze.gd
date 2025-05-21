@@ -15,6 +15,7 @@ func _ready():
 	build_maze()
 
 func generate_maze():
+	seed(1234)
 	maze = []
 	visited = []
 	for y in maze_height:
