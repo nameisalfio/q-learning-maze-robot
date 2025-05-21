@@ -88,16 +88,19 @@ func build_maze():
 				_place_wall(Vector3(cx - cell_size/2, wall_height/2, cz), 90, cube, wall_material)
 
 func _place_wall(position: Vector3, rot_y_deg: float, mesh: Mesh, material: Material):
-	var wall = MeshInstance3D.new()
-	wall.mesh = mesh
-	wall.material_override = material
-	wall.transform.origin = position
-	wall.rotate_y(deg_to_rad(rot_y_deg))
-	
+	var wall_body = StaticBody3D.new()
+	wall_body.transform.origin = position
+	wall_body.rotate_y(deg_to_rad(rot_y_deg))
+
+	var wall_mesh = MeshInstance3D.new()
+	wall_mesh.mesh = mesh
+	wall_mesh.material_override = material
+	wall_body.add_child(wall_mesh)
+
 	var collider = CollisionShape3D.new()
 	var shape = BoxShape3D.new()
 	shape.size = mesh.size
 	collider.shape = shape
-	wall.add_child(collider)
+	wall_body.add_child(collider)
 
-	add_child(wall)
+	add_child(wall_body)

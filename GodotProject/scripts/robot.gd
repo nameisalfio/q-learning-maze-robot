@@ -8,7 +8,7 @@ var right_motor : HingeJoint3D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#inizializzazione server
-	theRobot = $Body
+	theRobot = $Robot
 	DDS.subscribe("X")
 	DDS.subscribe("Y")
 	DDS.subscribe("Theta")
@@ -35,7 +35,7 @@ func _process(_delta):
 		theRobot.global_position.z = -y
 		theRobot.global_rotation.y = theta
 
-		_edit_xy_text(x,-y)
+		_edit_xy_text(theRobot.global_position.x, -theRobot.global_position.z)
 
 
 func _integrate_forces(state):
