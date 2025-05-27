@@ -33,13 +33,11 @@ func _dfs(pos: Vector2i):
 	visited[pos.y][pos.x] = true
 	var directions = [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)] # N E S W
 	directions.shuffle()
-	for i in range(4):
-		var dir = directions[i]
+	for dir in directions:
 		var nx = pos.x + dir.x
 		var ny = pos.y + dir.y
 		if nx >= 0 and nx < maze_width and ny >= 0 and ny < maze_height:
 			if not visited[ny][nx]:
-				# Remove wall between current and next cell
 				if dir == Vector2i(0, -1):
 					maze[pos.y][pos.x][0] = false
 					maze[ny][nx][2] = false
@@ -67,8 +65,8 @@ func build_floor():
 	add_child(floor)
 
 func build_maze():
-	var cube = BoxMesh.new()
-	cube.size = Vector3(cell_size, wall_height, wall_thickness)
+	var wall_size_h = Vector3(cell_size, wall_height, wall_thickness)
+	var wall_size_v = Vector3(wall_thickness, wall_height, cell_size)
 
 	var wall_material = StandardMaterial3D.new()
 	wall_material.albedo_color = Color(0.85, 0.75, 0.6) # beige sabbia
@@ -79,27 +77,30 @@ func build_maze():
 			var cx = x * cell_size
 			var cz = y * cell_size
 			if cell[0]: # North
-				_place_wall(Vector3(cx, wall_height/2, cz - cell_size/2), 0, cube, wall_material)
+				_place_wall(Vector3(cx, wall_height / 2, cz - cell_size / 2), wall_size_h, wall_material)
 			if cell[1]: # East
-				_place_wall(Vector3(cx + cell_size/2, wall_height/2, cz), 90, cube, wall_material)
+				_place_wall(Vector3(cx + cell_size / 2, wall_height / 2, cz), wall_size_v, wall_material)
 			if cell[2]: # South
-				_place_wall(Vector3(cx, wall_height/2, cz + cell_size/2), 0, cube, wall_material)
+				_place_wall(Vector3(cx, wall_height / 2, cz + cell_size / 2), wall_size_h, wall_material)
 			if cell[3]: # West
-				_place_wall(Vector3(cx - cell_size/2, wall_height/2, cz), 90, cube, wall_material)
+				_place_wall(Vector3(cx - cell_size / 2, wall_height / 2, cz), wall_size_v, wall_material)
 
-func _place_wall(position: Vector3, rot_y_deg: float, mesh: Mesh, material: Material):
+func _place_wall(position: Vector3, size: Vector3, material: Material):
 	var wall_body = StaticBody3D.new()
 	wall_body.transform.origin = position
-	wall_body.rotate_y(deg_to_rad(rot_y_deg))
+	wall_body.collision_layer = 1
+	wall_body.collision_mask = 1
 
 	var wall_mesh = MeshInstance3D.new()
+	var mesh = BoxMesh.new()
+	mesh.size = size
+	mesh.material = material
 	wall_mesh.mesh = mesh
-	wall_mesh.material_override = material
 	wall_body.add_child(wall_mesh)
 
 	var collider = CollisionShape3D.new()
 	var shape = BoxShape3D.new()
-	shape.size = mesh.size
+	shape.size = size
 	collider.shape = shape
 	wall_body.add_child(collider)
 

@@ -11,7 +11,7 @@ func _ready():
 	projection = PROJECTION_ORTHOGONAL
 	size = height
 	# Fissa la rotazione per una vista dall'alto (top-down)
-	rotation_degrees = Vector3(-90, 0, 0)
+	rotation_degrees = Vector3(-60, 0, 0)
 
 func _process(delta):
 	if robot:
