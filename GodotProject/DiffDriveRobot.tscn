@@ -1,36 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dbikic35gxbx7"]
+[gd_scene load_steps=2 format=3 uid="uid://dbikic35gxbx7"]
 
 [ext_resource type="PackedScene" uid="uid://dn3hlyumlcl0t" path="res://differential_drive_bot.tscn" id="1_27yxr"]
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_27yxr"]
-height = 0.64978
-radius = 0.760742
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_pt017"]
-height = 0.147491
-radius = 0.243652
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_0r6wb"]
-radius = 0.103454
-
 [node name="Robot" type="Node3D"]
 
-[node name="Body" type="CharacterBody3D" parent="."]
-
-[node name="differential_drive_bot" parent="Body" instance=ExtResource("1_27yxr")]
-
-[node name="MainBody" type="CollisionShape3D" parent="Body"]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 42.6086, 0)
-shape = SubResource("CylinderShape3D_27yxr")
-
-[node name="WheelDX" type="CollisionShape3D" parent="Body"]
-transform = Transform3D(100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, -50.1723, 25.4342, 68.1107)
-shape = SubResource("CylinderShape3D_pt017")
-
-[node name="WheelSX" type="CollisionShape3D" parent="Body"]
-transform = Transform3D(100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, -50.172, 25.434, -66.96)
-shape = SubResource("CylinderShape3D_pt017")
-
-[node name="Bottom" type="CollisionShape3D" parent="Body"]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 50.0531, 10.2354, 0)
-shape = SubResource("SphereShape3D_0r6wb")
+[node name="differential_drive_bot" parent="." instance=ExtResource("1_27yxr")]
