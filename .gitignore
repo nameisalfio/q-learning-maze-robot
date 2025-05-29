@@ -1,3 +1,6 @@
+# Godot Project
+GodotProject/.godot/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -43,6 +46,3 @@ Thumbs.db
 data/*.csv
 config/*.conf
 *.log
-
-# Godot Project
-GodotProject/.godot
