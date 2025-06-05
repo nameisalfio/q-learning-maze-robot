@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="Project"
-run/main_scene="uid://bd37h5tsqm275"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="res://Maze.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
 run/max_fps=120
 config/icon="res://icon.svg"
 

@@ -119,7 +119,7 @@ class DiffDriveRoboticAgent:
         
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
         
-        max_iterations = 600
+        max_iterations = 800
         iteration = 0
         target_tolerance = 0.01  # Tolleranza per considerare il target raggiunto
         
@@ -139,11 +139,14 @@ class DiffDriveRoboticAgent:
 
             # Controlla collisione
             collision = self.dds.read("Collision")
+            time.sleep(0.05)
+
             if collision == 1:
                 print("Collision detected! Stopping movement.")
                 self.stop_robot()
                 # Reset collision flag
                 self.dds.publish("Collision", 0, DDS.DDS_TYPE_INT)
+                print(f"\033[91mCollision status: {collision}\033[0m")
                 return MoveResult.COLLISION
 
             # Genera il target dal virtual robot
@@ -169,7 +172,7 @@ class DiffDriveRoboticAgent:
             # Log periodico
             if iteration % 20 == 0:
                 distance = math.sqrt((pose[0] - original_target[0])**2 + (pose[1] - original_target[1])**2)
-                print(f"Iter {iteration}: at ({pose[0]:.2f}, {pose[1]:.2f}), dist to target: {distance:.3f}")
+                #print(f"Iter {iteration}: at ({pose[0]:.2f}, {pose[1]:.2f}), dist to target: {distance:.3f}")
 
             # Controllo distanza dal target
             distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
