@@ -9,8 +9,8 @@ var theta = 0.0
 
 func _ready():
 	theRobot.add_to_group("robot")
-	DDS.publish('proceed', DDS.DDS_TYPE_INT, 0)
 	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
+	DDS.subscribe("Collision")
 	DDS.subscribe("X")
 	DDS.subscribe("Y")
 	DDS.subscribe("Theta")
@@ -46,7 +46,6 @@ func _physics_process(_delta):
 	#_edit_xy_text(x, y)
 
 func _process(_delta):
-	DDS.publish('proceed', DDS.DDS_TYPE_INT, 0)
 	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
 	
 	var x = DDS.read("X")
@@ -69,7 +68,6 @@ func _process(_delta):
 		theRobot.global_position.z += 0.05
 		
 	_edit_xy_text(theRobot.global_position.x,-theRobot.global_position.z)
-	DDS.publish('proceed', DDS.DDS_TYPE_INT, 1)
 
 func _edit_xy_text(x, y):
 	xy_text_edit.text = "(%.2f, %.2f)" % [x,y]

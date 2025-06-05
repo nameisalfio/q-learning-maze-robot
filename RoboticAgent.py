@@ -10,6 +10,7 @@ from lib.dds.dds import *
 from lib.utils.time import *
 from enum import Enum
 import math
+import time
 
 class PolarWheelSpeedControl:
     def __init__(self, _wheelbase, _kp, _ki, _kd, _sat):
@@ -44,7 +45,8 @@ class DiffDriveRoboticAgent:
         self.dds = dds
         
         # Subscribe ai topic necessari per RL
-        self.dds.subscribe(["Collision", "GoalReached"])
+        self.dds.start()
+        self.dds.subscribe(["Collision", "GoalReached", "tick"])
 
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
@@ -76,17 +78,83 @@ class DiffDriveRoboticAgent:
         )
 
         self.virtual_robot = None
+        self.backup_distance = 0.1  # Distanza di backup in metri
 
     def stop_robot(self):
         """Ferma immediatamente il robot"""
         # Imposta velocità zero
-        self.robot.evaluate(0.016, 0.0, 0.0)
+        self.robot.evaluate(0.008, 0.0, 0.0)
         
         # Pubblica posizione corrente
         pose = self.robot.get_pose()
         self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+
+    def _backup_from_collision(self, start_pos, collision_pos):
+        """Esegue un backup dalla posizione di collisione verso la posizione di partenza"""
+        print(f"Backing up from collision at ({collision_pos[0]:.2f}, {collision_pos[1]:.2f})")
+        
+        # Calcola la direzione opposta al movimento
+        dx = start_pos[0] - collision_pos[0]
+        dy = start_pos[1] - collision_pos[1]
+        distance = math.sqrt(dx*dx + dy*dy)
+        
+        if distance > 0:
+            # Normalizza e scala per la distanza di backup
+            backup_dx = (dx / distance) * self.backup_distance
+            backup_dy = (dy / distance) * self.backup_distance
+        else:
+            # Se siamo alla posizione di partenza, backup nella direzione opposta all'heading
+            current_pose = self.robot.get_pose()
+            backup_dx = -self.backup_distance * math.cos(current_pose[2])
+            backup_dy = -self.backup_distance * math.sin(current_pose[2])
+        
+        # Calcola target di backup
+        backup_target_x = collision_pos[0] + backup_dx
+        backup_target_y = collision_pos[1] + backup_dy
+        
+        print(f"Backup target: ({backup_target_x:.2f}, {backup_target_y:.2f})")
+        
+        # Crea un virtual robot per il backup
+        backup_virtual_robot = StraightLine2DMotion(0.8, 1.0, 1.0)  # Più lento per il backup
+        backup_virtual_robot.start_motion(
+            (collision_pos[0], collision_pos[1]), 
+            (backup_target_x, backup_target_y)
+        )
+        
+        # Esegui il backup
+        max_backup_iterations = 200
+        backup_iteration = 0
+        
+        while backup_iteration < max_backup_iterations:
+            self.dds.wait('tick')
+            godot_delta = self.dds.read('tick')
+            time.sleep(0.07)
+
+            backup_iteration += 1
+
+            # Genera target dal virtual robot di backup
+            (x_target, y_target) = backup_virtual_robot.evaluate(godot_delta)
+            
+            # Controllo del robot per backup
+            pose = self.robot.get_pose()
+            (target_v, target_w) = self.polar_controller.evaluate(godot_delta, x_target, y_target, pose)
+            
+            (current_left, current_right) = self.robot.get_wheel_speed()
+            (torque_left, torque_right) = self.wheel_speed_control.evaluate(godot_delta, 
+                                                                    target_v, target_w, 
+                                                                    current_left, current_right)
+            
+            self.robot.evaluate(godot_delta, torque_left, torque_right)
+            
+            # Pubblica posizione durante backup
+            pose = self.robot.get_pose()
+            self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
+            self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
+            self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+        
+        self.stop_robot()
 
     def move(self, direction):
         """
@@ -104,6 +172,7 @@ class DiffDriveRoboticAgent:
         current_pose = self.robot.get_pose()
         start_x = current_pose[0]
         start_y = current_pose[1]
+        start_pos = (start_x, start_y)  # Salva posizione di partenza
 
         if direction == "UP":
             target_x, target_y = start_x, start_y + 1
@@ -139,14 +208,22 @@ class DiffDriveRoboticAgent:
 
             # Controlla collisione
             collision = self.dds.read("Collision")
-            time.sleep(0.05)
+            time.sleep(0.07)
 
             if collision == 1:
-                print("Collision detected! Stopping movement.")
-                self.stop_robot()
+                print(f"\033[91mCollision detected! Status: {collision}. Starting backup procedure...\033[0m")
+
+                # Ottieni posizione di collisione
+                collision_pose = self.robot.get_pose()
+                collision_pos = (collision_pose[0], collision_pose[1])
+                
+                # Esegui backup e attendi il completamento prima di proseguire
+                self._backup_from_collision(start_pos, collision_pos)
+
                 # Reset collision flag
                 self.dds.publish("Collision", 0, DDS.DDS_TYPE_INT)
-                print(f"\033[91mCollision status: {collision}\033[0m")
+                
+                print("Collision handled with backup.")
                 return MoveResult.COLLISION
 
             # Genera il target dal virtual robot
@@ -172,7 +249,7 @@ class DiffDriveRoboticAgent:
             # Log periodico
             if iteration % 20 == 0:
                 distance = math.sqrt((pose[0] - original_target[0])**2 + (pose[1] - original_target[1])**2)
-                #print(f"Iter {iteration}: at ({pose[0]:.2f}, {pose[1]:.2f}), dist to target: {distance:.3f}")
+                # print(f"Iter {iteration}: at ({pose[0]:.2f}, {pose[1]:.2f}), dist to target: {distance:.3f}")
 
             # Controllo distanza dal target
             distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
