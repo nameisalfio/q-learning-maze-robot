@@ -93,7 +93,7 @@ class DiffDriveRoboticAgent:
 
     def _backup_from_collision(self, start_pos, collision_pos):
         """Esegue un backup dalla posizione di collisione verso la posizione di partenza"""
-        print(f"Backing up from collision at ({collision_pos[0]:.2f}, {collision_pos[1]:.2f})")
+        print(f"Ritorno leggermente sui miei passi a seguito della collisione")
         
         # Calcola la direzione opposta al movimento
         dx = start_pos[0] - collision_pos[0]
@@ -203,7 +203,7 @@ class DiffDriveRoboticAgent:
             # Controlla se il goal del labirinto è stato raggiunto
             goal_reached = self.dds.read("GoalReached")
             if goal_reached == 1:
-                print("Goal reached! Maze completed!")
+                print("Uscita raggiunta!")
                 self.stop_robot()
                 return MoveResult.GOAL_REACHED
 
@@ -211,7 +211,7 @@ class DiffDriveRoboticAgent:
             collision = self.dds.read("Collision")
 
             if collision == 1:
-                print(f"\033[91mCollision detected! Status: {collision}. Starting backup procedure...\033[0m")
+                print(f"\033[91mCollisione avvenuta! Stato: {collision}.\033[0m")
 
                 # Ottieni posizione di collisione
                 collision_pose = self.robot.get_pose()
@@ -220,7 +220,7 @@ class DiffDriveRoboticAgent:
                 # Esegui backup e attendi il completamento prima di proseguire
                 self._backup_from_collision(start_pos, collision_pos)
                 
-                print("Collision handled with backup.")
+                print("Collisione risolta con procedura di backup.")
                 return MoveResult.COLLISION
 
             # Genera il target dal virtual robot
@@ -251,12 +251,12 @@ class DiffDriveRoboticAgent:
             # Controllo distanza dal target
             distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
             if distance_to_target < target_tolerance:
-                print(f"Target reached with tolerance: ({pose[0]:.2f}, {pose[1]:.2f})")
+                print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
                 break
 
         # Timeout raggiunto
         if iteration >= max_iterations:
-            print(f"Movement timeout after {max_iterations} iterations")
+            print(f"Timeout raggiunto dopo {max_iterations} iterazioni")
             self.stop_robot()
             return MoveResult.TIMEOUT
 
@@ -268,8 +268,3 @@ class DiffDriveRoboticAgent:
         """Restituisce la posizione corrente del robot"""
         pose = self.robot.get_pose()
         return (pose[0], pose[1], pose[2])
-
-    def reset_flags(self):
-        """Reset dei flag DDS"""
-        self.dds.publish("Collision", 0, DDS.DDS_TYPE_INT)
-        self.dds.publish("GoalReached", 0, DDS.DDS_TYPE_INT)
