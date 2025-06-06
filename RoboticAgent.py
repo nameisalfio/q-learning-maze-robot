@@ -130,7 +130,7 @@ class DiffDriveRoboticAgent:
         while backup_iteration < max_backup_iterations:
             self.dds.wait('tick')
             godot_delta = self.dds.read('tick')
-            time.sleep(0.07)
+            time.sleep(0.052)
 
             backup_iteration += 1
 
@@ -196,6 +196,7 @@ class DiffDriveRoboticAgent:
             # Aspetta il tick di Godot
             self.dds.wait('tick')
             godot_delta = self.dds.read('tick')
+            time.sleep(0.052)
             
             iteration += 1
 
@@ -208,7 +209,6 @@ class DiffDriveRoboticAgent:
 
             # Controlla collisione
             collision = self.dds.read("Collision")
-            time.sleep(0.07)
 
             if collision == 1:
                 print(f"\033[91mCollision detected! Status: {collision}. Starting backup procedure...\033[0m")
@@ -219,9 +219,6 @@ class DiffDriveRoboticAgent:
                 
                 # Esegui backup e attendi il completamento prima di proseguire
                 self._backup_from_collision(start_pos, collision_pos)
-
-                # Reset collision flag
-                self.dds.publish("Collision", 0, DDS.DDS_TYPE_INT)
                 
                 print("Collision handled with backup.")
                 return MoveResult.COLLISION
