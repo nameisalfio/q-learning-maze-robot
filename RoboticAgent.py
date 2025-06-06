@@ -128,7 +128,6 @@ class DiffDriveRoboticAgent:
         backup_iteration = 0
         
         while backup_iteration < max_backup_iterations:
-            self.dds.wait('tick')
             godot_delta = self.dds.read('tick')
             time.sleep(0.052)
 
@@ -192,9 +191,10 @@ class DiffDriveRoboticAgent:
         iteration = 0
         target_tolerance = 0.01  # Tolleranza per considerare il target raggiunto
         
+        # Aspetta il tick di Godot
+        self.dds.wait('tick')
+
         while iteration < max_iterations:
-            # Aspetta il tick di Godot
-            self.dds.wait('tick')
             godot_delta = self.dds.read('tick')
             time.sleep(0.052)
             
