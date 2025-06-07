@@ -50,7 +50,7 @@ class DiffDriveRoboticAgent:
 
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
-            _kp=0.6,
+            _kp=0.7,
             _ki=0.0,
             _kd=0.0,
             _sat=8.0
@@ -71,7 +71,7 @@ class DiffDriveRoboticAgent:
         )
 
         self.polar_controller = Polar2DController(
-            KP_linear=1.0,
+            KP_linear=1.2,
             v_max=1.5,     
             KP_heading=2.0,   
             w_max=2.0         
