@@ -189,7 +189,7 @@ class DiffDriveRoboticAgent:
         
         max_iterations = 800
         iteration = 0
-        target_tolerance = 0.01  # Tolleranza per considerare il target raggiunto
+        target_tolerance = 0.005  # Tolleranza per considerare il target raggiunto
         
         # Aspetta il tick di Godot
         self.dds.wait('tick')
