@@ -78,7 +78,7 @@ class DiffDriveRoboticAgent:
         )
 
         self.virtual_robot = None
-        self.backup_distance = 0.1  # Distanza di backup in metri
+        self.target_tolerance = 0.005  # Tolleranza per considerare il target raggiunto
 
     def stop_robot(self):
         """Ferma immediatamente il robot"""
@@ -93,26 +93,8 @@ class DiffDriveRoboticAgent:
 
     def _backup_from_collision(self, start_pos, collision_pos):
         """Esegue un backup dalla posizione di collisione verso la posizione di partenza"""
-        print(f"Ritorno leggermente sui miei passi a seguito della collisione")
-        
-        # Calcola la direzione opposta al movimento
-        dx = start_pos[0] - collision_pos[0]
-        dy = start_pos[1] - collision_pos[1]
-        distance = math.sqrt(dx*dx + dy*dy)
-        
-        if distance > 0:
-            # Normalizza e scala per la distanza di backup
-            backup_dx = (dx / distance) * self.backup_distance
-            backup_dy = (dy / distance) * self.backup_distance
-        else:
-            # Se siamo alla posizione di partenza, backup nella direzione opposta all'heading
-            current_pose = self.robot.get_pose()
-            backup_dx = -self.backup_distance * math.cos(current_pose[2])
-            backup_dy = -self.backup_distance * math.sin(current_pose[2])
-        
-        # Calcola target di backup
-        backup_target_x = collision_pos[0] + backup_dx
-        backup_target_y = collision_pos[1] + backup_dy
+        backup_target_x = start_pos[0]
+        backup_target_y = start_pos[1]
         
         print(f"Backup target: ({backup_target_x:.2f}, {backup_target_y:.2f})")
         
@@ -124,7 +106,8 @@ class DiffDriveRoboticAgent:
         )
         
         # Esegui il backup
-        max_backup_iterations = 200
+        max_backup_iterations = 900
+        print("Inizio procedura di backup...")
         backup_iteration = 0
         
         while backup_iteration < max_backup_iterations:
@@ -152,6 +135,11 @@ class DiffDriveRoboticAgent:
             self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+
+            distance_to_target = math.sqrt((pose[0] - backup_target_x)**2 + (pose[1] - backup_target_y)**2)
+            if distance_to_target < self.target_tolerance:
+                print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
+                break
         
         self.stop_robot()
 
@@ -187,9 +175,8 @@ class DiffDriveRoboticAgent:
         
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
         
-        max_iterations = 800
+        max_iterations = 900
         iteration = 0
-        target_tolerance = 0.005  # Tolleranza per considerare il target raggiunto
         
         # Aspetta il tick di Godot
         self.dds.wait('tick')
@@ -250,7 +237,7 @@ class DiffDriveRoboticAgent:
 
             # Controllo distanza dal target
             distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
-            if distance_to_target < target_tolerance:
+            if distance_to_target < self.target_tolerance:
                 print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
                 break
 
