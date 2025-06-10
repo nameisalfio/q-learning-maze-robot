@@ -1,22 +1,22 @@
 [gd_scene load_steps=9 format=3 uid="uid://bd37h5tsqm275"]
 
-[ext_resource type="Script" path="res://scripts/generate_maze.gd" id="1_byshg"]
+[ext_resource type="Script" uid="uid://bsod6pridw143" path="res://scripts/generate_maze.gd" id="1_byshg"]
 [ext_resource type="PackedScene" uid="uid://dbikic35gxbx7" path="res://DiffDriveRobot.tscn" id="2_vg3ne"]
-[ext_resource type="Script" path="res://scripts/camera.gd" id="3_byshg"]
-[ext_resource type="Script" path="res://scripts/robot.gd" id="4_m0p1e"]
+[ext_resource type="Script" uid="uid://cinxqrdyi4v6f" path="res://scripts/camera.gd" id="3_byshg"]
+[ext_resource type="Script" uid="uid://d0dxwvsahse1l" path="res://scripts/robot.gd" id="4_m0p1e"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qrwu0"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_m0p1e"]
-height = 2.71609
-radius = 3.03223
+height = 1.98395
+radius = 2.271
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0ma3q"]
-radius = 0.41699
+radius = 0.301311
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cu42j"]
-height = 0.61438
-radius = 1.01416
+height = 0.451402
+radius = 0.756836
 
 [node name="World" type="Node3D"]
 
@@ -59,38 +59,38 @@ physics_material_override = SubResource("PhysicsMaterial_qrwu0")
 script = ExtResource("4_m0p1e")
 
 [node name="Robot" parent="Robot" instance=ExtResource("2_vg3ne")]
-transform = Transform3D(0.04, 0, 0, 0, 0.04, 0, 0, 0, 0.04, 0, 0, 0)
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="Area3D" type="Area3D" parent="Robot"]
 
 [node name="CorpoPrincipale" type="CollisionShape3D" parent="Robot/Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7552, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.31505, 0)
 shape = SubResource("CylinderShape3D_m0p1e")
 
 [node name="PuntoAppoggio" type="CollisionShape3D" parent="Robot/Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.99915, 0.383934, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.48814, 0.339054, -0.0112949)
 shape = SubResource("SphereShape3D_0ma3q")
 
 [node name="RuotaDX" type="CollisionShape3D" parent="Robot/Area3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.99789, 1.00394, 2.72622)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.50319, 0.753109, 2.0376)
 shape = SubResource("CylinderShape3D_cu42j")
 
 [node name="RuotaSX" type="CollisionShape3D" parent="Robot/Area3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.99789, 1.00394, -2.67805)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.50164, 0.748492, -2.00985)
 shape = SubResource("CylinderShape3D_cu42j")
 
 [node name="CorpoPrincipale" type="CollisionShape3D" parent="Robot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7552, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30262, 0)
 shape = SubResource("CylinderShape3D_m0p1e")
 
 [node name="PuntoAppoggio" type="CollisionShape3D" parent="Robot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.99915, 0.383934, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.49849, 0.29008, 0)
 shape = SubResource("SphereShape3D_0ma3q")
 
 [node name="RuotaDX" type="CollisionShape3D" parent="Robot"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.99789, 1.00394, 2.72622)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.49442, 0.750274, 2.04249)
 shape = SubResource("CylinderShape3D_cu42j")
 
 [node name="RuotaSX" type="CollisionShape3D" parent="Robot"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.99789, 1.00394, -2.67805)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.49843, 0.750259, -2.00858)
 shape = SubResource("CylinderShape3D_cu42j")

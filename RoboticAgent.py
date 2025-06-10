@@ -78,7 +78,7 @@ class DiffDriveRoboticAgent:
         )
 
         self.virtual_robot = None
-        self.target_tolerance = 0.005  # Tolleranza per considerare il target raggiunto
+        self.target_tolerance = 0.002  # Tolleranza per considerare il target raggiunto
 
     def stop_robot(self):
         """Ferma immediatamente il robot"""
