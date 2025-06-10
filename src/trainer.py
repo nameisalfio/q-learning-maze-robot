@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from robot.RoboticAgent import DiffDriveRoboticAgent, MoveResult
+from robot.robotic_agent import DiffDriveRoboticAgent, MoveResult
 from .agent import QLearningAgent
 from .environment import MazeEnvironment
 from .strategies import create_strategy

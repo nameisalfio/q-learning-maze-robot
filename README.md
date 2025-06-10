@@ -128,6 +128,11 @@ q-learning-maze-robot/
 ├── README.md                      # This file
 ├── config.yaml                    # Central configuration file for all parameters 
 ├── main.py                        # Entry point for the Q-Learning system
+├── lib/                           # User-defined libraries
+    ├── data
+    ├── dds
+    ├── system
+    └── utils
 ├── requirements.txt               # Python dependencies 
 ├── .gitignore                     
 ├── GodotProject/                  # Godot Engine project files

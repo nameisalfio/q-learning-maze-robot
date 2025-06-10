@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from robot.RoboticAgent import MoveResult
+from robot.robotic_agent import MoveResult
 
 @dataclass
 class Position:
