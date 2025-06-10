@@ -1,0 +1,44 @@
+# Q-Learning Maze Robot Configuration
+experiment:
+  name: "q_learning_maze_robot"
+  log_level: "INFO"
+
+# Q-Learning Agent Parameters
+agent:
+  learning_rate: 0.1
+  discount_factor: 0.95
+
+# Exploration Strategy Configuration
+# Options: epsilon_greedy, ucb, curiosity
+strategy:
+  name: "epsilon_greedy"
+  epsilon: 0.8
+  epsilon_decay: 0.995
+  epsilon_min: 0.1
+  ucb_factor: 2.0        # For UCB strategy
+  novelty_bonus: 3.0     # For curiosity strategy
+
+# Environment Settings
+environment:
+  max_steps: 100
+  collision_limit: 10
+  loop_threshold: 15
+  grid_scale: 10
+
+# Reward Structure
+rewards:
+  success: 5.0
+  collision: -10.0
+  goal_reached: 100.0
+  timeout: -5.0
+  streak_multiplier: 2.0
+  max_streak_bonus: 20.0
+  exploration_bonus: 3.0
+  loop_penalty: -8.0
+
+# Training Configuration
+training:
+  episodes: 200
+  save_every: 50
+  test_episodes: 5
+  model_path: "models/q_agent.pkl"

@@ -13,12 +13,15 @@ import math
 import time
 
 class PolarWheelSpeedControl:
+    """Wheel speed control for differential drive robot."""
+    
     def __init__(self, _wheelbase, _kp, _ki, _kd, _sat):
         self.wheelbase = _wheelbase
         self.left_pid = PID_Controller(_kp, _ki, _kd, _sat)
         self.right_pid = PID_Controller(_kp, _ki, _kd, _sat)
         
     def evaluate(self, delta_t, target_linear, target_angular, current_left, current_right):
+        """Calculate wheel torques based on target velocities."""
         self.target_left = target_linear - (target_angular * self.wheelbase) / 2.0
         self.target_right = target_linear + (target_angular * self.wheelbase) / 2.0
         out_left = self.left_pid.evaluate(delta_t, self.target_left - current_left)
@@ -32,22 +35,25 @@ DIRECTIONS = {
     "RIGHT": 3
 }
 
-# Enum per i risultati del movimento
 class MoveResult(Enum):
-    SUCCESS = "success"           # Movimento completato con successo
-    COLLISION = "collision"       # Collisione con muro
-    GOAL_REACHED = "goal_reached" # Uscita raggiunta
-    TIMEOUT = "timeout"           # Timeout del movimento
+    """Enumeration for movement results."""
+    SUCCESS = "success"           # Movement completed successfully
+    COLLISION = "collision"       # Collision with wall detected
+    GOAL_REACHED = "goal_reached" # Goal area reached
+    TIMEOUT = "timeout"           # Movement timed out
 
 class DiffDriveRoboticAgent:
+    """Differential drive robot agent for maze navigation."""
+    
     def __init__(self, dds, time):
         self.time = time
         self.dds = dds
         
-        # Subscribe ai topic necessari per RL
+        # Initialize DDS communication
         self.dds.start()
         self.dds.subscribe(["Collision", "GoalReached", "tick"])
 
+        # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
             _kp=0.7,
@@ -78,48 +84,63 @@ class DiffDriveRoboticAgent:
         )
 
         self.virtual_robot = None
-        self.target_tolerance = 0.002  # Tolleranza per considerare il target raggiunto
+        self.backup_distance = 0.1
 
     def stop_robot(self):
-        """Ferma immediatamente il robot"""
-        # Imposta velocità zero
+        """Stop robot movement immediately."""
         self.robot.evaluate(0.008, 0.0, 0.0)
         
-        # Pubblica posizione corrente
+        # Publish current position
         pose = self.robot.get_pose()
         self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
 
     def _backup_from_collision(self, start_pos, collision_pos):
-        """Esegue un backup dalla posizione di collisione verso la posizione di partenza"""
-        backup_target_x = start_pos[0]
-        backup_target_y = start_pos[1]
+        """Execute backup maneuver after collision."""
+        print("Executing collision recovery backup")
+        
+        # Calculate opposite direction
+        dx = start_pos[0] - collision_pos[0]
+        dy = start_pos[1] - collision_pos[1]
+        distance = math.sqrt(dx*dx + dy*dy)
+        
+        if distance > 0:
+            # Normalize and scale for backup distance
+            backup_dx = (dx / distance) * self.backup_distance
+            backup_dy = (dy / distance) * self.backup_distance
+        else:
+            # If at start position, backup opposite to heading
+            current_pose = self.robot.get_pose()
+            backup_dx = -self.backup_distance * math.cos(current_pose[2])
+            backup_dy = -self.backup_distance * math.sin(current_pose[2])
+        
+        # Calculate backup target
+        backup_target_x = collision_pos[0] + backup_dx * 10
+        backup_target_y = collision_pos[1] + backup_dy * 10
         
         print(f"Backup target: ({backup_target_x:.2f}, {backup_target_y:.2f})")
         
-        # Crea un virtual robot per il backup
-        backup_virtual_robot = StraightLine2DMotion(0.8, 1.0, 1.0)  # Più lento per il backup
+        # Create virtual robot for backup
+        backup_virtual_robot = StraightLine2DMotion(0.8, 1.0, 1.0)
         backup_virtual_robot.start_motion(
             (collision_pos[0], collision_pos[1]), 
             (backup_target_x, backup_target_y)
         )
         
-        # Esegui il backup
-        max_backup_iterations = 900
-        print("Inizio procedura di backup...")
+        # Execute backup movement
+        max_backup_iterations = 200
         backup_iteration = 0
         
         while backup_iteration < max_backup_iterations:
             godot_delta = self.dds.read('tick')
             time.sleep(0.052)
-
             backup_iteration += 1
 
-            # Genera target dal virtual robot di backup
+            # Generate target from backup virtual robot
             (x_target, y_target) = backup_virtual_robot.evaluate(godot_delta)
             
-            # Controllo del robot per backup
+            # Control robot during backup
             pose = self.robot.get_pose()
             (target_v, target_w) = self.polar_controller.evaluate(godot_delta, x_target, y_target, pose)
             
@@ -130,37 +151,28 @@ class DiffDriveRoboticAgent:
             
             self.robot.evaluate(godot_delta, torque_left, torque_right)
             
-            # Pubblica posizione durante backup
+            # Publish position during backup
             pose = self.robot.get_pose()
             self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
-
-            distance_to_target = math.sqrt((pose[0] - backup_target_x)**2 + (pose[1] - backup_target_y)**2)
-            if distance_to_target < self.target_tolerance:
-                print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
-                break
         
         self.stop_robot()
 
     def move(self, direction):
-        """
-        Esegue un movimento in una direzione.
-        
-        Returns:
-            MoveResult: Il risultato del movimento
-        """
+        """Execute movement in specified direction."""
         if direction not in DIRECTIONS:
             raise ValueError("Invalid direction. Use 'UP', 'DOWN', 'LEFT', or 'RIGHT'.")
 
-        # Motion planning
+        # Initialize motion planning
         self.virtual_robot = StraightLine2DMotion(1.2, 1.8, 1.8)
 
         current_pose = self.robot.get_pose()
         start_x = current_pose[0]
         start_y = current_pose[1]
-        start_pos = (start_x, start_y)  # Salva posizione di partenza
+        start_pos = (start_x, start_y)
 
+        # Calculate target position (10 unit movement)
         if direction == "UP":
             target_x, target_y = start_x, start_y + 10
         elif direction == "DOWN":
@@ -175,45 +187,44 @@ class DiffDriveRoboticAgent:
         
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
         
-        max_iterations = 900
+        max_iterations = 800
         iteration = 0
+        target_tolerance = 0.005
         
-        # Aspetta il tick di Godot
+        # Wait for Godot tick
         self.dds.wait('tick')
 
         while iteration < max_iterations:
             godot_delta = self.dds.read('tick')
             time.sleep(0.052)
-            
             iteration += 1
 
-            # Controlla se il goal del labirinto è stato raggiunto
+            # Check for goal reached
             goal_reached = self.dds.read("GoalReached")
             if goal_reached == 1:
-                print("Uscita raggiunta!")
+                print("Goal reached!")
                 self.stop_robot()
                 return MoveResult.GOAL_REACHED
 
-            # Controlla collisione
+            # Check for collision
             collision = self.dds.read("Collision")
-
             if collision == 1:
-                print(f"\033[91mCollisione avvenuta! Stato: {collision}.\033[0m")
+                print(f"\033[91mCollision detected! Status: {collision}.\033[0m")
 
-                # Ottieni posizione di collisione
+                # Get collision position
                 collision_pose = self.robot.get_pose()
                 collision_pos = (collision_pose[0], collision_pose[1])
                 
-                # Esegui backup e attendi il completamento prima di proseguire
+                # Execute backup and wait for completion
                 self._backup_from_collision(start_pos, collision_pos)
                 
-                print("Collisione risolta con procedura di backup.")
+                print("Collision resolved with backup procedure.")
                 return MoveResult.COLLISION
 
-            # Genera il target dal virtual robot
+            # Generate target from virtual robot
             (x_target, y_target) = self.virtual_robot.evaluate(godot_delta)
 
-            # Controllo del robot
+            # Robot control
             pose = self.robot.get_pose()
             (target_v, target_w) = self.polar_controller.evaluate(godot_delta, x_target, y_target, pose)
             
@@ -224,34 +235,29 @@ class DiffDriveRoboticAgent:
 
             self.robot.evaluate(godot_delta, torque_left, torque_right)
             
-            # Pubblica posizione
+            # Publish position
             pose = self.robot.get_pose()
             self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
 
-            # Log periodico
-            if iteration % 20 == 0:
-                distance = math.sqrt((pose[0] - original_target[0])**2 + (pose[1] - original_target[1])**2)
-                # print(f"Iter {iteration}: at ({pose[0]:.2f}, {pose[1]:.2f}), dist to target: {distance:.3f}")
-
-            # Controllo distanza dal target
+            # Check if target reached
             distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
-            if distance_to_target < self.target_tolerance:
-                print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
+            if distance_to_target < target_tolerance:
+                print(f"Target reached: ({pose[0]:.2f}, {pose[1]:.2f})")
                 break
 
-        # Timeout raggiunto
+        # Check for timeout
         if iteration >= max_iterations:
-            print(f"Timeout raggiunto dopo {max_iterations} iterazioni")
+            print(f"Timeout reached after {max_iterations} iterations")
             self.stop_robot()
             return MoveResult.TIMEOUT
 
-        # Movimento completato con successo
+        # Movement completed successfully
         self.stop_robot()
         return MoveResult.SUCCESS
 
     def get_current_position(self):
-        """Restituisce la posizione corrente del robot"""
+        """Get current robot position."""
         pose = self.robot.get_pose()
         return (pose[0], pose[1], pose[2])

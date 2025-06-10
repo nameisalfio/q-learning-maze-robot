@@ -1,13 +1,9 @@
-# Godot Project
-GodotProject/.godot/
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -19,19 +15,33 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# Virtualenv
+# Virtual environments
 venv/
+env/
 ENV/
+env.bak/
+venv.bak/
 
 # IDE
-.idea/
 .vscode/
-*.sublime-project
-*.sublime-workspace
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Models and logs
+models/*.pkl
+logs/*.log
 
 # OS
 .DS_Store
@@ -42,7 +52,9 @@ ENV/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-data/*.csv
-config/*.conf
-*.log
+# Godot
+.import/
+export.cfg
+export_presets.cfg
+.mono/
+data_*/
