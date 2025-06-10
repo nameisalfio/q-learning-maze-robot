@@ -278,6 +278,7 @@ class RLTrainer:
         try:
             for episode in range(n_episodes):
                 print(f"\nEpisodio {episode + 1}/{n_episodes}")
+                print("="*50)
                 
                 state = self.env.reset()
                 total_reward = 0
