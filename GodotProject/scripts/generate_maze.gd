@@ -6,6 +6,9 @@ extends Node3D
 @export var wall_height: float = 2.5
 @export var wall_thickness: float = 0.3
 
+# checkpoint già attivati
+var activated_checkpoints = {}
+
 var maze = []
 var visited = []
 
@@ -105,6 +108,14 @@ func build_maze():
 				
 	var goal_pos = Vector3(maze_width * cell_size, 0, (maze_height - 1) * cell_size)
 	create_goal_area(goal_pos)
+	
+	# Aggiungi i checkpoints
+	var steps = 6
+	for i in range(1, steps - 1):
+		var px = int(i * maze_width / (steps - 1))
+		var py = int(i * maze_height / (steps - 1))
+		var position = Vector3(px * cell_size, 0, py * cell_size)
+		create_checkpoint_area(i, position)
 
 func _place_wall(position: Vector3, size: Vector3, material: Material):
 	var wall_body = StaticBody3D.new()
@@ -165,7 +176,6 @@ func create_goal_area(position: Vector3):
 	goal_collider.transform.origin = Vector3(0, 0.5, 0)
 
 	goal_area.transform.origin = position + Vector3(0, 0.05, 0)
-	goal_area.add_child(goal_collider)
 
 	goal_area.connect("body_entered", Callable(self, "_on_goal_area_entered"))
 	add_child(goal_area)
@@ -174,3 +184,65 @@ func _on_goal_area_entered(body):
 	if body.is_in_group("robot"):
 		print("Obiettivo raggiunto!")
 		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
+		
+func _on_checkpoint_entered(body, area):
+	if body.is_in_group("robot"):
+		var name = area.get_meta("name")  # es: "Checkpoint_1"
+
+		if not activated_checkpoints[name]:
+			activated_checkpoints[name] = true
+			var mat = area.get_meta("material")
+			mat.albedo_color = Color(0.4, 1.0, 0.4)  # verde acceso
+			print("Checkpoint %s attivato!" % name)
+
+			# Estrai numero del checkpoint (dopo "_")
+			var parts = name.split("_")
+			var checkpoint_num = int(parts[-1])  # prende l'ultimo elemento
+
+			print(checkpoint_num)
+			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, checkpoint_num)
+		
+		
+func create_checkpoint_area(index: int, position: Vector3):
+	var checkpoint_name = "checkpoint_%d" % index
+	activated_checkpoints[checkpoint_name] = false
+
+	# --- CREA LA PIATTAFORMA ---
+	var platform_body = StaticBody3D.new()
+	platform_body.name = checkpoint_name + "_platform"
+	platform_body.transform.origin = position + Vector3(0, 0.01, 0)
+
+	var platform_mesh = MeshInstance3D.new()
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(cell_size, 0.1, cell_size)
+	platform_mesh.mesh = mesh
+
+	var material = StandardMaterial3D.new()
+	material.albedo_color = Color(0.95, 0.85, 0.6)  # colore iniziale
+	mesh.material = material
+	platform_mesh.material_override = material
+
+	platform_body.add_child(platform_mesh)
+	add_child(platform_body)
+
+	# --- CREA L'AREA DI CHECKPOINT ---
+	var area = Area3D.new()
+	area.name = checkpoint_name
+	area.monitoring = true
+	area.collision_layer = 2
+	area.collision_mask = 1  # il robot ha layer 1
+
+	var area_shape = BoxShape3D.new()
+	area_shape.size = Vector3(cell_size, 1.0, cell_size)
+	var area_collider = CollisionShape3D.new()
+	area_collider.shape = area_shape
+	area_collider.transform.origin = Vector3(0, 0.5, 0)
+
+	area.transform.origin = position + Vector3(0, 0.05, 0)
+	area.add_child(area_collider)
+
+	area.set_meta("material", material)
+	area.set_meta("name", checkpoint_name)
+	area.connect("body_entered", Callable(self, "_on_checkpoint_entered").bind(area))
+
+	add_child(area)

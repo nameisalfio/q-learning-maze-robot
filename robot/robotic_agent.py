@@ -41,6 +41,7 @@ class MoveResult(Enum):
     COLLISION = "collision"       # Collision with wall detected
     GOAL_REACHED = "goal_reached" # Goal area reached
     TIMEOUT = "timeout"           # Movement timed out
+    CHECKPOINT_REACHED = "checkpoint_reached" # Checkpoint reached
 
 class DiffDriveRoboticAgent:
     """Differential drive robot agent for maze navigation."""
@@ -85,6 +86,7 @@ class DiffDriveRoboticAgent:
 
         self.virtual_robot = None
         self.target_tolerance = 0.001  # Tolerance for reaching target position
+        self.last_checkpoint_reached = None
 
     def stop_robot(self):
         """Stop robot movement immediately."""
@@ -170,12 +172,10 @@ class DiffDriveRoboticAgent:
         elif direction == "RIGHT":
             target_x, target_y = start_x + 10, start_y
 
-        original_target = (target_x, target_y)
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
-        
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
         
-        max_iterations = 800
+        max_iterations = 900
         iteration = 0
 
         # Wait for Godot tick
@@ -239,6 +239,13 @@ class DiffDriveRoboticAgent:
             print(f"Timeout reached after {max_iterations} iterations")
             self.stop_robot()
             return MoveResult.TIMEOUT
+        
+        # Check if checkpoint reached
+        checkpoint_reached = self.dds.read("checkpoint_reached")
+        if checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
+            self.last_checkpoint_reached = checkpoint_reached
+            print(f"Checkpoint reached: {checkpoint_reached}")
+            return MoveResult.CHECKPOINT_REACHED * checkpoint_reached
 
         # Movement completed successfully
         self.stop_robot()
@@ -248,3 +255,9 @@ class DiffDriveRoboticAgent:
         """Get current robot position."""
         pose = self.robot.get_pose()
         return (pose[0], pose[1], pose[2])
+    
+    def reset(self):
+        """Reset robot state."""
+        self.virtual_robot = None
+        self.last_checkpoint_reached = None
+        print("Robot state reset.")
