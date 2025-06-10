@@ -174,13 +174,13 @@ class DiffDriveRoboticAgent:
         start_pos = (start_x, start_y)  # Salva posizione di partenza
 
         if direction == "UP":
-            target_x, target_y = start_x, start_y + 1
+            target_x, target_y = start_x, start_y + 10
         elif direction == "DOWN":
-            target_x, target_y = start_x, start_y - 1
+            target_x, target_y = start_x, start_y - 10
         elif direction == "LEFT":
-            target_x, target_y = start_x - 1, start_y
+            target_x, target_y = start_x - 10, start_y
         elif direction == "RIGHT":
-            target_x, target_y = start_x + 1, start_y
+            target_x, target_y = start_x + 10, start_y
 
         original_target = (target_x, target_y)
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
