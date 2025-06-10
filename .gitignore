@@ -58,3 +58,5 @@ export.cfg
 export_presets.cfg
 .mono/
 data_*/
+GodotProject/.godot/
+GodotProject/.godot/editor/

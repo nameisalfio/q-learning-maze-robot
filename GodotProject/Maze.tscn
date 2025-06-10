@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://bd37h5tsqm275"]
 
-[ext_resource type="Script" path="res://scripts/generate_maze.gd" id="1_byshg"]
+[ext_resource type="Script" uid="uid://bsod6pridw143" path="res://scripts/generate_maze.gd" id="1_byshg"]
 [ext_resource type="PackedScene" uid="uid://dbikic35gxbx7" path="res://DiffDriveRobot.tscn" id="2_vg3ne"]
-[ext_resource type="Script" path="res://scripts/camera.gd" id="3_byshg"]
-[ext_resource type="Script" path="res://scripts/robot.gd" id="4_m0p1e"]
+[ext_resource type="Script" uid="uid://cinxqrdyi4v6f" path="res://scripts/camera.gd" id="3_byshg"]
+[ext_resource type="Script" uid="uid://d0dxwvsahse1l" path="res://scripts/robot.gd" id="4_m0p1e"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qrwu0"]
 
