@@ -5,40 +5,51 @@ experiment:
 
 # Q-Learning Agent Parameters
 agent:
-  learning_rate: 0.1
-  discount_factor: 0.95
+  learning_rate: 0.12
+  discount_factor: 0.96
 
 # Exploration Strategy Configuration
 # Options: epsilon_greedy, ucb, curiosity
 strategy:
   name: "epsilon_greedy"
-  epsilon: 0.8
-  epsilon_decay: 0.995
-  epsilon_min: 0.1
-  ucb_factor: 2.0        # For UCB strategy
-  novelty_bonus: 3.0     # For curiosity strategy
+  epsilon: 0.75
+  epsilon_decay: 0.997
+  epsilon_min: 0.08
+  ucb_factor: 2.5        # For UCB strategy
+  novelty_bonus: 4.0     # For curiosity strategy
 
 # Environment Settings
 environment:
-  max_steps: 100
-  collision_limit: 10
-  loop_threshold: 15
+  max_steps: 120
+  collision_limit: 12
+  loop_threshold: 18
   grid_scale: 10
 
 # Reward Structure
 rewards:
-  success: 5.0
-  collision: -10.0
-  goal_reached: 100.0
-  timeout: -5.0
-  streak_multiplier: 2.0
-  max_streak_bonus: 20.0
-  exploration_bonus: 3.0
-  loop_penalty: -8.0
+  success: 8.0
+  collision: -15.0
+  goal_reached: 150.0
+  timeout: -10.0
+  checkpoint_reached: 75.0
+  streak_multiplier: 3.0
+  max_streak_bonus: 40.0
+  exploration_bonus: 2.0
+  loop_penalty: -12.0
+
+  checkpoint:
+    base_bonus: 75.0
+    progressive_multiplier: 25.0
+    momentum_threshold: 3
+    momentum_multiplier: 3.0
+    explosion_threshold: 8
+    explosion_bonus: 25.0
+    stagnation_threshold: 20
+    stagnation_penalty: -3.0
 
 # Training Configuration
 training:
-  episodes: 200
-  save_every: 50
-  test_episodes: 5
+  episodes: 250
+  save_every: 40
+  test_episodes: 8
   model_path: "models/q_agent.pkl"
