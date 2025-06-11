@@ -52,7 +52,7 @@ class DiffDriveRoboticAgent:
         
         # Initialize DDS communication
         self.dds.start()
-        self.dds.subscribe(["Collision", "GoalReached", "tick"])
+        self.dds.subscribe(["Collision", "GoalReached", "tick", "checkpoint_reached"])
 
         # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
@@ -191,7 +191,7 @@ class DiffDriveRoboticAgent:
             if goal_reached == 1:
                 print("Goal reached!")
                 self.stop_robot()
-                return MoveResult.GOAL_REACHED
+                return MoveResult.GOAL_REACHED, None
 
             # Check for collision
             collision = self.dds.read("Collision")
@@ -206,7 +206,7 @@ class DiffDriveRoboticAgent:
                 self._backup_from_collision(start_pos, collision_pos)
                 
                 print("Collision resolved with backup procedure.")
-                return MoveResult.COLLISION
+                return MoveResult.COLLISION, None
 
             # Generate target from virtual robot
             (x_target, y_target) = self.virtual_robot.evaluate(godot_delta)
@@ -238,18 +238,18 @@ class DiffDriveRoboticAgent:
         if iteration >= max_iterations:
             print(f"Timeout reached after {max_iterations} iterations")
             self.stop_robot()
-            return MoveResult.TIMEOUT
+            return MoveResult.TIMEOUT, None
         
         # Check if checkpoint reached
         checkpoint_reached = self.dds.read("checkpoint_reached")
         if checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
             self.last_checkpoint_reached = checkpoint_reached
             print(f"Checkpoint reached: {checkpoint_reached}")
-            return MoveResult.CHECKPOINT_REACHED * checkpoint_reached
+            return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
 
         # Movement completed successfully
         self.stop_robot()
-        return MoveResult.SUCCESS
+        return MoveResult.SUCCESS, None
 
     def get_current_position(self):
         """Get current robot position."""
