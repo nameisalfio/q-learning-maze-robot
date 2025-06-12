@@ -53,21 +53,22 @@ class DiffDriveRoboticAgent:
         # Initialize DDS communication
         self.dds.start()
         self.dds.subscribe(["Collision", "GoalReached", "tick", "checkpoint_reached"])
+        self.dds.publish('reset_checkpoints', 0, DDS.DDS_TYPE_INT)
 
         # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
-            _kp=0.7,
+            _kp=0.8,
             _ki=0.0,
             _kd=0.0,
-            _sat=8.0
+            _sat=10.0
         )
 
         self.robot = TwoWheelsCart2DEncodersOdometry(
             _mass=1.0,
             _radius=0.3,
-            _lin_friction=0.9,
-            _ang_friction=0.8,
+            _lin_friction=0.8,
+            _ang_friction=0.7,
             _r_traction_left=0.04,
             _r_traction_right=0.04,
             _traction_wheelbase=0.4,
@@ -258,6 +259,12 @@ class DiffDriveRoboticAgent:
     
     def reset(self):
         """Reset robot state."""
+        self.stop_robot()
         self.virtual_robot = None
         self.last_checkpoint_reached = None
+        self.robot.reset()
+        self.dds.publish('X', 0.0, DDS.DDS_TYPE_FLOAT)
+        self.dds.publish('Y', 0.0, DDS.DDS_TYPE_FLOAT)
+        self.dds.publish('Theta', 0.0, DDS.DDS_TYPE_FLOAT)
+        self.dds.publish('reset_checkpoints', 1, DDS.DDS_TYPE_INT)
         print("Robot state reset.")

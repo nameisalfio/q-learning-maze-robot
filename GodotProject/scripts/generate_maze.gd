@@ -8,14 +8,30 @@ extends Node3D
 
 # checkpoint già attivati
 var activated_checkpoints = {}
+var checkpoint_areas = {}
 
 var maze = []
 var visited = []
 
 func _ready():
+	DDS.subscribe("reset_checkpoints")
 	generate_maze()
 	build_floor()
 	build_maze()
+	
+func process():
+	var reset_checkpoints = DDS.read("reset_checkpoints")
+	if reset_checkpoints == 1:
+		for i in range(1, 5):
+			name = "checkpoint_%d" % i
+			activated_checkpoints[name] = false
+			
+			var area = checkpoint_areas[name]
+			var mat = area.get_meta("material")
+			mat.albedo_color = Color(0.95, 0.85, 0.6)  # verde acceso
+			print("Checkpoint %s disattivato!" % name)
+			
+		DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, 0)
 
 func generate_maze():
 	seed(1234)
@@ -187,7 +203,7 @@ func _on_goal_area_entered(body):
 		
 func _on_checkpoint_entered(body, area):
 	if body.is_in_group("robot"):
-		var name = area.get_meta("name")  # es: "Checkpoint_1"
+		var name = area.get_meta("name")  # es: "checkpoint_1"
 
 		if not activated_checkpoints[name]:
 			activated_checkpoints[name] = true
@@ -245,4 +261,5 @@ func create_checkpoint_area(index: int, position: Vector3):
 	area.set_meta("name", checkpoint_name)
 	area.connect("body_entered", Callable(self, "_on_checkpoint_entered").bind(area))
 
+	checkpoint_areas[checkpoint_name] = area
 	add_child(area)

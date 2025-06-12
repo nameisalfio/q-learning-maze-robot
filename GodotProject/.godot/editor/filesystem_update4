@@ -1,3 +1,4 @@
 res://Maze.tscn
 res://DiffDriveRobot.tscn
 res://differential_drive_bot.tscn
+res://scripts/generate_maze.gd

@@ -11,7 +11,7 @@ agent:
 # Exploration Strategy Configuration
 # Options: epsilon_greedy, ucb, curiosity
 strategy:
-  name: "epsilon_greedy"
+  name: "curiosity"
   epsilon: 0.75
   epsilon_decay: 0.997
   epsilon_min: 0.08

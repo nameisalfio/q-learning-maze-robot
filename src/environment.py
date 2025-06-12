@@ -76,10 +76,8 @@ class MazeEnvironment:
         self.collision_count = 0
         self.recent_positions.clear()
         
-        # Reset robot to origin
-        self.robot.dds.publish('X', 0.0, self.robot.dds.DDS_TYPE_FLOAT)
-        self.robot.dds.publish('Y', 0.0, self.robot.dds.DDS_TYPE_FLOAT)
-        self.robot.dds.publish('Theta', 0.0, self.robot.dds.DDS_TYPE_FLOAT)
+        # Reset robot
+        self.robot.reset()
         
         time.sleep(0.5)
         self.robot.dds.wait('tick')
