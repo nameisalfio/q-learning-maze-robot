@@ -7,6 +7,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from robot.robotic_agent import MoveResult
+from lib.dds.dds import DDS
 
 @dataclass
 class Position:
@@ -87,6 +88,12 @@ class MazeEnvironment:
         self.previous_position = self.current_position
         
         return self.get_state()
+    
+    def reset_checkpoints(self):
+        """Reset checkpoint tracking."""
+        self.last_checkpoint_step = 0
+        self.robot.dds.publish('reset_checkpoints', 1, DDS.DDS_TYPE_INT)
+        print("Checkpoints reset.")
     
     def get_state(self) -> Tuple[int, int]:
         """Get discretized state representation."""

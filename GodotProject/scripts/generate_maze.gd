@@ -9,6 +9,8 @@ extends Node3D
 # checkpoint già attivati
 var activated_checkpoints = {}
 var checkpoint_areas = {}
+var reset_checkpoints = null
+var prev_reset_checkpoints = null
 
 var maze = []
 var visited = []
@@ -19,8 +21,12 @@ func _ready():
 	build_floor()
 	build_maze()
 	
-func process():
-	var reset_checkpoints = DDS.read("reset_checkpoints")
+func _process(delta):
+	prev_reset_checkpoints = reset_checkpoints
+	reset_checkpoints = DDS.read("reset_checkpoints")
+	if reset_checkpoints != null and prev_reset_checkpoints != reset_checkpoints:
+		print(reset_checkpoints)
+	
 	if reset_checkpoints == 1:
 		for i in range(1, 5):
 			name = "checkpoint_%d" % i

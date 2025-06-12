@@ -266,5 +266,4 @@ class DiffDriveRoboticAgent:
         self.dds.publish('X', 0.0, DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Y', 0.0, DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Theta', 0.0, DDS.DDS_TYPE_FLOAT)
-        self.dds.publish('reset_checkpoints', 1, DDS.DDS_TYPE_INT)
         print("Robot state reset.")

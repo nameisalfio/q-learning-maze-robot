@@ -84,6 +84,9 @@ class RLTrainer:
                 success = (info['result'] == MoveResult.GOAL_REACHED)
                 self.agent.success_episodes.append(success)
                 
+                # Reset environment checkpoints for next episode
+                self.environment.reset_checkpoints()
+
                 # Track checkpoint episodes
                 if episode_checkpoints:
                     checkpoint_stats['checkpoint_episodes'] += 1
