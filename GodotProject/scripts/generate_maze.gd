@@ -25,7 +25,7 @@ func _process(delta):
 	prev_reset_checkpoints = reset_checkpoints
 	reset_checkpoints = DDS.read("reset_checkpoints")
 	if reset_checkpoints != null and prev_reset_checkpoints != reset_checkpoints:
-		print(reset_checkpoints)
+		print("Checkpoints reset: %d" % reset_checkpoints)
 	
 	if reset_checkpoints == 1:
 		for i in range(1, 5):
@@ -37,8 +37,6 @@ func _process(delta):
 			mat.albedo_color = Color(0.95, 0.85, 0.6)  # verde acceso
 			print("Checkpoint %s disattivato!" % name)
 			
-		DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, 0)
-
 func generate_maze():
 	seed(1234)
 	maze = []

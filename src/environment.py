@@ -93,6 +93,8 @@ class MazeEnvironment:
         """Reset checkpoint tracking."""
         self.last_checkpoint_step = 0
         self.robot.dds.publish('reset_checkpoints', 1, DDS.DDS_TYPE_INT)
+        time.sleep(1.0)
+        self.robot.dds.publish('reset_checkpoints', 0, DDS.DDS_TYPE_INT)
         print("Checkpoints reset.")
     
     def get_state(self) -> Tuple[int, int]:

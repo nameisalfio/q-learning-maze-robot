@@ -7,6 +7,7 @@ from .agent import QLearningAgent
 from .environment import MazeEnvironment
 from .strategies import create_strategy
 from .utils import Config, Logger
+import time
 
 class RLTrainer:
     """Main trainer for Q-Learning maze navigation."""
