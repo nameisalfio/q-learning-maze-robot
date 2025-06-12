@@ -30,12 +30,12 @@ func _process(delta):
 	if reset_checkpoints == 1:
 		for i in range(1, 5):
 			name = "checkpoint_%d" % i
-			activated_checkpoints[name] = false
-			
-			var area = checkpoint_areas[name]
-			var mat = area.get_meta("material")
-			mat.albedo_color = Color(0.95, 0.85, 0.6)  # verde acceso
-			print("Checkpoint %s disattivato!" % name)
+			if activated_checkpoints[name] == true:
+				activated_checkpoints[name] = false
+				var area = checkpoint_areas[name]
+				var mat = area.get_meta("material")
+				mat.albedo_color = Color(0.95, 0.85, 0.6)  # verde acceso
+				print("Checkpoint %s disattivato!" % name)
 			
 func generate_maze():
 	seed(1234)

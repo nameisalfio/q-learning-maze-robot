@@ -28,7 +28,7 @@ script = ExtResource("3_byshg")
 robot = NodePath("../Robot")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.857293, 0.514829, 0, -0.514829, -0.857293, 0, 1.93338, -3.24937)
+transform = Transform3D(1, 0, 0, 0, -0.857293, 0.514829, 0, -0.514829, -0.857293, 0, 5.11895, -3.24937)
 
 [node name="Maze" type="Node3D" parent="."]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)

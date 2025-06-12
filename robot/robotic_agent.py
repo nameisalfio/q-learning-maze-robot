@@ -79,8 +79,8 @@ class DiffDriveRoboticAgent:
         )
 
         self.polar_controller = Polar2DController(
-            KP_linear=1.2,
-            v_max=1.5,     
+            KP_linear=1.4,
+            v_max=1.7,     
             KP_heading=2.0,   
             w_max=2.0         
         )
@@ -163,15 +163,15 @@ class DiffDriveRoboticAgent:
         start_y = current_pose[1]
         start_pos = (start_x, start_y)
 
-        # Calculate target position (10 unit movement)
+        # Calculate target position (10.5 unit movement)
         if direction == "UP":
-            target_x, target_y = start_x, start_y + 10
+            target_x, target_y = start_x, start_y + 10.5
         elif direction == "DOWN":
-            target_x, target_y = start_x, start_y - 10
+            target_x, target_y = start_x, start_y - 10.5
         elif direction == "LEFT":
-            target_x, target_y = start_x - 10, start_y
+            target_x, target_y = start_x - 10.5, start_y
         elif direction == "RIGHT":
-            target_x, target_y = start_x + 10, start_y
+            target_x, target_y = start_x + 10.5, start_y
 
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
