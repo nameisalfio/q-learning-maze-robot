@@ -8,10 +8,10 @@ from .environment import MazeEnvironment
 from .strategies import create_strategy
 from .utils import Config, Logger
 import time
-
+    
 class RLTrainer:
     """Main trainer for Q-Learning maze navigation."""
-    
+
     def __init__(self, dds, time_obj, config_path: str = "config.yaml"):
         self.dds = dds
         self.time = time_obj
@@ -22,10 +22,15 @@ class RLTrainer:
         self.robot = DiffDriveRoboticAgent(dds, time_obj)
         self.environment = MazeEnvironment(self.robot, self.config)
         
-        strategy = create_strategy(self.config)
-        self.agent = QLearningAgent(self.config, strategy)
+        # IMPORTANTE: Crea strategia UNA SOLA VOLTA qui
+        self.strategy = create_strategy(self.config)
+        self.agent = QLearningAgent(self.config, self.strategy)  # Passa la strategia esistente
         
         self.model_path = self.config.get('training.model_path', 'models/q_agent.pkl')
+        
+        # Debug: Verifica che la strategia sia corretta
+        self.logger.info(f"Strategy initialized: {self.strategy.name if hasattr(self.strategy, 'name') else type(self.strategy).__name__}")
+        self.logger.info(f"Strategy info: {self.strategy.info}")
     
     def train(self, n_episodes: int = None, save_every: int = None):
         """Train the Q-Learning agent with checkpoint tracking."""

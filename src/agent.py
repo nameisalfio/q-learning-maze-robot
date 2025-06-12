@@ -92,8 +92,11 @@ class QLearningAgent:
             self.episode_rewards = model_data.get('episode_rewards', [])
             self.episode_steps = model_data.get('episode_steps', [])
             self.success_episodes = model_data.get('success_episodes', [])
+
+            saved_strategy_info = model_data.get('strategy_info', {})
+            if saved_strategy_info and hasattr(self.strategy, 'load_state'):
+                self.strategy.load_state(saved_strategy_info)
             
-            # Ensure action_counts for all states
             for state in self.q_table:
                 if state not in self.action_counts:
                     self.action_counts[state] = np.zeros(self.n_actions)
