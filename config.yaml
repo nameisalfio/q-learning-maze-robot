@@ -22,9 +22,9 @@ strategy:
 rewards:
   success: 10.0                    
   collision: -12.0                 
-  goal_reached: 200.0              
+  goal_reached: 1200.0              
   timeout: -8.0
-  checkpoint_reached: 100.0        
+  checkpoint_reached: 300.0        
   streak_multiplier: 2.5
   max_streak_bonus: 30.0
   exploration_bonus: 8.0           
@@ -32,9 +32,9 @@ rewards:
 
 # Environment Configuration
 environment:
-  max_steps: 150              
-  min_steps: 75               
-  collision_limit: 12
+  max_steps: 300              
+  min_steps: 150            
+  collision_limit: 60
   loop_threshold: 18
   grid_scale: 10
 

@@ -46,10 +46,11 @@ class MoveResult(Enum):
 class DiffDriveRoboticAgent:
     """Differential drive robot agent for maze navigation."""
     
-    def __init__(self, dds, time):
+    def __init__(self, dds, time, mode):
         self.time = time
         self.dds = dds
-        
+        self.mode = mode # 'test' or 'training'
+
         # Initialize DDS communication
         self.dds.start()
         self.dds.subscribe(["Collision", "GoalReached", "tick", "checkpoint_reached"])
@@ -154,24 +155,31 @@ class DiffDriveRoboticAgent:
         """Execute movement in specified direction."""
         if direction not in DIRECTIONS:
             raise ValueError("Invalid direction. Use 'UP', 'DOWN', 'LEFT', or 'RIGHT'.")
+        
+        self.dds.publish('mode', 1 if self.mode == "training" else 0, DDS.DDS_TYPE_INT) # training/test modes
+        time.sleep(0.052) # leggero delay per sincronizzazione con Godot
 
         # Initialize motion planning
         self.virtual_robot = StraightLine2DMotion(1.2, 1.8, 1.8)
 
         current_pose = self.robot.get_pose()
-        start_x = current_pose[0]
-        start_y = current_pose[1]
+        start_x = tmp_x = current_pose[0]
+        start_y = tmp_y = current_pose[1]
         start_pos = (start_x, start_y)
 
         # Calculate target position (10.5 unit movement)
         if direction == "UP":
             target_x, target_y = start_x, start_y + 10.5
+            tmp_x, tmp_y = start_x, start_y + 5.25
         elif direction == "DOWN":
             target_x, target_y = start_x, start_y - 10.5
+            tmp_x, tmp_y = start_x, start_y - 5.25
         elif direction == "LEFT":
             target_x, target_y = start_x - 10.5, start_y
+            tmp_x, tmp_y = start_x - 5.25, start_y
         elif direction == "RIGHT":
             target_x, target_y = start_x + 10.5, start_y
+            tmp_x, tmp_y = start_x + 5.25, start_y
 
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
@@ -179,80 +187,130 @@ class DiffDriveRoboticAgent:
         max_iterations = 900
         iteration = 0
 
-        # Wait for Godot tick
-        self.dds.wait('tick')
+        if self.mode == "test":
+            # Wait for Godot tick
+            self.dds.wait('tick')
 
-        while iteration < max_iterations:
-            godot_delta = self.dds.read('tick')
-            time.sleep(0.052)
-            iteration += 1
+            while iteration < max_iterations:
+                godot_delta = self.dds.read('tick')
+                time.sleep(0.052)
+                iteration += 1
 
-            # Check for goal reached
-            goal_reached = self.dds.read("GoalReached")
-            if goal_reached == 1:
-                print("Goal reached!")
+                # Check for goal reached
+                goal_reached = self.dds.read("GoalReached")
+                if goal_reached == 1:
+                    print("Goal reached!")
+                    self.stop_robot()
+                    return MoveResult.GOAL_REACHED, None
+
+                # Check for collision
+                collision = self.dds.read("Collision")
+                if collision == 1:
+                    print(f"\033[91mCollision detected! Status: {collision}.\033[0m")
+
+                    # Get collision position
+                    collision_pose = self.robot.get_pose()
+                    collision_pos = (collision_pose[0], collision_pose[1])
+                    
+                    # Execute backup and wait for completion
+                    self._backup_from_collision(start_pos, collision_pos)
+                    
+                    print("Collision resolved with backup procedure.")
+                    return MoveResult.COLLISION, None
+
+                # Generate target from virtual robot
+                (x_target, y_target) = self.virtual_robot.evaluate(godot_delta)
+
+                # Robot control
+                pose = self.robot.get_pose()
+                (target_v, target_w) = self.polar_controller.evaluate(godot_delta, x_target, y_target, pose)
+                
+                (current_left, current_right) = self.robot.get_wheel_speed()
+                (torque_left, torque_right) = self.wheel_speed_control.evaluate(godot_delta, 
+                                                                        target_v, target_w, 
+                                                                        current_left, current_right)
+
+                self.robot.evaluate(godot_delta, torque_left, torque_right)
+            
+                # Publish position
+                pose = self.robot.get_pose()
+                self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+
+                # Check if target reached
+                distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
+                if distance_to_target < self.target_tolerance:
+                    print(f"Target reached: ({pose[0]:.2f}, {pose[1]:.2f})")
+                    break
+
+            # Check for timeout
+            if iteration >= max_iterations:
+                print(f"Timeout reached after {max_iterations} iterations")
                 self.stop_robot()
-                return MoveResult.GOAL_REACHED, None
+                return MoveResult.TIMEOUT, None
+            
+            # Check if checkpoint reached
+            checkpoint_reached = self.dds.read("checkpoint_reached")
+            if checkpoint_reached != 0 and checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
+                self.last_checkpoint_reached = checkpoint_reached
+                print("=" * 50)
+                print(f"\033[92mCHECKPOINT REACHED: {checkpoint_reached}\033[0m")
+                print("=" * 50)
+                return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
+
+            # Movement completed successfully
+            self.stop_robot()
+            return MoveResult.SUCCESS, None
+
+        if self.mode == "training":
+            old_pose = self.robot.get_pose()
+            new_pose = (target_x, target_y, 0.0)
+            self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)
+            self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
+            self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
+            time.sleep(0.05)
 
             # Check for collision
             collision = self.dds.read("Collision")
             if collision == 1:
                 print(f"\033[91mCollision detected! Status: {collision}.\033[0m")
-
-                # Get collision position
-                collision_pose = self.robot.get_pose()
-                collision_pos = (collision_pose[0], collision_pose[1])
+                #time.sleep(2)  # a bit of delay to sync with Godot
                 
                 # Execute backup and wait for completion
-                self._backup_from_collision(start_pos, collision_pos)
-                
+                self.dds.publish('X', old_pose[0], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Y', old_pose[1], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Theta', old_pose[2], DDS.DDS_TYPE_FLOAT)
+
                 print("Collision resolved with backup procedure.")
                 return MoveResult.COLLISION, None
-
-            # Generate target from virtual robot
-            (x_target, y_target) = self.virtual_robot.evaluate(godot_delta)
-
-            # Robot control
-            pose = self.robot.get_pose()
-            (target_v, target_w) = self.polar_controller.evaluate(godot_delta, x_target, y_target, pose)
+            else:
+                self.robot.x_r = new_pose[0]
+                self.robot.y_r = new_pose[1]
+                self.robot.theta_r = new_pose[2]
+                self.dds.publish('X', new_pose[0], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Y', new_pose[1], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
+                time.sleep(0.05)
             
-            (current_left, current_right) = self.robot.get_wheel_speed()
-            (torque_left, torque_right) = self.wheel_speed_control.evaluate(godot_delta, 
-                                                                    target_v, target_w, 
-                                                                    current_left, current_right)
-
-            self.robot.evaluate(godot_delta, torque_left, torque_right)
+            goal_reached = self.dds.read("GoalReached")
+            if goal_reached == 1:
+                print("Goal reached!")
+                self.stop_robot()
+                return MoveResult.GOAL_REACHED, None
             
-            # Publish position
-            pose = self.robot.get_pose()
-            self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
-
-            # Check if target reached
-            distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
-            if distance_to_target < self.target_tolerance:
-                print(f"Target reached: ({pose[0]:.2f}, {pose[1]:.2f})")
-                break
-
-        # Check for timeout
-        if iteration >= max_iterations:
-            print(f"Timeout reached after {max_iterations} iterations")
-            self.stop_robot()
-            return MoveResult.TIMEOUT, None
-        
-        # Check if checkpoint reached
-        checkpoint_reached = self.dds.read("checkpoint_reached")
-        if checkpoint_reached != 0 and checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
-            self.last_checkpoint_reached = checkpoint_reached
-            print("=" * 50)
-            print(f"\033[92mCHECKPOINT REACHED: {checkpoint_reached}\033[0m")
-            print("=" * 50)
-            return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
-
-        # Movement completed successfully
-        self.stop_robot()
-        return MoveResult.SUCCESS, None
+            # Check if checkpoint reached
+            checkpoint_reached = self.dds.read("checkpoint_reached")
+            if checkpoint_reached != 0 and checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
+                self.last_checkpoint_reached = checkpoint_reached
+                print("=" * 50)
+                print(f"\033[92mCHECKPOINT REACHED: {checkpoint_reached}\033[0m")
+                print("=" * 50)
+                return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
+            
+            # Movement completed successfully
+            print(f"Movement completed successfully to ({target_x:.2f}, {target_y:.2f})")
+            return MoveResult.SUCCESS, None
 
     def get_current_position(self):
         """Get current robot position."""
@@ -269,3 +327,7 @@ class DiffDriveRoboticAgent:
         self.dds.publish('Y', 0.0, DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Theta', 0.0, DDS.DDS_TYPE_FLOAT)
         print("Robot state reset.")
+
+    def set_test_mode(self):
+        """Set robot to test mode."""
+        self.mode = "test"

@@ -21,7 +21,7 @@ class RLTrainer:
         self.logger = Logger(log_level=self.config.get('experiment.log_level', 'INFO'))
         
         # Initialize system components
-        self.robot = DiffDriveRoboticAgent(dds, time_obj)
+        self.robot = DiffDriveRoboticAgent(dds, time_obj, "training")
         self.environment = MazeEnvironment(self.robot, self.config)
         
         # Create strategy UNA VOLTA
@@ -112,6 +112,8 @@ class RLTrainer:
                 # Track checkpoint episodes
                 if episode_checkpoints:
                     checkpoint_stats['checkpoint_episodes'] += 1
+
+                self.environment.reset_checkpoints()
                 
                 # Update exploration strategy
                 self.agent.update_strategy()
@@ -135,6 +137,7 @@ class RLTrainer:
     def test(self, n_episodes: int = None):
         """Test the trained agent with strategy display."""
         n_episodes = n_episodes or self.config.get('training.test_episodes', 5)
+        self.robot.set_test_mode()
         
         print("\n" + "=" * 80)
         print("🧪 TESTING MODE")

@@ -14,6 +14,7 @@ func _ready():
 	DDS.subscribe("X")
 	DDS.subscribe("Y")
 	DDS.subscribe("Theta")
+	DDS.subscribe("mode")
 	
 	var area = $Area3D
 	area.connect("body_entered", Callable(self, "_on_collision_with_wall"))
@@ -33,9 +34,7 @@ func _on_collision_with_wall(body):
 		DDS.publish("Collision", DDS.DDS_TYPE_INT, 1)
 		print("Collision!")
 
-func _physics_process(_delta):
-	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
-	
+func robot_position_move(delta):
 	var x = DDS.read("X")
 	var y = DDS.read("Y")
 	var theta = DDS.read("Theta")
@@ -56,26 +55,17 @@ func _physics_process(_delta):
 		theRobot.global_position.z += 0.05
 		
 	_edit_xy_text(theRobot.global_position.x,-theRobot.global_position.z)
-	
-	#var prev_x = x
-	#var prev_y = y
-	#var prev_theta = theta
 
-	#if collided:
-	#	print("Collision! Movement reverted.")
-	#	# Ripristina posizione e segnala collisione
-	#	x = prev_x
-	#	y = prev_y
-	#	theta = prev_theta
-	#	theRobot.global_position.x = x
-	#	theRobot.global_position.z = -y
-	#	theRobot.rotation.y = theta
-	#	collided = false
-
-	#_edit_xy_text(x, y)
+func _physics_process(_delta):
+	var mode = DDS.read("mode")
+	if mode == 0:
+		robot_position_move(_delta)
 
 func _process(_delta):
-	pass
+	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
+	var mode = DDS.read("mode")
+	if mode == 1:
+		robot_position_move(_delta)
 
 func _edit_xy_text(x, y):
 	xy_text_edit.text = "(%.2f, %.2f)" % [x,y]

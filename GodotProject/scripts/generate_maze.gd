@@ -254,7 +254,7 @@ func create_checkpoint_area(index: int, position: Vector3):
 	area.collision_mask = 1  # il robot ha layer 1
 
 	var area_shape = BoxShape3D.new()
-	area_shape.size = Vector3(cell_size, 1.0, cell_size)
+	area_shape.size = Vector3(0.3, 1.0, 0.3)
 	var area_collider = CollisionShape3D.new()
 	area_collider.shape = area_shape
 	area_collider.transform.origin = Vector3(0, 0.5, 0)
