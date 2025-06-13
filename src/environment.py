@@ -277,15 +277,8 @@ class MazeEnvironment:
         if result == MoveResult.CHECKPOINT_REACHED:
             return False
         
-        # Se non abbiamo raggiunto min_steps, continua (salvo condizioni critiche)
+        # Se non abbiamo raggiunto min_steps, continua 
         if self.steps_count < self.min_steps:
-            # Termina solo in condizioni critiche anche se sotto min_steps
-            if self.collision_count >= self.collision_limit * 1.5:  # Più tollerante
-                print(f"⚠️ Critico: Troppe collisioni ({self.collision_count}) prima di min_steps")
-                return True
-            if self._is_in_loop() and self.steps_count > self.min_steps * 0.8:  # Loop solo verso la fine
-                print(f"⚠️ Critico: Loop rilevato vicino alla soglia di min_steps")
-                return True
             return False  # Continua l'episodio
         
         # Dopo min_steps, usa le condizioni normali
