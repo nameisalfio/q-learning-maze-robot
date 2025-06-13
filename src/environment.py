@@ -81,8 +81,6 @@ class MazeEnvironment:
         self.robot.reset()
         
         time.sleep(0.5)
-        self.robot.dds.wait('tick')
-        
         x, y, theta = self.robot.get_current_position()
         self.current_position = Position(x, y, theta)
         self.previous_position = self.current_position

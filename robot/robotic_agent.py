@@ -243,7 +243,7 @@ class DiffDriveRoboticAgent:
         
         # Check if checkpoint reached
         checkpoint_reached = self.dds.read("checkpoint_reached")
-        if checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
+        if checkpoint_reached != 0 and checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
             self.last_checkpoint_reached = checkpoint_reached
             print(f"Checkpoint reached: {checkpoint_reached}")
             return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
@@ -261,7 +261,7 @@ class DiffDriveRoboticAgent:
         """Reset robot state."""
         self.stop_robot()
         self.virtual_robot = None
-        self.last_checkpoint_reached = None
+        self.last_checkpoint_reached = 0
         self.robot.reset()
         self.dds.publish('X', 0.0, DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Y', 0.0, DDS.DDS_TYPE_FLOAT)

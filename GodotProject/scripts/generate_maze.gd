@@ -36,6 +36,7 @@ func _process(delta):
 				var mat = area.get_meta("material")
 				mat.albedo_color = Color(0.95, 0.85, 0.6)  # verde acceso
 				print("Checkpoint %s disattivato!" % name)
+			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, 0)
 			
 func generate_maze():
 	seed(1234)
