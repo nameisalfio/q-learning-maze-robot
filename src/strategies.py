@@ -23,7 +23,8 @@ class Strategy(ABC):
     def info(self) -> Dict[str, float]:
         """Return current strategy parameters."""
         pass
-
+    
+'''
 class EpsilonGreedyStrategy(Strategy):
     """Classic epsilon-greedy exploration strategy."""
     
@@ -85,7 +86,7 @@ class UCBStrategy(Strategy):
     @property
     def info(self) -> Dict[str, float]:
         return {"ucb_factor": self.ucb_factor}
-
+'''
 class CuriosityStrategy(Strategy):
     """Curiosity-driven exploration based on state novelty."""
     
@@ -128,9 +129,9 @@ class CuriosityStrategy(Strategy):
             "states_discovered": len(self.state_visits)
         }
 
+'''
 def create_strategy(config) -> Strategy:
-    """Factory function to create exploration strategies."""
-    strategy_name = config.get('strategy.name', 'epsilon_greedy')
+    strategy_name = config.get('strategy.name', 'curiosity')
     
     if strategy_name == 'epsilon_greedy':
         return EpsilonGreedyStrategy(
@@ -150,3 +151,10 @@ def create_strategy(config) -> Strategy:
         )
     else:
         raise ValueError(f"Unknown strategy: {strategy_name}")
+'''
+    
+def create_strategy(config) -> Strategy:
+    return CuriosityStrategy(
+        base_epsilon=config.get('strategy.epsilon', 0.3),
+        novelty_bonus=config.get('strategy.novelty_bonus', 3.0)
+    )

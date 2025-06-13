@@ -21,16 +21,15 @@ class Position:
         return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
 class MazeEnvironment:
-    """Maze environment for reinforcement learning."""
-    
     def __init__(self, robot_agent, config):
         self.robot = robot_agent
         self.config = config
         
         # Environment parameters
-        self.max_steps = config.get('environment.max_steps', 100)
-        self.collision_limit = config.get('environment.collision_limit', 10)
-        self.loop_threshold = config.get('environment.loop_threshold', 15)
+        self.max_steps = config.get('environment.max_steps', 150)
+        self.min_steps = config.get('environment.min_steps', 75) 
+        self.collision_limit = config.get('environment.collision_limit', 12)
+        self.loop_threshold = config.get('environment.loop_threshold', 18)
         self.grid_scale = config.get('environment.grid_scale', 10)
         
         # Reward configuration
@@ -54,9 +53,9 @@ class MazeEnvironment:
         self.collision_count = 0
         self.recent_positions = deque(maxlen=6)
         self.visited_states = {}
-
+        
         # Checkpoint tracking
-        self.last_checkpoint_step = 0 
+        self.last_checkpoint_step = 0
         self.checkpoint_bonuses = {
             1: 75.0,  
             2: 100.0, 
@@ -244,6 +243,15 @@ class MazeEnvironment:
         if result == MoveResult.CHECKPOINT_REACHED:
             self.last_checkpoint_step = self.steps_count
         
+        if self.steps_count == self.min_steps:
+            min_steps_bonus = 15.0
+            total_reward += min_steps_bonus
+            print(f"🎯 MIN_STEPS BONUS! Reached {self.min_steps} steps, bonus: {min_steps_bonus}")
+        
+        if self.steps_count > self.min_steps:
+            longevity_bonus = 0.5  
+            total_reward += longevity_bonus
+        
         return total_reward
 
     def _is_in_loop(self) -> bool:
@@ -259,13 +267,36 @@ class MazeEnvironment:
         return max(pos_counts.values()) >= 3
     
     def _check_done(self, result: MoveResult) -> bool:
-        """Check if episode should terminate."""
+        """Controlla se l'episodio deve terminare considerando min_steps."""
+        
+        # Goal raggiunto - termina sempre (indipendentemente da min_steps)
         if result == MoveResult.GOAL_REACHED:
             return True
+        
+        # Checkpoint raggiunto - continua sempre (anche oltre max_steps se necessario)
+        if result == MoveResult.CHECKPOINT_REACHED:
+            return False
+        
+        # Se non abbiamo raggiunto min_steps, continua (salvo condizioni critiche)
+        if self.steps_count < self.min_steps:
+            # Termina solo in condizioni critiche anche se sotto min_steps
+            if self.collision_count >= self.collision_limit * 1.5:  # Più tollerante
+                print(f"⚠️ Critico: Troppe collisioni ({self.collision_count}) prima di min_steps")
+                return True
+            if self._is_in_loop() and self.steps_count > self.min_steps * 0.8:  # Loop solo verso la fine
+                print(f"⚠️ Critico: Loop rilevato vicino alla soglia di min_steps")
+                return True
+            return False  # Continua l'episodio
+        
+        # Dopo min_steps, usa le condizioni normali
         if self.steps_count >= self.max_steps:
+            print(f"⏱️ Episodio terminato: raggiunto max_steps ({self.max_steps})")
             return True
         if self.collision_count >= self.collision_limit:
+            print(f"💥 Episodio terminato: troppe collisioni ({self.collision_count})")
             return True
         if self._is_in_loop() and self.steps_count > self.loop_threshold:
+            print(f"🔄 Episodio terminato: loop rilevato dopo {self.steps_count} passi")
             return True
+        
         return False

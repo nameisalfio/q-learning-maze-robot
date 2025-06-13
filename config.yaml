@@ -32,9 +32,10 @@ rewards:
 
 # Environment Configuration
 environment:
-  max_steps: 150                  
-  collision_limit: 15              
-  loop_threshold: 20
+  max_steps: 150              
+  min_steps: 75               
+  collision_limit: 12
+  loop_threshold: 18
   grid_scale: 10
 
   checkpoint:

@@ -1,3 +1,5 @@
+# SOSTITUISCI COMPLETAMENTE src/trainer.py
+
 import numpy as np
 import sys
 import os
@@ -7,56 +9,68 @@ from .agent import QLearningAgent
 from .environment import MazeEnvironment
 from .strategies import create_strategy
 from .utils import Config, Logger
-import time
-    
-class RLTrainer:
-    """Main trainer for Q-Learning maze navigation."""
 
+class RLTrainer:
+    """Main trainer for Q-Learning maze navigation with enhanced episode formatting."""
+    
     def __init__(self, dds, time_obj, config_path: str = "config.yaml"):
+        """Initialize the RL trainer with all necessary components."""
         self.dds = dds
         self.time = time_obj
-        self.config = Config(config_path)
+        self.config = Config(config_path)  # IMPORTANTE: Inizializza config qui
         self.logger = Logger(log_level=self.config.get('experiment.log_level', 'INFO'))
         
         # Initialize system components
         self.robot = DiffDriveRoboticAgent(dds, time_obj)
         self.environment = MazeEnvironment(self.robot, self.config)
         
-        # IMPORTANTE: Crea strategia UNA SOLA VOLTA qui
-        self.strategy = create_strategy(self.config)
-        self.agent = QLearningAgent(self.config, self.strategy)  # Passa la strategia esistente
+        # Create strategy UNA VOLTA
+        strategy = create_strategy(self.config)
+        self.agent = QLearningAgent(self.config, strategy)
         
         self.model_path = self.config.get('training.model_path', 'models/q_agent.pkl')
         
-        # Debug: Verifica che la strategia sia corretta
-        self.logger.info(f"Strategy initialized: {self.strategy.name if hasattr(self.strategy, 'name') else type(self.strategy).__name__}")
-        self.logger.info(f"Strategy info: {self.strategy.info}")
+        # Verification logging
+        self.logger.info(f"Strategy initialized: {type(strategy).__name__}")
+        self.logger.info(f"Strategy info: {strategy.info}")
     
     def train(self, n_episodes: int = None, save_every: int = None):
-        """Train the Q-Learning agent with checkpoint tracking."""
+        """Train the Q-Learning agent with enhanced episode formatting."""
         n_episodes = n_episodes or self.config.get('training.episodes', 200)
         save_every = save_every or self.config.get('training.save_every', 50)
         
-        self.logger.info(f"Starting training for {n_episodes} episodes")
+        # Get environment parameters for display
+        min_steps = self.config.get('environment.min_steps', 75)
+        max_steps = self.config.get('environment.max_steps', 150)
+        
+        self.logger.info("=" * 80)
+        self.logger.info("🚀 STARTING TRAINING SESSION")
+        self.logger.info("=" * 80)
+        self.logger.info(f"Episodes: {n_episodes}")
         self.logger.info(f"Strategy: {self.config.get('strategy.name', 'unknown')}")
+        self.logger.info(f"Min steps per episode: {min_steps}")
+        self.logger.info(f"Max steps per episode: {max_steps}")
+        self.logger.info(f"Model path: {self.model_path}")
+        self.logger.info("=" * 80)
         
         # Load existing model if available
         if self.agent.load_model(self.model_path):
-            self.logger.info("Loaded existing model")
+            self.logger.info("📁 Loaded existing model")
         
         self.dds.wait('tick')
-        self.logger.info("Connected to Godot simulation!")
+        self.logger.info("🔗 Connected to Godot simulation!")
         
-        # Tracking checkpoint statistics
+        # Training statistics
         checkpoint_stats = {
             'total_checkpoints': 0,
             'unique_checkpoints': set(),
-            'checkpoint_episodes': 0
+            'checkpoint_episodes': 0,
+            'min_steps_reached': 0  
         }
         
         try:
             for episode in range(n_episodes):
-                self.logger.info(f"Episode {episode + 1}/{n_episodes}")
+                self._print_episode_header(episode + 1, n_episodes, min_steps, max_steps)
                 
                 # Reset environment for new episode
                 state = self.environment.reset()
@@ -84,15 +98,17 @@ class RLTrainer:
                     state = next_state
                     max_streak = max(max_streak, info['success_streak'])
                 
-                # Episode completed - record statistics
+                # Episode completed statistics
+                steps_taken = info['steps']
+                min_steps_reached = steps_taken >= min_steps
+                if min_steps_reached:
+                    checkpoint_stats['min_steps_reached'] += 1
+                
                 self.agent.episode_rewards.append(total_reward)
-                self.agent.episode_steps.append(info['steps'])
+                self.agent.episode_steps.append(steps_taken)
                 success = (info['result'] == MoveResult.GOAL_REACHED)
                 self.agent.success_episodes.append(success)
                 
-                # Reset environment checkpoints for next episode
-                self.environment.reset_checkpoints()
-
                 # Track checkpoint episodes
                 if episode_checkpoints:
                     checkpoint_stats['checkpoint_episodes'] += 1
@@ -100,82 +116,87 @@ class RLTrainer:
                 # Update exploration strategy
                 self.agent.update_strategy()
                 
-                # Enhanced episode logging with checkpoint info
-                symbol = "🎯" if success else "📍" if episode_checkpoints else "💥" if info['total_collisions'] > 0 else "⏱️"
-                strategy_info = self.agent.strategy.info
+                # Enhanced episode summary
+                self._print_episode_summary(episode + 1, info, total_reward, max_streak, 
+                                          episode_checkpoints, min_steps_reached, min_steps)
                 
-                checkpoint_info = ""
-                if episode_checkpoints:
-                    unique_checkpoints = len(set(episode_checkpoints))
-                    checkpoint_info = f", Checkpoints: {episode_checkpoints} (unique: {unique_checkpoints})"
-                
-                self.logger.info(f"{symbol} Episode {episode + 1}: "
-                            f"Reward: {total_reward:.1f}, Steps: {info['steps']}, "
-                            f"Max streak: {max_streak}{checkpoint_info}")
-                
-                # Strategy info
-                self.logger.info(f"   Strategy: {strategy_info}")
-                
-                # Calculate recent success rate
-                if len(self.agent.success_episodes) >= 20:
-                    recent_success = sum(self.agent.success_episodes[-20:]) / 20
-                    recent_checkpoints = sum(1 for i in range(max(0, episode-19), episode+1) 
-                                        if i < len(self.agent.episode_rewards))
-                    self.logger.info(f"   Success rate (last 20): {recent_success:.1%}, "
-                                f"Checkpoint episodes: {recent_checkpoints}/20")
-                
-                # Periodic model saving and enhanced stats
+                # Periodic model saving and stats
                 if (episode + 1) % save_every == 0:
                     self.agent.save_model(self.model_path)
-                    self._print_stats(checkpoint_stats, episode + 1)
+                    self._print_stats_with_checkpoints(checkpoint_stats, episode + 1)
                     
         except KeyboardInterrupt:
-            self.logger.info("Training interrupted by user")
+            self.logger.info("⚠️ Training interrupted by user")
         finally:
             self.agent.save_model(self.model_path)
-            self.logger.info("Training completed!")
-            self._print_final_stats(checkpoint_stats) 
-
+            self.logger.info("✅ Training completed!")
+            self._print_final_stats_with_checkpoints(checkpoint_stats)
+    
     def test(self, n_episodes: int = None):
-        """Test the trained agent."""
+        """Test the trained agent with strategy display."""
         n_episodes = n_episodes or self.config.get('training.test_episodes', 5)
         
-        self.logger.info(f"Testing agent for {n_episodes} episodes")
+        print("\n" + "=" * 80)
+        print("🧪 TESTING MODE")
+        print("=" * 80)
         
         if not self.agent.load_model(self.model_path):
-            self.logger.error("No trained model found!")
+            self.logger.error("❌ No trained model found!")
             return
+        
+        # Display strategy info
+        strategy_info = self.agent.strategy.info if hasattr(self.agent.strategy, 'info') else {}
+        strategy_name = strategy_info.get('strategy', type(self.agent.strategy).__name__)
+        print(f"🎯 Testing Strategy: {strategy_name.upper()}")
+        print(f"📊 Strategy Details: {strategy_info}")
+        print("=" * 80)
         
         self.dds.wait('tick')
         
         successes = 0
         total_steps = 0
+        min_steps = self.config.get('environment.min_steps', 75)
+        min_steps_achieved = 0
         
         try:
             for episode in range(n_episodes):
-                self.logger.info(f"Test episode {episode + 1}/{n_episodes}")
+                print(f"\n🧪 TEST EPISODE {episode + 1}/{n_episodes}")
+                print("-" * 50)
                 
                 state = self.environment.reset()
                 done = False
+                step_count = 0
                 
                 while not done:
                     # Use greedy policy (no exploration)
                     action = self.agent.choose_action(state, training=False)
                     state, reward, done, info = self.environment.step(action)
+                    step_count += 1
+                    
+                    # Show progress every 20 steps
+                    if step_count % 20 == 0:
+                        print(f"   Step {step_count}: Position {info['position'][:2]}")
                 
                 total_steps += info['steps']
+                steps_achieved_min = info['steps'] >= min_steps
+                if steps_achieved_min:
+                    min_steps_achieved += 1
                 
                 if info['result'] == MoveResult.GOAL_REACHED:
                     successes += 1
-                    self.logger.info(f"Goal reached in {info['steps']} steps!")
+                    print(f"✅ Goal reached in {info['steps']} steps!")
                 else:
-                    self.logger.info(f"Test failed: {info['result'].value}")
-        
+                    status = "Min steps achieved" if steps_achieved_min else "Short episode"
+                    print(f"⚠️ Test incomplete: {info['result'].value} ({status})")
+            
         finally:
-            self.logger.info("Test Results:")
+            print(f"\n📊 TEST RESULTS:")
+            print("=" * 50)
             self.logger.info(f"Success rate: {successes}/{n_episodes} ({successes/n_episodes:.1%})")
             self.logger.info(f"Average steps: {total_steps/n_episodes:.1f}")
-
+            self.logger.info(f"Min steps achieved: {min_steps_achieved}/{n_episodes} ({min_steps_achieved/n_episodes:.1%})")
+            print("=" * 50)
+    
     def show_stats(self):
         """Display model statistics."""
         if self.agent.load_model(self.model_path):
@@ -185,9 +206,101 @@ class RLTrainer:
                 self.logger.info(f"  {key}: {value}")
         else:
             self.logger.error("No trained model found!")
-
-    def _print_stats(self, checkpoint_stats: dict, episodes_completed: int):
-        """Print training statistics including checkpoint information."""
+    
+    def _print_episode_header(self, episode_num: int, total_episodes: int, 
+                            min_steps: int, max_steps: int):
+        """Print formatted episode header with strategy information."""
+        
+        # Get current strategy info
+        strategy_info = self.agent.strategy.info if hasattr(self.agent.strategy, 'info') else {}
+        strategy_name = strategy_info.get('strategy', type(self.agent.strategy).__name__)
+        
+        # Create header
+        header_line = "=" * 100
+        print(f"\n{header_line}")
+        print(f"🎯 EPISODE {episode_num:3d}/{total_episodes} | Strategy: {strategy_name.upper()}")
+        print(f"{header_line}")
+        
+        # Strategy-specific details
+        if strategy_name == 'curiosity':
+            states_discovered = strategy_info.get('states_discovered', 0)
+            base_epsilon = strategy_info.get('base_epsilon', 0.0)
+            print(f"🧠 Curiosity Details: Base ε={base_epsilon:.3f} | States Discovered: {states_discovered}")
+        elif strategy_name == 'epsilon_greedy':
+            epsilon = strategy_info.get('epsilon', 0.0)
+            print(f"🎲 Epsilon-Greedy Details: Current ε={epsilon:.3f}")
+        elif strategy_name == 'ucb':
+            ucb_factor = strategy_info.get('ucb_factor', 0.0)
+            print(f"🎯 UCB Details: Factor={ucb_factor:.1f}")
+        
+        # Episode requirements
+        print(f"📏 Episode Requirements: Min={min_steps} steps | Max={max_steps} steps")
+        print(f"🎮 Starting position: (0.0, 0.0)")
+        print(f"{'-' * 100}")
+        
+        # Log to file as well
+        self.logger.info(f"Episode {episode_num}/{total_episodes} started - Strategy: {strategy_name}")
+    
+    def _print_episode_summary(self, episode_num: int, info: dict, total_reward: float,
+                             max_streak: int, episode_checkpoints: list, 
+                             min_steps_reached: bool, min_steps: int):
+        """Print comprehensive episode summary."""
+        
+        steps_taken = info['steps']
+        result = info['result']
+        
+        # Choose symbol based on result and min_steps
+        if result == MoveResult.GOAL_REACHED:
+            symbol = "🏆"
+            status = "GOAL REACHED"
+        elif min_steps_reached:
+            if episode_checkpoints:
+                symbol = "📍"
+                status = "MIN_STEPS + CHECKPOINTS"
+            else:
+                symbol = "✅"
+                status = "MIN_STEPS REACHED"
+        else:
+            if episode_checkpoints:
+                symbol = "🔶"
+                status = "CHECKPOINTS (Short)"
+            else:
+                symbol = "❌"
+                status = "FAILED (Short)"
+        
+        # Episode summary line
+        summary_line = "-" * 100
+        print(f"{summary_line}")
+        print(f"{symbol} EPISODE {episode_num} COMPLETED | Status: {status}")
+        print(f"📊 Reward: {total_reward:6.1f} | Steps: {steps_taken:3d}/{min_steps} | Max Streak: {max_streak}")
+        
+        # Checkpoint info
+        if episode_checkpoints:
+            unique_checkpoints = len(set(episode_checkpoints))
+            print(f"📍 Checkpoints: {episode_checkpoints} (unique: {unique_checkpoints})")
+        
+        # Performance indicators
+        performance_indicators = []
+        if min_steps_reached:
+            performance_indicators.append("✅ Min Steps")
+        if episode_checkpoints:
+            performance_indicators.append(f"📍 {len(set(episode_checkpoints))} Checkpoints")
+        if max_streak >= 5:
+            performance_indicators.append(f"🔥 {max_streak} Streak")
+        if info['total_collisions'] <= 3:
+            performance_indicators.append("🛡️ Low Collisions")
+        
+        if performance_indicators:
+            print(f"🎯 Performance: {' | '.join(performance_indicators)}")
+        
+        print(f"{summary_line}\n")
+        
+        # Log summary to file
+        self.logger.info(f"{symbol} Episode {episode_num}: {status} | "
+                        f"Reward: {total_reward:.1f} | Steps: {steps_taken}")
+    
+    def _print_stats_with_checkpoints(self, checkpoint_stats: dict, episodes_completed: int):
+        """Print training statistics including checkpoint and min_steps information."""
         if not self.agent.episode_rewards:
             return
         
@@ -195,22 +308,33 @@ class RLTrainer:
         recent_steps = self.agent.episode_steps[-50:]
         recent_success = self.agent.success_episodes[-50:]
         
-        self.logger.info("=== TRAINING STATISTICS ===")
+        min_steps = self.config.get('environment.min_steps', 75)
+        recent_min_steps = sum(1 for steps in recent_steps if steps >= min_steps)
+        
+        print("\n" + "=" * 80)
+        print("📊 TRAINING STATISTICS")
+        print("=" * 80)
         self.logger.info(f"Episodes completed: {episodes_completed}")
         self.logger.info(f"Average reward (last 50): {np.mean(recent_rewards):.2f}")
         self.logger.info(f"Average steps (last 50): {np.mean(recent_steps):.1f}")
         self.logger.info(f"Success rate (last 50): {sum(recent_success)/len(recent_success):.1%}")
+        self.logger.info(f"Min steps achieved (last 50): {recent_min_steps}/50 ({recent_min_steps/50:.1%})")
         self.logger.info(f"States explored: {len(self.agent.q_table)}")
         
         # Checkpoint statistics
-        self.logger.info("=== CHECKPOINT STATISTICS ===")
+        print("\n📍 CHECKPOINT STATISTICS")
+        print("-" * 40)
         self.logger.info(f"Total checkpoints reached: {checkpoint_stats['total_checkpoints']}")
         self.logger.info(f"Unique checkpoints discovered: {len(checkpoint_stats['unique_checkpoints'])}")
         self.logger.info(f"Episodes with checkpoints: {checkpoint_stats['checkpoint_episodes']}/{episodes_completed}")
+        self.logger.info(f"Episodes reaching min_steps: {checkpoint_stats['min_steps_reached']}/{episodes_completed}")
+        
         if checkpoint_stats['unique_checkpoints']:
             self.logger.info(f"Checkpoint values found: {sorted(checkpoint_stats['unique_checkpoints'])}")
-
-    def _print_final_stats(self, checkpoint_stats: dict):
+        
+        print("=" * 80 + "\n")
+    
+    def _print_final_stats_with_checkpoints(self, checkpoint_stats: dict):
         """Print final training statistics with checkpoint analysis."""
         stats = self.agent.get_stats()
         if stats:
@@ -221,13 +345,17 @@ class RLTrainer:
             # Final checkpoint analysis
             self.logger.info("=== FINAL CHECKPOINT ANALYSIS ===")
             total_episodes = len(self.agent.episode_rewards)
-            checkpoint_discovery_rate = len(checkpoint_stats['unique_checkpoints']) / max(1, total_episodes)
-            checkpoint_frequency = checkpoint_stats['total_checkpoints'] / max(1, total_episodes)
-            
-            self.logger.info(f"  Checkpoint discovery rate: {checkpoint_discovery_rate:.3f} unique/episode")
-            self.logger.info(f"  Checkpoint frequency: {checkpoint_frequency:.3f} checkpoints/episode")
-            self.logger.info(f"  Best checkpoint reached: {max(checkpoint_stats['unique_checkpoints']) if checkpoint_stats['unique_checkpoints'] else 'None'}")
-            
-            if checkpoint_stats['unique_checkpoints']:
-                progress_percentage = len(checkpoint_stats['unique_checkpoints']) / 5 * 100  # Assuming 5 total checkpoints
-                self.logger.info(f"  Maze progress: {progress_percentage:.1f}% (checkpoints discovered)")
+            if total_episodes > 0:
+                checkpoint_discovery_rate = len(checkpoint_stats['unique_checkpoints']) / total_episodes
+                checkpoint_frequency = checkpoint_stats['total_checkpoints'] / total_episodes
+                min_steps_rate = checkpoint_stats['min_steps_reached'] / total_episodes
+                
+                self.logger.info(f"  Checkpoint discovery rate: {checkpoint_discovery_rate:.3f} unique/episode")
+                self.logger.info(f"  Checkpoint frequency: {checkpoint_frequency:.3f} checkpoints/episode")
+                self.logger.info(f"  Min steps achievement rate: {min_steps_rate:.1%}")
+                
+                if checkpoint_stats['unique_checkpoints']:
+                    best_checkpoint = max(checkpoint_stats['unique_checkpoints'])
+                    progress_percentage = len(checkpoint_stats['unique_checkpoints']) / 5 * 100  # Assuming 5 total checkpoints
+                    self.logger.info(f"  Best checkpoint reached: {best_checkpoint}")
+                    self.logger.info(f"  Maze progress: {progress_percentage:.1f}% (checkpoints discovered)")
