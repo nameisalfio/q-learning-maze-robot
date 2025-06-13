@@ -245,7 +245,9 @@ class DiffDriveRoboticAgent:
         checkpoint_reached = self.dds.read("checkpoint_reached")
         if checkpoint_reached != 0 and checkpoint_reached is not None and self.last_checkpoint_reached != checkpoint_reached:
             self.last_checkpoint_reached = checkpoint_reached
-            print(f"Checkpoint reached: {checkpoint_reached}")
+            print("=" * 50)
+            print(f"\033[92mCHECKPOINT REACHED: {checkpoint_reached}\033[0m")
+            print("=" * 50)
             return MoveResult.CHECKPOINT_REACHED, checkpoint_reached
 
         # Movement completed successfully
