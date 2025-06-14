@@ -20,7 +20,7 @@ strategy:
 
 # Reward Structure
 rewards:
-  success: 10.0                    
+  success: 7.0                    
   collision: -10.0                 
   goal_reached: 1000.0              
   timeout: -20.0
@@ -28,7 +28,7 @@ rewards:
   streak_multiplier: 2.5
   max_streak_bonus: 30.0
   exploration_bonus: 8.0           
-  loop_penalty: -8.5
+  loop_penalty: -9.0
 
 # Environment Configuration
 environment:
