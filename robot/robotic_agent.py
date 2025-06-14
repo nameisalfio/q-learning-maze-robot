@@ -268,6 +268,7 @@ class DiffDriveRoboticAgent:
             new_pose = (target_x, target_y, 0.0)
             self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
+            self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
             time.sleep(0.1) # a bit of delay to sync with Godot
 
@@ -280,6 +281,7 @@ class DiffDriveRoboticAgent:
                 # Execute backup and wait for completion
                 self.dds.publish('X', old_pose[0], DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Y', old_pose[1], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Theta', old_pose[2], DDS.DDS_TYPE_FLOAT)
 
                 print("Collision resolved with backup procedure.")
@@ -290,6 +292,7 @@ class DiffDriveRoboticAgent:
                 self.robot.theta_r = new_pose[2]
                 self.dds.publish('X', new_pose[0], DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Y', new_pose[1], DDS.DDS_TYPE_FLOAT)
+                self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
                 time.sleep(0.1)  # a bit of delay to sync with Godot
             

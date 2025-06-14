@@ -195,8 +195,8 @@ class MazeEnvironment:
                 total_reward += momentum_bonus
                 
             # EXPLOSIVE BONUS for long sequences (straight corridors)
-            if self.consecutive_success_moves >= 8:
-                explosion_bonus = 25.0 + (self.consecutive_success_moves - 8) * 5.0
+            if self.consecutive_success_moves >= 4:
+                explosion_bonus = 25.0 + (self.consecutive_success_moves - 4) * 5.0
                 total_reward += explosion_bonus
                 print(f"🚀 MOMENTUM BONUS! Streak: {self.consecutive_success_moves}, Extra: {momentum_bonus + explosion_bonus:.1f}")
         

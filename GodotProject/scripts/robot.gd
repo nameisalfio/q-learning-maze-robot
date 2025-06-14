@@ -13,6 +13,7 @@ func _ready():
 	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
 	DDS.subscribe("X")
 	DDS.subscribe("Y")
+	DDS.subscribe("Z")
 	DDS.subscribe("Theta")
 	DDS.subscribe("mode")
 	
@@ -37,11 +38,13 @@ func _on_collision_with_wall(body):
 func robot_position_move(delta):
 	var x = DDS.read("X")
 	var y = DDS.read("Y")
+	var z = DDS.read("Z")
 	var theta = DDS.read("Theta")
 	
-	if (x != null)and(y != null)and(theta != null):
+	if (x != null) and (y != null) and (z != null) and (theta != null):
 		theRobot.global_position.x = x
 		theRobot.global_position.z = -y
+		theRobot.global_position.y = z
 		theRobot.global_rotation.y = theta
 		
 	# solo debug
