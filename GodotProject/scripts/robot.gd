@@ -68,6 +68,7 @@ func _process(_delta):
 	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
 	var mode = DDS.read("mode")
 	if mode == 1:
+		theRobot.global_rotation = Vector3(0.0, 0.0, 0.0)
 		robot_position_move(_delta)
 
 func _edit_xy_text(x, y):
