@@ -270,7 +270,7 @@ class DiffDriveRoboticAgent:
             self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
-            time.sleep(0.052) # a bit of delay to sync with Godot
+            time.sleep(0.06) # a bit of delay to sync with Godot
 
             # Check for collision
             collision = self.dds.read("Collision")
@@ -294,7 +294,7 @@ class DiffDriveRoboticAgent:
                 self.dds.publish('Y', new_pose[1], DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
-                time.sleep(0.052)  # a bit of delay to sync with Godot
+                time.sleep(0.06)  # a bit of delay to sync with Godot
             
             goal_reached = self.dds.read("GoalReached")
             if goal_reached == 1:
