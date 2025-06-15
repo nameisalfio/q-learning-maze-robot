@@ -30,7 +30,7 @@ class MazeEnvironment:
         self.min_steps = config.get('environment.min_steps', 75) 
         self.collision_limit = config.get('environment.collision_limit', 12)
         self.loop_threshold = config.get('environment.loop_threshold', 18)
-        self.grid_scale = config.get('environment.grid_scale', 10)
+        self.grid_scale = config.get('environment.grid_scale', 10.5)
         
         # Reward configuration
         self.rewards = {
@@ -42,7 +42,7 @@ class MazeEnvironment:
         
         self.streak_multiplier = config.get('rewards.streak_multiplier', 2.0)
         self.max_streak_bonus = config.get('rewards.max_streak_bonus', 20.0)
-        self.exploration_bonus = config.get('rewards.exploration_bonus', 3.0)
+        self.exploration_bonus = config.get('rewards.exploration_bonus', 150.0)
         self.loop_penalty = config.get('rewards.loop_penalty', -8.0)
         
         # Environment state
@@ -60,9 +60,10 @@ class MazeEnvironment:
             1: 75.0,  
             2: 100.0, 
             3: 125.0, 
-            4: 150.0, 
-            5: 200.0  # Higher bonus for reaching the final checkpoint
+            4: 150.0
         }
+        self.base_checkpoint_reward = config.get("rewards.checkpoint_reached", 300.0)
+        self.goal_reached_reward = config.get("rewards.goal_reached", 800.0)
         
         # Enhanced momentum system
         self.momentum_threshold = 3      # Minimum consecutive successful moves to activate momentum bonus
@@ -171,15 +172,16 @@ class MazeEnvironment:
         # === CHECKPOINT SYSTEM - VERY HIGH REWARD ===
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
             # Progressive reward for different checkpoints
-            checkpoint_bonus = 75.0 + (checkpoint_value * 25.0)  # Base 75 + 25 for each checkpoint
+            checkpoint_bonus = self.base_checkpoint_reward + self.checkpoint_bonuses[checkpoint_value]  # Base reward + bonus for checkpoint
             total_reward += checkpoint_bonus
             
             # Extra bonus if checkpoint is reached with a long streak
             if self.consecutive_success_moves >= 5:
                 total_reward += 50.0
-            
             print(f"🎯 CHECKPOINT {checkpoint_value} REACHED! Bonus: {checkpoint_bonus:.1f}, Total reward: {total_reward:.1f}")
-        
+
+        # Uncomment the following block to enable the momentum system !!!
+        """
         # === MOMENTUM SYSTEM - ENCOURAGES CONTINUING IN THE SAME DIRECTION ===
         if result == MoveResult.SUCCESS:
             # Progressive bonus for consecutive movements
@@ -199,12 +201,13 @@ class MazeEnvironment:
                 explosion_bonus = 25.0 + (self.consecutive_success_moves - 4) * 5.0
                 total_reward += explosion_bonus
                 print(f"🚀 MOMENTUM BONUS! Streak: {self.consecutive_success_moves}, Extra: {momentum_bonus + explosion_bonus:.1f}")
-        
+        """
+                
         # === GOAL BONUS WITH CHECKPOINT ===
-        elif result == MoveResult.GOAL_REACHED:
+        if result == MoveResult.GOAL_REACHED:
             # Extra bonus if goal is reached with a long streak
             streak_bonus = min(self.consecutive_success_moves * 5.0, 100.0)
-            total_reward += streak_bonus
+            total_reward += (streak_bonus + self.goal_reached_reward)
             print(f"🏆 GOAL WITH STREAK {self.consecutive_success_moves}! Total: {total_reward:.1f}")
         
         # === PENALTIES FOR UNDESIRED BEHAVIORS ===
@@ -221,10 +224,9 @@ class MazeEnvironment:
         self.visited_states[current_state] = visits + 1
         
         if visits == 0:
-            exploration_bonus = self.exploration_bonus * 0.7  # Reduced to favor checkpoints
-            total_reward += exploration_bonus
+            total_reward += self.exploration_bonus
         elif visits > 8:  # Increased penalty for over-visitation
-            total_reward -= 4.0
+            total_reward -= 40.0
         
         # === ANTI-STAGNATION SYSTEM ===
         # Penalty for lack of progress towards checkpoint/goal
@@ -285,9 +287,9 @@ class MazeEnvironment:
         if self.steps_count >= self.max_steps:
             print(f"⏱️ Episodio terminato: raggiunto max_steps ({self.max_steps})")
             return True
-        if self.collision_count >= self.collision_limit:
-            print(f"💥 Episodio terminato: troppe collisioni ({self.collision_count})")
-            return True
+        #if self.collision_count >= self.collision_limit:
+        #    print(f"💥 Episodio terminato: troppe collisioni ({self.collision_count})")
+        #    return True
         if self._is_in_loop() and self.steps_count > self.loop_threshold:
             print(f"🔄 Episodio terminato: loop rilevato dopo {self.steps_count} passi")
             return True

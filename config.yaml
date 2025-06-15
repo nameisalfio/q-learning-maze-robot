@@ -21,22 +21,22 @@ strategy:
 # Reward Structure
 rewards:
   success: 0.1                    
-  collision: -12.0                 
+  collision: -8.0                 
   goal_reached: 800.0           
   timeout: -12.0
   checkpoint_reached: 300.0        
   streak_multiplier: 0.1
   max_streak_bonus: 20.0
-  exploration_bonus: 8.0   
-  loop_penalty: -11.0
+  exploration_bonus: 150.0
+  loop_penalty: -14.0
 
 # Environment Configuration
 environment:
   max_steps: 150              
-  min_steps: 75
+  min_steps: 100
   collision_limit: 15
   loop_threshold: 18
-  grid_scale: 10
+  grid_scale: 10.5
 
   checkpoint:
     base_bonus: 100.0

@@ -170,16 +170,16 @@ class DiffDriveRoboticAgent:
         # Calculate target position (10.5 unit movement)
         if direction == "UP":
             target_x, target_y = start_x, start_y + 10.5
-            tmp_x, tmp_y = start_x, start_y + 5.25
+            tmp_x, tmp_y = start_x, start_y + 4.25
         elif direction == "DOWN":
             target_x, target_y = start_x, start_y - 10.5
-            tmp_x, tmp_y = start_x, start_y - 5.25
+            tmp_x, tmp_y = start_x, start_y - 4.25
         elif direction == "LEFT":
             target_x, target_y = start_x - 10.5, start_y
-            tmp_x, tmp_y = start_x - 5.25, start_y
+            tmp_x, tmp_y = start_x - 4.25, start_y
         elif direction == "RIGHT":
             target_x, target_y = start_x + 10.5, start_y
-            tmp_x, tmp_y = start_x + 5.25, start_y
+            tmp_x, tmp_y = start_x + 4.25, start_y
 
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
@@ -270,7 +270,7 @@ class DiffDriveRoboticAgent:
             self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
-            time.sleep(0.06) # a bit of delay to sync with Godot
+            time.sleep(0.063) # a bit of delay to sync with Godot
 
             # Check for collision
             collision = self.dds.read("Collision")
@@ -294,7 +294,7 @@ class DiffDriveRoboticAgent:
                 self.dds.publish('Y', new_pose[1], DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
                 self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
-                time.sleep(0.06)  # a bit of delay to sync with Godot
+                time.sleep(0.063)  # a bit of delay to sync with Godot
             
             goal_reached = self.dds.read("GoalReached")
             if goal_reached == 1:
