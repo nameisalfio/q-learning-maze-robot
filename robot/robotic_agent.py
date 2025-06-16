@@ -266,6 +266,9 @@ class DiffDriveRoboticAgent:
         if self.mode == "training":
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
+            if tmp_x < -4.50 or tmp_x > 109.50 or tmp_y > 4.50 or tmp_y < -109.50: 
+                return MoveResult.COLLISION, None # robot out of bounds, issue a timeout to avoid giving it a reward
+
             self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
             self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)

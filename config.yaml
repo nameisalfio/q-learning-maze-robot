@@ -5,7 +5,7 @@ experiment:
 
 # Q-Learning Agent Parameters
 agent:
-  learning_rate: 0.08
+  learning_rate: 0.1
   discount_factor: 0.96
 
 # Exploration Strategy Configuration
@@ -20,15 +20,14 @@ strategy:
 
 # Reward Structure
 rewards:
-  success: 0.1                    
-  collision: -8.0                 
-  goal_reached: 800.0           
-  timeout: -12.0
-  checkpoint_reached: 300.0        
-  streak_multiplier: 0.1
+  success: 0.001                    
+  collision: -10.0                 
+  goal_reached: 1000.0           
+  checkpoint_reached: 200.0        
+  streak_multiplier: 0.001
   max_streak_bonus: 20.0
-  exploration_bonus: 150.0
-  loop_penalty: -14.0
+  exploration_bonus: 30.0
+  loop_penalty: -12.0
 
 # Environment Configuration
 environment:
@@ -36,7 +35,6 @@ environment:
   min_steps: 100
   collision_limit: 15
   loop_threshold: 18
-  grid_scale: 10.5
 
   checkpoint:
     base_bonus: 100.0
@@ -51,6 +49,6 @@ environment:
 # Training Configuration
 training:
   episodes: 250
-  save_every: 40
+  save_every: 10
   test_episodes: 8
   model_path: "models/q_agent.pkl"

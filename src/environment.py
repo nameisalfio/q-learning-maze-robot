@@ -9,17 +9,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from robot.robotic_agent import MoveResult
 from lib.dds.dds import DDS
 
-@dataclass
-class Position:
-    """Robot position representation."""
-    x: float
-    y: float
-    theta: float
-    
-    def distance_to(self, other: 'Position') -> float:
-        """Calculate Euclidean distance to another position."""
-        return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
-
 class MazeEnvironment:
     def __init__(self, robot_agent, config):
         self.robot = robot_agent
@@ -30,20 +19,19 @@ class MazeEnvironment:
         self.min_steps = config.get('environment.min_steps', 75) 
         self.collision_limit = config.get('environment.collision_limit', 12)
         self.loop_threshold = config.get('environment.loop_threshold', 18)
-        self.grid_scale = config.get('environment.grid_scale', 10.5)
         
         # Reward configuration
         self.rewards = {
-            MoveResult.SUCCESS: config.get('rewards.success', 5.0),
+            MoveResult.SUCCESS: config.get('rewards.success', 0.001),
             MoveResult.COLLISION: config.get('rewards.collision', -10.0),
-            MoveResult.GOAL_REACHED: config.get('rewards.goal_reached', 100.0),
-            MoveResult.TIMEOUT: config.get('rewards.timeout', -5.0),
+            MoveResult.GOAL_REACHED: config.get('rewards.goal_reached', 1000.0),
+            MoveResult.CHECKPOINT_REACHED: config.get('rewards.checkpoint_reached', 200.0)
         }
         
-        self.streak_multiplier = config.get('rewards.streak_multiplier', 2.0)
+        self.streak_multiplier = config.get('rewards.streak_multiplier', 0.001)
         self.max_streak_bonus = config.get('rewards.max_streak_bonus', 20.0)
-        self.exploration_bonus = config.get('rewards.exploration_bonus', 150.0)
-        self.loop_penalty = config.get('rewards.loop_penalty', -8.0)
+        self.exploration_bonus = config.get('rewards.exploration_bonus', 30.0)
+        self.loop_penalty = config.get('rewards.loop_penalty', -12.0)
         
         # Environment state
         self.current_position = None
@@ -62,8 +50,9 @@ class MazeEnvironment:
             3: 125.0, 
             4: 150.0
         }
-        self.base_checkpoint_reward = config.get("rewards.checkpoint_reached", 300.0)
+        self.base_checkpoint_reward = config.get("rewards.checkpoint_reached", 200.0)
         self.goal_reached_reward = config.get("rewards.goal_reached", 800.0)
+        self.goal_coordinates = (105, 105)
         
         # Enhanced momentum system
         self.momentum_threshold = 3      # Minimum consecutive successful moves to activate momentum bonus
@@ -76,13 +65,12 @@ class MazeEnvironment:
         self.consecutive_success_moves = 0
         self.collision_count = 0
         self.recent_positions.clear()
-        
         # Reset robot
         self.robot.reset()
         
         time.sleep(0.5)
         x, y, theta = self.robot.get_current_position()
-        self.current_position = Position(x, y, theta)
+        self.current_position = (x,y, theta)
         self.previous_position = self.current_position
         
         return self.get_state()
@@ -94,15 +82,11 @@ class MazeEnvironment:
         time.sleep(1.0)
         self.robot.dds.publish('reset_checkpoints', 0, DDS.DDS_TYPE_INT)
         print("Checkpoints reset.")
-    
-    def get_state(self) -> Tuple[int, int]:
-        """Get discretized state representation."""
+
+    def get_state(self) -> Tuple[float, float]:
+        """Get (x,y) state representation."""
         x, y, _ = self.robot.get_current_position()
-        discrete_x = int(round(x / self.grid_scale))
-        discrete_y = int(round(y / self.grid_scale))
-        discrete_x = max(-5, min(5, discrete_x))
-        discrete_y = max(-5, min(5, discrete_y))
-        return (discrete_x, discrete_y)
+        return x, y
 
     def step(self, action: int) -> Tuple[Tuple, float, bool, Dict]:
         """Execute action and return environment response with checkpoint support."""
@@ -125,12 +109,18 @@ class MazeEnvironment:
         
         # Update position
         x, y, theta = self.robot.get_current_position()
-        self.current_position = Position(x, y, theta)
+        self.current_position = (x, y, theta)
+        state = self.get_state()
+        is_new_state = state not in self.visited_states
+        self.visited_states[state] = self.visited_states.get(state, 0) + 1
         self.recent_positions.append(self.current_position)
-        
-        # Calculate reward with checkpoint support
+
+        # Calcola reward, passando il flag se vuoi
         reward = self._calculate_reward(result, checkpoint_value)
-        
+        if is_new_state:
+            reward += self.exploration_bonus
+            print(f"🧭 Exploration bonus! Stato {state} visitato per la prima volta.")
+
         # Update success streak
         if result == MoveResult.SUCCESS or result == MoveResult.CHECKPOINT_REACHED:
             self.consecutive_success_moves += 1
@@ -162,7 +152,6 @@ class MazeEnvironment:
             MoveResult.SUCCESS: self.rewards[MoveResult.SUCCESS],
             MoveResult.COLLISION: self.rewards[MoveResult.COLLISION], 
             MoveResult.GOAL_REACHED: self.rewards[MoveResult.GOAL_REACHED],
-            MoveResult.TIMEOUT: self.rewards[MoveResult.TIMEOUT],
             MoveResult.CHECKPOINT_REACHED: self.rewards.get(MoveResult.CHECKPOINT_REACHED, 50.0)  # New reward for checkpoint
         }
         
@@ -202,7 +191,7 @@ class MazeEnvironment:
                 total_reward += explosion_bonus
                 print(f"🚀 MOMENTUM BONUS! Streak: {self.consecutive_success_moves}, Extra: {momentum_bonus + explosion_bonus:.1f}")
         """
-                
+        
         # === GOAL BONUS WITH CHECKPOINT ===
         if result == MoveResult.GOAL_REACHED:
             # Extra bonus if goal is reached with a long streak
@@ -217,29 +206,19 @@ class MazeEnvironment:
             loop_penalty = self.loop_penalty * 1.5  # Increased penalty
             total_reward += loop_penalty
             print(f"🔄 Loop detected! Penalty: {loop_penalty:.1f}")
-        
-        # Exploration bonus for new states (reduced to favor checkpoints)
-        current_state = self.get_state()
-        visits = self.visited_states.get(current_state, 0)
-        self.visited_states[current_state] = visits + 1
-        
-        if visits == 0:
-            total_reward += self.exploration_bonus
-        elif visits > 8:  # Increased penalty for over-visitation
-            total_reward -= 40.0
-        
+
         # === ANTI-STAGNATION SYSTEM ===
         # Penalty for lack of progress towards checkpoint/goal
-        if result == MoveResult.SUCCESS and self.consecutive_success_moves > 15:
+        #if result == MoveResult.SUCCESS and self.consecutive_success_moves > 15:
             # Penalize if too many steps are taken without a checkpoint
-            if not hasattr(self, 'last_checkpoint_step'):
-                self.last_checkpoint_step = 0
+        #    if not hasattr(self, 'last_checkpoint_step'):
+        #        self.last_checkpoint_step = 0
             
-            steps_since_checkpoint = self.steps_count - self.last_checkpoint_step
-            if steps_since_checkpoint > 20:
-                stagnation_penalty = -3.0
-                total_reward += stagnation_penalty
-                print(f"⚠️ Stagnation penalty: {stagnation_penalty:.1f}")
+        #    steps_since_checkpoint = self.steps_count - self.last_checkpoint_step
+        #    if steps_since_checkpoint > 20:
+        #        stagnation_penalty = -3.0
+        #        total_reward += stagnation_penalty
+        #        print(f"⚠️ Stagnation penalty: {stagnation_penalty:.1f}")
         
         # Update last checkpoint step
         if result == MoveResult.CHECKPOINT_REACHED:
@@ -253,6 +232,13 @@ class MazeEnvironment:
         if self.steps_count > self.min_steps:
             longevity_bonus = 0.5  
             total_reward += longevity_bonus
+
+        # Give bonus based on distance to goal
+        distance_to_goal = self.distance_to_goal()
+        distance_to_goal_bonus = math.sqrt(2 / (1 + distance_to_goal)) * 100.0
+
+        total_reward += distance_to_goal_bonus
+        print(f"Distance to goal: {distance_to_goal:.2f}, Bonus: {distance_to_goal_bonus:.2f}")
         
         return total_reward
 
@@ -263,7 +249,7 @@ class MazeEnvironment:
         
         pos_counts = {}
         for pos in self.recent_positions:
-            key = (round(pos.x / self.grid_scale), round(pos.y / self.grid_scale))
+            key = (pos[0], pos[1])
             pos_counts[key] = pos_counts.get(key, 0) + 1
         
         return max(pos_counts.values()) >= 3
@@ -290,8 +276,14 @@ class MazeEnvironment:
         #if self.collision_count >= self.collision_limit:
         #    print(f"💥 Episodio terminato: troppe collisioni ({self.collision_count})")
         #    return True
-        if self._is_in_loop() and self.steps_count > self.loop_threshold:
-            print(f"🔄 Episodio terminato: loop rilevato dopo {self.steps_count} passi")
-            return True
+        #if self._is_in_loop() and self.steps_count > self.loop_threshold:
+        #    print(f"🔄 Episodio terminato: loop rilevato dopo {self.steps_count} passi")
+        #    return True
         
         return False
+    
+    def distance_to_goal(self) -> float:
+        """Calculate distance to goal position."""
+        goal_x, goal_y = self.goal_coordinates
+        current_x, current_y = self.get_state()
+        return math.sqrt((goal_x - current_x) ** 2 + (goal_y - current_y) ** 2)
