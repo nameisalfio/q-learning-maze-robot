@@ -264,6 +264,7 @@ class DiffDriveRoboticAgent:
             return MoveResult.SUCCESS, None
 
         if self.mode == "training":
+            time.sleep(0.011)  # slight delay to sync with Godot
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
             if tmp_x < -4.50 or tmp_x > 109.50 or tmp_y > 4.50 or tmp_y < -109.50: 
@@ -288,6 +289,7 @@ class DiffDriveRoboticAgent:
                 self.dds.publish('Theta', old_pose[2], DDS.DDS_TYPE_FLOAT)
 
                 print("Collision resolved with backup procedure.")
+                time.sleep(0.012)
                 return MoveResult.COLLISION, None
             else:
                 self.robot.x_r = new_pose[0]
