@@ -131,12 +131,13 @@ func build_maze():
 	create_goal_area(goal_pos)
 	
 	# Aggiungi i checkpoints
-	var steps = 6
-	for i in range(1, steps - 1):
-		var px = int(i * maze_width / (steps - 1))
-		var py = int(i * maze_height / (steps - 1))
+	for i in range(1, 4): # checkpoints da 1 a 3 sulla diagonale
+		var px = int(i * maze_width / (5))
+		var py = int(i * maze_height / (5))
 		var position = Vector3(px * cell_size, 0, py * cell_size)
 		create_checkpoint_area(i, position)
+		
+	create_checkpoint_area(4, Vector3(7.0, 0, 28.0))
 
 func _place_wall(position: Vector3, size: Vector3, material: Material):
 	var wall_body = StaticBody3D.new()

@@ -151,7 +151,7 @@ class DiffDriveRoboticAgent:
         
         self.stop_robot()
 
-    def move(self, direction):
+    def move(self, direction, times=1):
         """Execute movement in specified direction."""
         if direction not in DIRECTIONS:
             raise ValueError("Invalid direction. Use 'UP', 'DOWN', 'LEFT', or 'RIGHT'.")
@@ -169,16 +169,16 @@ class DiffDriveRoboticAgent:
 
         # Calculate target position (10.5 unit movement)
         if direction == "UP":
-            target_x, target_y = start_x, start_y + 10.5
+            target_x, target_y = start_x, start_y + 10.5 * times
             tmp_x, tmp_y = start_x, start_y + 4.25
         elif direction == "DOWN":
-            target_x, target_y = start_x, start_y - 10.5
+            target_x, target_y = start_x, start_y - 10.5 * times
             tmp_x, tmp_y = start_x, start_y - 4.25
         elif direction == "LEFT":
-            target_x, target_y = start_x - 10.5, start_y
+            target_x, target_y = start_x - 10.5 * times, start_y
             tmp_x, tmp_y = start_x - 4.25, start_y
         elif direction == "RIGHT":
-            target_x, target_y = start_x + 10.5, start_y
+            target_x, target_y = start_x + 10.5 * times, start_y
             tmp_x, tmp_y = start_x + 4.25, start_y
 
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))

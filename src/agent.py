@@ -72,12 +72,12 @@ class QLearningAgent:
             'episode_rewards': self.episode_rewards,
             'episode_steps': self.episode_steps,
             'success_episodes': self.success_episodes,
-            'strategy_info': self.strategy.info
+            'strategy_state': self.strategy.get_strategy_state() if hasattr(self.strategy, 'get_strategy_state') else self.strategy.info
         }
         
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
-    
+
     def load_model(self, filepath: str) -> bool:
         """Load a trained model from file."""
         if not os.path.exists(filepath):
@@ -93,10 +93,13 @@ class QLearningAgent:
             self.episode_steps = model_data.get('episode_steps', [])
             self.success_episodes = model_data.get('success_episodes', [])
 
-            saved_strategy_info = model_data.get('strategy_info', {})
-            if saved_strategy_info and hasattr(self.strategy, 'load_state'):
-                self.strategy.load_state(saved_strategy_info)
-            
+            saved_strategy_state = model_data.get('strategy_state')
+            if saved_strategy_state and hasattr(self.strategy, 'load_strategy_state'):
+                self.strategy.load_strategy_state(saved_strategy_state)
+            elif saved_strategy_state and hasattr(self.strategy, 'load_state'):
+                 self.strategy.load_state(saved_strategy_state)
+
+
             for state in self.q_table:
                 if state not in self.action_counts:
                     self.action_counts[state] = np.zeros(self.n_actions)

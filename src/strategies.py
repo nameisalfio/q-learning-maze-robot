@@ -30,7 +30,7 @@ class CuriosityStrategy(Strategy):
     def __init__(self, base_epsilon: float = 0.3, novelty_bonus: float = 3.0):
         self.base_epsilon = base_epsilon
         self.novelty_bonus = novelty_bonus
-        self.state_visits = {}
+        self.state_visits = {} # Questo è lo stato cruciale da salvare/caricare
     
     def choose_action(self, q_values: np.ndarray, action_counts: np.ndarray = None,
                      state_info: Dict[str, Any] = None) -> int:
@@ -70,15 +70,32 @@ class CuriosityStrategy(Strategy):
     
     def update(self):
         """Curiosity parameters update dynamically."""
-        pass
+        pass # Nessun decadimento esplicito di base_epsilon qui
     
     @property
     def info(self) -> Dict[str, float]:
+        # Questo è ciò che viene salvato attualmente tramite agent.save_model
         return {
             "base_epsilon": self.base_epsilon,
+            "novelty_bonus": self.novelty_bonus, # Aggiungiamo anche questo per completezza
             "states_discovered": len(self.state_visits)
         }
-    
+
+    def get_strategy_state(self) -> Dict[str, Any]:
+        """Get the internal state of the strategy for saving."""
+        return {
+            'base_epsilon': self.base_epsilon,
+            'novelty_bonus': self.novelty_bonus,
+            'state_visits': self.state_visits.copy() # Salva una copia
+        }
+
+    def load_strategy_state(self, strategy_state: Dict[str, Any]):
+        """Load the internal state of the strategy."""
+        self.base_epsilon = strategy_state.get('base_epsilon', self.base_epsilon)
+        self.novelty_bonus = strategy_state.get('novelty_bonus', self.novelty_bonus)
+        self.state_visits = strategy_state.get('state_visits', {}).copy() # Carica una copia
+        self.logger.info(f"CuriosityStrategy state loaded. States discovered: {len(self.state_visits)}")
+
 def create_strategy(config) -> Strategy:
     return CuriosityStrategy(
         base_epsilon=config.get('strategy.epsilon', 0.3),
