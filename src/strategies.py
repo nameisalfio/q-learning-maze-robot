@@ -41,19 +41,32 @@ class CuriosityStrategy(Strategy):
         if current_state is not None:
             visits = self.state_visits.get(current_state, 0)
             self.state_visits[current_state] = visits + 1
+            # dynamic_epsilon encourages random exploration more in newer states
             dynamic_epsilon = min(0.8, self.base_epsilon + (0.5 / (visits + 1)))
         else:
             dynamic_epsilon = self.base_epsilon
         
+        # Prepare curiosity-adjusted Q-values for exploitation phase
+        # This makes the "greedy" choice also sensitive to action novelty
+        curiosity_adjusted_q_values = q_values.copy()
+        if action_counts is not None:
+            # Add novelty bonus: higher for actions tried less often
+            # Add a small constant to avoid division by zero if action_count is 0
+            novelty_term = self.novelty_bonus / (np.sqrt(action_counts) + 1e-6)
+            curiosity_adjusted_q_values += novelty_term
+
         if random.random() < dynamic_epsilon:
-            # Favor less tried actions
+            # Exploration phase:
+            # Favor less tried actions even during random exploration
             if action_counts is not None:
                 min_count = np.min(action_counts)
-                least_tried = np.where(action_counts == min_count)[0]
-                return int(np.random.choice(least_tried))
+                least_tried_actions = np.where(action_counts == min_count)[0]
+                return int(np.random.choice(least_tried_actions))
+            # Fallback to pure random if action_counts somehow not available
             return random.randint(0, len(q_values) - 1)
-        
-        return int(np.argmax(q_values))
+        else:
+            # Exploitation phase: Use curiosity-adjusted Q-values
+            return int(np.argmax(curiosity_adjusted_q_values))
     
     def update(self):
         """Curiosity parameters update dynamically."""

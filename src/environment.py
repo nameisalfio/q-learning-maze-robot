@@ -45,12 +45,11 @@ class MazeEnvironment:
         # Checkpoint tracking
         self.last_checkpoint_step = 0
         self.checkpoint_bonuses = {
-            1: 75.0,  
-            2: 100.0, 
-            3: 125.0, 
-            4: 150.0
+            1: 50.0,  
+            2: 150.0, 
+            3: 300.0,
+            4: 500.0
         }
-        self.base_checkpoint_reward = config.get("rewards.checkpoint_reached", 200.0)
         self.goal_reached_reward = config.get("rewards.goal_reached", 800.0)
         self.goal_coordinates = (105, 105)
         
@@ -161,7 +160,7 @@ class MazeEnvironment:
         # === CHECKPOINT SYSTEM - VERY HIGH REWARD ===
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
             # Progressive reward for different checkpoints
-            checkpoint_bonus = self.base_checkpoint_reward + self.checkpoint_bonuses[checkpoint_value]  # Base reward + bonus for checkpoint
+            checkpoint_bonus = self.checkpoint_bonuses[checkpoint_value]  # Base reward + bonus for checkpoint
             total_reward += checkpoint_bonus
             
             # Extra bonus if checkpoint is reached with a long streak
@@ -232,13 +231,6 @@ class MazeEnvironment:
         if self.steps_count > self.min_steps:
             longevity_bonus = 0.5  
             total_reward += longevity_bonus
-
-        # Give bonus based on distance to goal
-        distance_to_goal = self.distance_to_goal()
-        distance_to_goal_bonus = math.sqrt(2 / (1 + distance_to_goal)) * 100.0
-
-        total_reward += distance_to_goal_bonus
-        print(f"Distance to goal: {distance_to_goal:.2f}, Bonus: {distance_to_goal_bonus:.2f}")
         
         return total_reward
 
@@ -281,9 +273,3 @@ class MazeEnvironment:
         #    return True
         
         return False
-    
-    def distance_to_goal(self) -> float:
-        """Calculate distance to goal position."""
-        goal_x, goal_y = self.goal_coordinates
-        current_x, current_y = self.get_state()
-        return math.sqrt((goal_x - current_x) ** 2 + (goal_y - current_y) ** 2)

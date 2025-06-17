@@ -23,7 +23,6 @@ rewards:
   success: 0.001                    
   collision: -12.0                 
   goal_reached: 1000.0           
-  checkpoint_reached: 200.0        
   streak_multiplier: 0.001
   max_streak_bonus: 20.0
   exploration_bonus: 30.0
@@ -31,7 +30,7 @@ rewards:
 
 # Environment Configuration
 environment:
-  max_steps: 150              
+  max_steps: 200         
   min_steps: 100
   collision_limit: 15
   loop_threshold: 18
