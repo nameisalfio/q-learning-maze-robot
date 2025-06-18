@@ -47,16 +47,6 @@ func robot_position_move(delta):
 		theRobot.global_position.y = z
 		theRobot.global_rotation.y = theta
 		
-	# solo debug
-	if Input.is_action_pressed("move_dx"):
-		theRobot.global_position.x += 0.05
-	elif Input.is_action_pressed("move_sx"):
-		theRobot.global_position.x -= 0.05
-	elif Input.is_action_pressed("move_up"):
-		theRobot.global_position.z -= 0.05
-	elif Input.is_action_pressed("move_down"):
-		theRobot.global_position.z += 0.05
-		
 	_edit_xy_text(theRobot.global_position.x,-theRobot.global_position.z)
 
 func _physics_process(_delta):
@@ -65,6 +55,16 @@ func _physics_process(_delta):
 		robot_position_move(_delta)
 
 func _process(_delta):
+	# solo debug
+	if Input.is_action_pressed("move_dx"):
+		theRobot.global_position.x += 0.2
+	elif Input.is_action_pressed("move_sx"):
+		theRobot.global_position.x -= 0.2
+	elif Input.is_action_pressed("move_up"):
+		theRobot.global_position.z -= 0.2
+	elif Input.is_action_pressed("move_down"):
+		theRobot.global_position.z += 0.2
+	
 	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
 	var mode = DDS.read("mode")
 	if mode == 1:

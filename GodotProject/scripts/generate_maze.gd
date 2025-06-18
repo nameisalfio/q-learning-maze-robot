@@ -162,50 +162,52 @@ func _place_wall(position: Vector3, size: Vector3, material: Material):
 	add_child(wall_body)
 
 func create_goal_area(position: Vector3):
-	# --- CREA UNA PIATTAFORMA SOLIDA ---
-	var platform_body = StaticBody3D.new()
-	platform_body.transform.origin = position + Vector3(0, 0.01, 0)  # leggero offset per evitare z-fighting
+	# Crea piattaforma su cui il robot può stare
+	var platform = StaticBody3D.new()
+	platform.transform.origin = position + Vector3(0, 0.01, 0)
 
-	var platform_mesh = MeshInstance3D.new()
-	var mesh = BoxMesh.new()
-	mesh.size = Vector3(cell_size, 0.1, cell_size)
-	platform_mesh.mesh = mesh
+	var p_mesh = MeshInstance3D.new()
+	var p_box = BoxMesh.new()
+	p_box.size = Vector3(cell_size, 0.1, cell_size)
+	p_mesh.mesh = p_box
 
-	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.6, 0.85, 0.9)
-	mesh.material = material
-	platform_body.add_child(platform_mesh)
+	var p_mat = StandardMaterial3D.new()
+	p_mat.albedo_color = Color(0.6, 0.85, 0.9)
+	p_mesh.material_override = p_mat
+	platform.add_child(p_mesh)
 
-	var collider = CollisionShape3D.new()
-	var shape = BoxShape3D.new()
-	shape.size = Vector3(cell_size, 0.1, cell_size)
-	collider.shape = shape
-	platform_body.add_child(collider)
+	var p_col = CollisionShape3D.new()
+	var p_shape = BoxShape3D.new()
+	p_shape.size = Vector3(cell_size, 0.1, cell_size)
+	p_col.shape = p_shape
+	platform.add_child(p_col)
 
-	add_child(platform_body)
+	add_child(platform)
 
-	# --- CREA L'AREA DI GOAL SOPRA LA PIATTAFORMA ---
+	# Crea Area3D per rilevare il goal
 	var goal_area = Area3D.new()
 	goal_area.name = "GoalArea"
 	goal_area.monitoring = true
 	goal_area.collision_layer = 2
-	goal_area.collision_mask = 1  # il robot deve avere layer 1
+	goal_area.collision_mask = 1
 
-	var goal_collider = CollisionShape3D.new()
-	var goal_shape = BoxShape3D.new()
-	goal_shape.size = Vector3(1.0, 1.0, 1.0)
-	goal_collider.shape = goal_shape
-	goal_collider.transform.origin = Vector3(0, 0.5, 0)
+	var g_shape = BoxShape3D.new()
+	g_shape.size = Vector3(0.5, 1.0, 0.5)
 
-	goal_area.transform.origin = position + Vector3(0, 0.05, 0)
+	var g_col = CollisionShape3D.new()
+	g_col.shape = g_shape
 
-	goal_area.connect("body_entered", Callable(self, "_on_goal_area_entered"))
+	goal_area.transform.origin = position + Vector3(0, 0, 0)
+	goal_area.add_child(g_col)
+
+	goal_area.connect("body_entered",
+		Callable(self, "_on_goal_area_entered").bind(goal_area))
+
 	add_child(goal_area)
 
-func _on_goal_area_entered(body):
-	if body.is_in_group("robot"):
-		print("Obiettivo raggiunto!")
-		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
+func _on_goal_area_entered(body, area):
+	print("Obiettivo raggiunto!")
+	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
 		
 func _on_checkpoint_entered(body, area):
 	if body.is_in_group("robot"):

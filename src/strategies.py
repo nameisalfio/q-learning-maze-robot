@@ -42,7 +42,7 @@ class CuriosityStrategy(Strategy):
             visits = self.state_visits.get(current_state, 0)
             self.state_visits[current_state] = visits + 1
             # dynamic_epsilon encourages random exploration more in newer states
-            dynamic_epsilon = min(0.8, self.base_epsilon + (0.5 / (visits + 1)))
+            dynamic_epsilon = min(0.8, self.base_epsilon + (0.8 / (visits + 1)))
         else:
             dynamic_epsilon = self.base_epsilon
         

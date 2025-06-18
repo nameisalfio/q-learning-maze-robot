@@ -6,6 +6,7 @@ from src.trainer import RLTrainer
 from src.utils import Config, Logger
 from lib.dds.dds import DDS
 from lib.utils.time import Time
+import argparse
 
 def main():
     """Main entry point for Q-Learning Maze Robot system."""
@@ -16,38 +17,84 @@ def main():
     dds = DDS()
     time_obj = Time()
     
+    # --- INIZIO MODIFICHE PER ARGOMENTI DA RIGA DI COMANDO ---
+    parser = argparse.ArgumentParser(description="Q-Learning Maze Robot CLI")
+    parser.add_argument(
+        "--mode", 
+        choices=["train", "test", "continue", "stats", "exit"], 
+        help="Operation mode: train, test, continue, stats, exit"
+    )
+    parser.add_argument(
+        "--episodes", 
+        type=int, 
+        help="Number of episodes for training or continuing"
+    )
+    parser.add_argument(
+        "--test_episodes", 
+        type=int, 
+        help="Number of episodes for testing"
+    )
+    
+    args = parser.parse_args()
+
     try:
         trainer = RLTrainer(dds, time_obj)
         
-        while True:
-            print(f"\n{'='*50}")
-            print("Q-LEARNING MAZE ROBOT")
-            print(f"Strategy: {config.get('strategy.name', 'unknown')}")
-            print(f"{'='*50}")
-            print("1. 🎓 Train - Train new agent")
-            print("2. 🧪 Test - Test trained agent")
-            print("3. 📚 Continue - Continue training")
-            print("4. 📊 Stats - Show model statistics")
-            print("5. 🚪 Exit - Exit program")
-            
-            choice = input("\nChoice (1-5): ").strip()
-            
-            if choice == "1":
-                episodes = int(input("Episodes (default from config): ") or config.get('training.episodes', 200))
-                trainer.train(n_episodes=episodes)
-            elif choice == "2":
-                tests = int(input("Test episodes (default from config): ") or config.get('training.test_episodes', 5))
-                trainer.test(n_episodes=tests)
-            elif choice == "3":
-                episodes = int(input("Additional episodes (default 100): ") or "100")
-                trainer.train(n_episodes=episodes)
-            elif choice == "4":
+        # --- LOGICA PER GESTIRE MODALITÀ CLI O INTERATTIVA ---
+        if args.mode:
+            logger.info(f"CLI mode selected: {args.mode}")
+            if args.mode == "train":
+                num_episodes = args.episodes if args.episodes is not None else config.get('training.episodes', 200)
+                logger.info(f"Training for {num_episodes} episodes.")
+                trainer.train(n_episodes=num_episodes)
+            elif args.mode == "test":
+                num_test_episodes = args.test_episodes if args.test_episodes is not None else config.get('training.test_episodes', 5)
+                logger.info(f"Testing for {num_test_episodes} episodes.")
+                trainer.test(n_episodes=num_test_episodes)
+            elif args.mode == "continue":
+                num_episodes = args.episodes if args.episodes is not None else 100 # Default per continue
+                logger.info(f"Continuing training for {num_episodes} additional episodes.")
+                trainer.train(n_episodes=num_episodes)
+            elif args.mode == "stats":
+                logger.info("Showing model statistics.")
                 trainer.show_stats()
-            elif choice == "5":
+            elif args.mode == "exit":
+                logger.info("Exiting via CLI command.")
                 print("Goodbye!")
-                break
-            else:
-                print("Invalid option")
+        else:
+            # Modalità interattiva se non vengono forniti argomenti CLI per la modalità
+            while True:
+                print(f"\n{'='*50}")
+                print("Q-LEARNING MAZE ROBOT")
+                print(f"Strategy: {config.get('strategy.name', 'unknown')}")
+                print(f"{'='*50}")
+                print("1. 🎓 Train - Train new agent")
+                print("2. 🧪 Test - Test trained agent")
+                print("3. 📚 Continue - Continue training")
+                print("4. 📊 Stats - Show model statistics")
+                print("5. 🚪 Exit - Exit program")
+                
+                choice = input("\nChoice (1-5): ").strip()
+                
+                if choice == "1":
+                    episodes_input = input(f"Episodes (default from config: {config.get('training.episodes', 200)}): ")
+                    episodes = int(episodes_input) if episodes_input else config.get('training.episodes', 200)
+                    trainer.train(n_episodes=episodes)
+                elif choice == "2":
+                    tests_input = input(f"Test episodes (default from config: {config.get('training.test_episodes', 5)}): ")
+                    tests = int(tests_input) if tests_input else config.get('training.test_episodes', 5)
+                    trainer.test(n_episodes=tests)
+                elif choice == "3":
+                    episodes_input = input("Additional episodes (default 100): ")
+                    episodes = int(episodes_input) if episodes_input else 100
+                    trainer.train(n_episodes=episodes)
+                elif choice == "4":
+                    trainer.show_stats()
+                elif choice == "5":
+                    print("Goodbye!")
+                    break
+                else:
+                    print("Invalid option")
     
     except KeyboardInterrupt:
         logger.info("Shutting down...")
@@ -58,8 +105,9 @@ def main():
     finally:
         try:
             dds.stop()
-        except:
-            pass
+            logger.info("DDS stopped.")
+        except Exception as e:
+            logger.error(f"Error stopping DDS: {e}")
 
 if __name__ == "__main__":
     main()
