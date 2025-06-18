@@ -267,7 +267,7 @@ class DiffDriveRoboticAgent:
             time.sleep(0.011)  # slight delay to sync with Godot
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
-            if tmp_x < -4.50 or tmp_x > 109.50 or tmp_y > 4.50 or tmp_y < -109.50: 
+            if tmp_x < -4.0 or tmp_x > 110.0 or tmp_y > 4.50 or tmp_y < -99.0: 
                 return MoveResult.COLLISION, None # robot out of bounds, issue a timeout to avoid giving it a reward
 
             self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)

@@ -17,6 +17,7 @@ var visited = []
 
 func _ready():
 	DDS.subscribe("reset_checkpoints")
+	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
 	generate_maze()
 	build_floor()
 	build_maze()
@@ -206,8 +207,9 @@ func create_goal_area(position: Vector3):
 	add_child(goal_area)
 
 func _on_goal_area_entered(body, area):
-	print("Obiettivo raggiunto!")
-	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
+	if body.is_in_group("robot"):
+		print("Obiettivo raggiunto!")
+		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
 		
 func _on_checkpoint_entered(body, area):
 	if body.is_in_group("robot"):

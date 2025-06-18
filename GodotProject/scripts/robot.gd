@@ -65,6 +65,9 @@ func _process(_delta):
 	elif Input.is_action_pressed("move_down"):
 		theRobot.global_position.z += 0.2
 	
+	# solo debug
+	_edit_xy_text(theRobot.global_position.x,-theRobot.global_position.z)
+	
 	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
 	var mode = DDS.read("mode")
 	if mode == 1:
