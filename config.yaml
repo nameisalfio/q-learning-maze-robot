@@ -20,11 +20,8 @@ strategy:
 
 # Reward Structure
 rewards:
-  success: 0.001                    
   collision: -12.0                 
   goal_reached: 1000.0           
-  streak_multiplier: 0.001
-  max_streak_bonus: 20.0
   exploration_bonus: 30.0
   loop_penalty: -14.0
 
@@ -38,10 +35,6 @@ environment:
   checkpoint:
     base_bonus: 100.0
     progressive_multiplier: 25.0
-    momentum_threshold: 3
-    momentum_multiplier: 0.1
-    explosion_threshold: 4
-    explosion_bonus: 25.0
     stagnation_threshold: 20
     stagnation_penalty: -3.0
 

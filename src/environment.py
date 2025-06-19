@@ -22,14 +22,11 @@ class MazeEnvironment:
         
         # Reward configuration
         self.rewards = {
-            MoveResult.SUCCESS: config.get('rewards.success', 0.001),
             MoveResult.COLLISION: config.get('rewards.collision', -10.0),
             MoveResult.GOAL_REACHED: config.get('rewards.goal_reached', 1000.0),
             MoveResult.CHECKPOINT_REACHED: config.get('rewards.checkpoint_reached', 200.0)
         }
         
-        self.streak_multiplier = config.get('rewards.streak_multiplier', 0.001)
-        self.max_streak_bonus = config.get('rewards.max_streak_bonus', 20.0)
         self.exploration_bonus = config.get('rewards.exploration_bonus', 30.0)
         self.loop_penalty = config.get('rewards.loop_penalty', -12.0)
         
@@ -43,20 +40,13 @@ class MazeEnvironment:
         self.visited_states = {}
         
         # Checkpoint tracking
-        self.last_checkpoint_step = 0
         self.checkpoint_bonuses = {
             1: 50.0,  
             2: 150.0, 
             3: 300.0,
             4: 500.0
         }
-        self.goal_reached_reward = config.get("rewards.goal_reached", 800.0)
-        self.goal_coordinates = (105, 105)
-        
-        # Enhanced momentum system
-        self.momentum_threshold = 3      # Minimum consecutive successful moves to activate momentum bonus
-        self.momentum_multiplier = 3.0   # Multiplier for momentum bonus calculation
-        self.explosion_threshold = 8     # Threshold for activating explosive bonus for long streaks
+        self.goal_reached_reward = config.get("rewards.goal_reached", 1000.0)
     
     def reset(self) -> Tuple:
         """Reset environment to initial state."""
@@ -76,7 +66,6 @@ class MazeEnvironment:
     
     def reset_checkpoints(self):
         """Reset checkpoint tracking."""
-        self.last_checkpoint_step = 0
         self.robot.dds.publish('reset_checkpoints', 1, DDS.DDS_TYPE_INT)
         time.sleep(1.0)
         self.robot.dds.publish('reset_checkpoints', 0, DDS.DDS_TYPE_INT)
@@ -144,18 +133,16 @@ class MazeEnvironment:
         return self.get_state(), reward, done, info
 
     def _calculate_reward(self, result: MoveResult, checkpoint_value=None) -> float:
-        """Calculate reward with checkpoint bonuses and momentum system."""
+        """Calculate rewards."""
         
         # === BASE REWARD ===
         base_rewards = {
-            MoveResult.SUCCESS: self.rewards[MoveResult.SUCCESS],
             MoveResult.COLLISION: self.rewards[MoveResult.COLLISION], 
             MoveResult.GOAL_REACHED: self.rewards[MoveResult.GOAL_REACHED],
             MoveResult.CHECKPOINT_REACHED: self.rewards.get(MoveResult.CHECKPOINT_REACHED, 50.0)  # New reward for checkpoint
         }
         
-        base_reward = base_rewards.get(result, 0.0)
-        total_reward = base_reward
+        total_reward = base_rewards.get(result, 0.0)
         
         # === CHECKPOINT SYSTEM - VERY HIGH REWARD ===
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
@@ -167,29 +154,6 @@ class MazeEnvironment:
             if self.consecutive_success_moves >= 5:
                 total_reward += 50.0
             print(f"🎯 CHECKPOINT {checkpoint_value} REACHED! Bonus: {checkpoint_bonus:.1f}, Total reward: {total_reward:.1f}")
-
-        # Uncomment the following block to enable the momentum system !!!
-        """
-        # === MOMENTUM SYSTEM - ENCOURAGES CONTINUING IN THE SAME DIRECTION ===
-        if result == MoveResult.SUCCESS:
-            # Progressive bonus for consecutive movements
-            streak_bonus = min(
-                self.consecutive_success_moves * self.streak_multiplier * 1.5,  # Increased multiplier
-                self.max_streak_bonus * 2  # Doubled max bonus
-            )
-            total_reward += streak_bonus
-            
-            # EXTRA MOMENTUM BONUS - Encourages straight movement
-            if self.consecutive_success_moves >= 3:
-                momentum_bonus = min(self.consecutive_success_moves * 3.0, 30.0)
-                total_reward += momentum_bonus
-                
-            # EXPLOSIVE BONUS for long sequences (straight corridors)
-            if self.consecutive_success_moves >= 4:
-                explosion_bonus = 25.0 + (self.consecutive_success_moves - 4) * 5.0
-                total_reward += explosion_bonus
-                print(f"🚀 MOMENTUM BONUS! Streak: {self.consecutive_success_moves}, Extra: {momentum_bonus + explosion_bonus:.1f}")
-        """
         
         # === GOAL BONUS WITH CHECKPOINT ===
         if result == MoveResult.GOAL_REACHED:
@@ -205,23 +169,6 @@ class MazeEnvironment:
             loop_penalty = self.loop_penalty * 1.5  # Increased penalty
             total_reward += loop_penalty
             print(f"🔄 Loop detected! Penalty: {loop_penalty:.1f}")
-
-        # === ANTI-STAGNATION SYSTEM ===
-        # Penalty for lack of progress towards checkpoint/goal
-        #if result == MoveResult.SUCCESS and self.consecutive_success_moves > 15:
-            # Penalize if too many steps are taken without a checkpoint
-        #    if not hasattr(self, 'last_checkpoint_step'):
-        #        self.last_checkpoint_step = 0
-            
-        #    steps_since_checkpoint = self.steps_count - self.last_checkpoint_step
-        #    if steps_since_checkpoint > 20:
-        #        stagnation_penalty = -3.0
-        #        total_reward += stagnation_penalty
-        #        print(f"⚠️ Stagnation penalty: {stagnation_penalty:.1f}")
-        
-        # Update last checkpoint step
-        if result == MoveResult.CHECKPOINT_REACHED:
-            self.last_checkpoint_step = self.steps_count
         
         if self.steps_count == self.min_steps:
             min_steps_bonus = 15.0
@@ -252,14 +199,6 @@ class MazeEnvironment:
         # Goal raggiunto - termina sempre (indipendentemente da min_steps)
         if result == MoveResult.GOAL_REACHED:
             return True
-        
-        # Checkpoint raggiunto - continua sempre (anche oltre max_steps se necessario)
-        if result == MoveResult.CHECKPOINT_REACHED:
-            return False
-        
-        # Se non abbiamo raggiunto min_steps, continua 
-        if self.steps_count < self.min_steps:
-            return False  # Continua l'episodio
         
         # Dopo min_steps, usa le condizioni normali
         if self.steps_count >= self.max_steps:

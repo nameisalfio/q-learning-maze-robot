@@ -1,10 +1,6 @@
 #!/bin/bash
 
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
-python main.py --mode continue --episodes 75
+for  i in {1..10}
+do
+    python main.py --mode continue --episodes 50
+done
