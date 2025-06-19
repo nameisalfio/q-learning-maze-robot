@@ -117,6 +117,9 @@ class RLTrainer:
                 
                 # Update exploration strategy
                 self.agent.update_strategy()
+
+                # update learning rate
+                self.agent.update_learning_rate()
                 
                 # Enhanced episode summary
                 self._print_episode_summary(episode + 1, info, total_reward, max_streak, 

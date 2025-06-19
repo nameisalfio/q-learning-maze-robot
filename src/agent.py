@@ -11,6 +11,8 @@ class QLearningAgent:
         # Q-Learning parameters
         self.learning_rate = config.get('agent.learning_rate', 0.1)
         self.discount_factor = config.get('agent.discount_factor', 0.95)
+        self.min_lr = config.get('agent.min_learning_rate', 0.01)
+        self.lr_decay = config.get('agent.lr_decay', 0.995)
         self.strategy = strategy
         
         # Q-table and action tracking
@@ -45,6 +47,9 @@ class QLearningAgent:
         self.action_counts[state][action] += 1
         return action
     
+    def update_learning_rate(self):
+        self.learning_rate = max(self.min_lr, self.learning_rate * self.lr_decay)
+
     def update_q_value(self, state: Tuple, action: int, reward: float,
                       next_state: Tuple, done: bool = False):
         """Update Q-value using Q-Learning rule."""
