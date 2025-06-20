@@ -14,7 +14,7 @@ agent:
 # Options: epsilon_greedy, ucb, curiosity
 strategy:
   name: "curiosity"
-  epsilon: 0.6
+  epsilon: 0.65
   epsilon_decay: 0.999
   epsilon_min: 0.15
   ucb_factor: 2.0
@@ -24,7 +24,6 @@ strategy:
 rewards:
   collision: -12.0                 
   goal_reached: 1000.0           
-  exploration_bonus: 30.0
   loop_penalty: -14.0
 
 # Environment Configuration

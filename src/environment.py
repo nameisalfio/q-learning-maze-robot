@@ -27,7 +27,6 @@ class MazeEnvironment:
             MoveResult.CHECKPOINT_REACHED: config.get('rewards.checkpoint_reached', 200.0)
         }
         
-        self.exploration_bonus = config.get('rewards.exploration_bonus', 30.0)
         self.loop_penalty = config.get('rewards.loop_penalty', -12.0)
         
         # Environment state
@@ -99,15 +98,11 @@ class MazeEnvironment:
         x, y, theta = self.robot.get_current_position()
         self.current_position = (x, y, theta)
         state = self.get_state()
-        is_new_state = state not in self.visited_states
         self.visited_states[state] = self.visited_states.get(state, 0) + 1
         self.recent_positions.append(self.current_position)
 
         # Calcola reward, passando il flag se vuoi
         reward = self._calculate_reward(result, checkpoint_value)
-        if is_new_state:
-            reward += self.exploration_bonus
-            print(f"🧭 Exploration bonus! Stato {state} visitato per la prima volta.")
 
         # Update success streak
         if result == MoveResult.SUCCESS or result == MoveResult.CHECKPOINT_REACHED:
