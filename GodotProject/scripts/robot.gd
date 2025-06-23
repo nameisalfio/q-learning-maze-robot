@@ -10,7 +10,6 @@ var collision_wall = false
 
 func _ready():
 	theRobot.add_to_group("robot")
-	DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
 	DDS.subscribe("X")
 	DDS.subscribe("Y")
 	DDS.subscribe("Z")

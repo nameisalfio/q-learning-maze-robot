@@ -1,7 +1,7 @@
 extends Node3D
 
-@export var maze_width: int = 10
-@export var maze_height: int = 10
+@export var maze_width: int = 8
+@export var maze_height: int = 8
 @export var cell_size: float = 3.5
 @export var wall_height: float = 2.5
 @export var wall_thickness: float = 0.3
@@ -40,7 +40,7 @@ func _process(delta):
 			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, 0)
 			
 func generate_maze():
-	seed(1234)
+	seed(9875)
 	maze = []
 	visited = []
 	for y in maze_height:
@@ -132,13 +132,10 @@ func build_maze():
 	create_goal_area(goal_pos)
 	
 	# Aggiungi i checkpoints
-	for i in range(1, 4): # checkpoints da 1 a 3 sulla diagonale
-		var px = int(i * maze_width / (5))
-		var py = int(i * maze_height / (5))
-		var position = Vector3(px * cell_size, 0, py * cell_size)
-		create_checkpoint_area(i, position)
-		
-	create_checkpoint_area(4, Vector3(7.0, 0, 28.0))
+	create_checkpoint_area(1, Vector3(10.5, 0.0, 7.0))
+	create_checkpoint_area(2, Vector3(7.0, 0.0, 14.0))
+	create_checkpoint_area(3, Vector3(10.5, 0.0, 24.5))
+	create_checkpoint_area(4, Vector3(24.5, 0, 14.0))
 
 func _place_wall(position: Vector3, size: Vector3, material: Material):
 	var wall_body = StaticBody3D.new()
@@ -210,6 +207,8 @@ func _on_goal_area_entered(body, area):
 	if body.is_in_group("robot"):
 		print("Obiettivo raggiunto!")
 		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
+		await get_tree().create_timer(0.3).timeout  # pausa non bloccante di 0.3s
+		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
 		
 func _on_checkpoint_entered(body, area):
 	if body.is_in_group("robot"):
