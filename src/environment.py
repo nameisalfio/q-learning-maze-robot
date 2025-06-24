@@ -15,10 +15,7 @@ class MazeEnvironment:
         self.config = config
         
         # Environment parameters
-        self.max_steps = config.get('environment.max_steps', 150)
-        self.min_steps = config.get('environment.min_steps', 75) 
-        self.collision_limit = config.get('environment.collision_limit', 12)
-        self.loop_threshold = config.get('environment.loop_threshold', 18)
+        self.steps = config.get('environment.steps', 150)
         
         # Reward configuration
         self.rewards = {
@@ -165,15 +162,6 @@ class MazeEnvironment:
             total_reward += loop_penalty
             print(f"🔄 Loop detected! Penalty: {loop_penalty:.1f}")
         
-        if self.steps_count == self.min_steps:
-            min_steps_bonus = 15.0
-            total_reward += min_steps_bonus
-            print(f"🎯 MIN_STEPS BONUS! Reached {self.min_steps} steps, bonus: {min_steps_bonus}")
-        
-        if self.steps_count > self.min_steps:
-            longevity_bonus = 0.5  
-            total_reward += longevity_bonus
-        
         return total_reward
 
     def _is_in_loop(self) -> bool:
@@ -196,14 +184,8 @@ class MazeEnvironment:
             return True
         
         # Dopo min_steps, usa le condizioni normali
-        if self.steps_count >= self.max_steps:
-            print(f"⏱️ Episodio terminato: raggiunto max_steps ({self.max_steps})")
+        if self.steps_count >= self.steps:
+            print(f"⏱️ Episodio terminato: raggiunto max_steps ({self.steps})")
             return True
-        #if self.collision_count >= self.collision_limit:
-        #    print(f"💥 Episodio terminato: troppe collisioni ({self.collision_count})")
-        #    return True
-        #if self._is_in_loop() and self.steps_count > self.loop_threshold:
-        #    print(f"🔄 Episodio terminato: loop rilevato dopo {self.steps_count} passi")
-        #    return True
         
         return False

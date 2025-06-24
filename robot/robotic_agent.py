@@ -46,10 +46,10 @@ class MoveResult(Enum):
 class DiffDriveRoboticAgent:
     """Differential drive robot agent for maze navigation."""
     
-    def __init__(self, dds, time, mode):
+    def __init__(self, dds, time):
         self.time = time
         self.dds = dds
-        self.mode = mode # 'test' or 'training'
+        self.mode = "train" # 'test' or 'train'
 
         # Initialize DDS communication
         self.dds.start()
@@ -59,17 +59,17 @@ class DiffDriveRoboticAgent:
         # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
-            _kp=0.8,
-            _ki=0.0,
+            _kp=2.0,
+            _ki=0.08,
             _kd=0.0,
-            _sat=10.0
+            _sat=13.0
         )
 
         self.robot = TwoWheelsCart2DEncodersOdometry(
             _mass=1.0,
             _radius=0.3,
-            _lin_friction=0.8,
-            _ang_friction=0.7,
+            _lin_friction=0.9,
+            _ang_friction=0.8,
             _r_traction_left=0.04,
             _r_traction_right=0.04,
             _traction_wheelbase=0.4,
@@ -81,9 +81,9 @@ class DiffDriveRoboticAgent:
 
         self.polar_controller = Polar2DController(
             KP_linear=1.4,
-            v_max=1.7,     
+            v_max=2.0,     
             KP_heading=2.0,   
-            w_max=2.0         
+            w_max=2.0
         )
 
         self.virtual_robot = None
@@ -156,11 +156,10 @@ class DiffDriveRoboticAgent:
         if direction not in DIRECTIONS:
             raise ValueError("Invalid direction. Use 'UP', 'DOWN', 'LEFT', or 'RIGHT'.")
         
-        self.dds.publish('mode', 1 if self.mode == "training" else 0, DDS.DDS_TYPE_INT) # training/test modes
         time.sleep(0.052) # leggero delay per sincronizzazione con Godot
 
         # Initialize motion planning
-        self.virtual_robot = StraightLine2DMotion(1.2, 1.8, 1.8)
+        self.virtual_robot = StraightLine2DMotion(2.0, 2.5, 2.5)
 
         current_pose = self.robot.get_pose()
         start_x = tmp_x = current_pose[0]
@@ -184,13 +183,11 @@ class DiffDriveRoboticAgent:
         self.virtual_robot.start_motion((start_x, start_y), (target_x, target_y))
         print(f"Moving {direction} from ({start_x:.2f}, {start_y:.2f}) to ({target_x:.2f}, {target_y:.2f})")
         
-        max_iterations = 900
+        max_iterations = 1500 * times
         iteration = 0
 
         if self.mode == "test":
-            # Wait for Godot tick
             self.dds.wait('tick')
-
             while iteration < max_iterations:
                 godot_delta = self.dds.read('tick')
                 time.sleep(0.052)
@@ -263,11 +260,11 @@ class DiffDriveRoboticAgent:
             self.stop_robot()
             return MoveResult.SUCCESS, None
 
-        if self.mode == "training":
+        if self.mode == "train":
             time.sleep(0.011)  # slight delay to sync with Godot
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
-            if tmp_x < -4.0 or tmp_x > 110.0 or tmp_y > 4.50 or tmp_y < -99.0: 
+            if tmp_x < -4.0 or tmp_x > 90.0 or tmp_y > 4.50 or tmp_y < -78.0: 
                 return MoveResult.COLLISION, None # robot out of bounds, issue a timeout to avoid giving it a reward
 
             self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)
@@ -339,3 +336,9 @@ class DiffDriveRoboticAgent:
     def set_test_mode(self):
         """Set robot to test mode."""
         self.mode = "test"
+        self.dds.publish('mode', 0, DDS.DDS_TYPE_INT)  # 0 = test, 1 = train
+
+    def set_train_mode(self):
+        """Set robot to train mode."""
+        self.mode = "train"
+        self.dds.publish('mode', 1, DDS.DDS_TYPE_INT)

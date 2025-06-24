@@ -94,7 +94,7 @@ class CuriosityStrategy(Strategy):
         self.base_epsilon = strategy_state.get('base_epsilon', self.base_epsilon)
         self.novelty_bonus = strategy_state.get('novelty_bonus', self.novelty_bonus)
         self.state_visits = strategy_state.get('state_visits', {}).copy() # Carica una copia
-        self.logger.info(f"CuriosityStrategy state loaded. States discovered: {len(self.state_visits)}")
+        print(f"CuriosityStrategy state loaded. States discovered: {len(self.state_visits)}")
 
 def create_strategy(config) -> Strategy:
     return CuriosityStrategy(

@@ -14,8 +14,8 @@ agent:
 # Options: epsilon_greedy, ucb, curiosity
 strategy:
   name: "curiosity"
-  epsilon: 0.65
-  epsilon_decay: 0.999
+  epsilon: 0.5
+  epsilon_decay: 0.985
   epsilon_min: 0.15
   ucb_factor: 2.0
   novelty_bonus: 5.0               
@@ -28,10 +28,7 @@ rewards:
 
 # Environment Configuration
 environment:
-  max_steps: 200         
-  min_steps: 100
-  collision_limit: 15
-  loop_threshold: 18
+  steps: 200
 
   checkpoint:
     base_bonus: 100.0

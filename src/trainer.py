@@ -9,6 +9,7 @@ from .agent import QLearningAgent
 from .environment import MazeEnvironment
 from .strategies import create_strategy
 from .utils import Config, Logger
+from lib.dds.dds import DDS
 
 class RLTrainer:
     """Main trainer for Q-Learning maze navigation with enhanced episode formatting."""
@@ -21,7 +22,7 @@ class RLTrainer:
         self.logger = Logger(log_level=self.config.get('experiment.log_level', 'INFO'))
         
         # Initialize system components
-        self.robot = DiffDriveRoboticAgent(dds, time_obj, "training")
+        self.robot = DiffDriveRoboticAgent(dds, time_obj)
         self.environment = MazeEnvironment(self.robot, self.config)
         
         # Create strategy UNA VOLTA
@@ -69,6 +70,7 @@ class RLTrainer:
         }
         
         try:
+            self.robot.set_train_mode()
             for episode in range(n_episodes):
                 self._print_episode_header(episode + 1, n_episodes, min_steps, max_steps)
                 
@@ -166,6 +168,8 @@ class RLTrainer:
         
         try:
             for episode in range(n_episodes):
+                self.robot.set_test_mode()
+                
                 print(f"\n🧪 TEST EPISODE {episode + 1}/{n_episodes}")
                 print("-" * 50)
                 
