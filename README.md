@@ -1,9 +1,8 @@
 # 🤖 Q-Learning Maze Robot
 
-A sophisticated reinforcement learning system for training differential drive robots to navigate complex mazes using Q-Learning with multiple exploration strategies.
+A sophisticated reinforcement learning system for training a differential drive robot to navigate complex mazes. This project integrates a physics-based Godot simulation with an advanced Q-Learning agent featuring a dynamic, curiosity-driven exploration strategy.
 
-
-> **Note**: This project combines robotics simulation in Godot Engine with advanced RL algorithms for autonomous navigation research.
+> **Note**: This project is designed for research and educational purposes in autonomous navigation, combining a real-time robotics simulation with a robust RL training pipeline.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Godot](https://img.shields.io/badge/Godot-4.x-blue.svg)](https://godotengine.org)
@@ -13,444 +12,221 @@ A sophisticated reinforcement learning system for training differential drive ro
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Quick Start](#-quick-start)
-- [Project Structure](#-project-structure)
-- [Exploration Strategies](#-exploration-strategies)
-- [Configuration](#-configuration)
-- [Usage Examples](#-usage-examples)
-- [Results and Analysis](#-results-and-analysis)
-- [Architecture](#-architecture)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [🤖 Q-Learning Maze Robot](#-q-learning-maze-robot)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [🎯 Overview](#-overview)
+  - [✨ Key Features](#-key-features)
+    - [🧠 Machine Learning](#-machine-learning)
+    - [🤖 Robotics \& Simulation](#-robotics--simulation)
+    - [🛠️ Development \& Usability](#️-development--usability)
+  - [🏗️ System Architecture](#️-system-architecture)
+  - [🚀 Quick Start](#-quick-start)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Running the System](#running-the-system)
+  - [🎮 Usage](#-usage)
+    - [Interactive Menu](#interactive-menu)
+    - [Command-Line Interface (for automation)](#command-line-interface-for-automation)
+  - [⚙️ Configuration](#️-configuration)
+    - [Example `config.yaml` for Curiosity Strategy](#example-configyaml-for-curiosity-strategy)
+  - [📊 Analysis and Visualization](#-analysis-and-visualization)
+  - [📁 Project Structure](#-project-structure)
+  - [🤝 Contributing](#-contributing)
+  - [📄 License](#-license)
 
 ## 🎯 Overview
 
-This project implements a complete reinforcement learning pipeline for training robots in maze navigation tasks. The system features:
+This project implements a complete reinforcement learning pipeline for a robot navigating a maze. The core of the system is a **Q-Learning agent** that learns optimal paths through trial and error. It interacts with a **Godot Engine simulation** via a DDS (Data Distribution Service) communication layer, allowing for decoupled, real-time training and testing.
 
-- **Real-time Simulation**: Integration with Godot Engine for physics-accurate robot simulation
-- **Multiple RL Strategies**: Epsilon-Greedy, UCB, and Curiosity-based exploration
-- **Progressive Reward System**: Encourages efficient navigation through streak bonuses
-- **Comprehensive Analysis**: Jupyter notebooks for training visualization and performance analysis
-- **Modular Architecture**: Easy to extend with new strategies and environments
+The agent's learning is guided by a **Curiosity-driven exploration strategy**, which dynamically adjusts its exploration rate based on state novelty. This encourages the robot to thoroughly explore the maze instead of getting stuck in local optima. The reward system is designed with **progressive checkpoints** to provide intermediate goals, making it feasible to solve large, complex mazes with sparse final rewards.
 
-### 🔬 Research Applications
-
-- Autonomous navigation research
-- Reinforcement learning algorithm comparison
-- Robot behavior analysis
-- Educational robotics and AI
-
-## ✨ Features
+## ✨ Key Features
 
 ### 🧠 Machine Learning
-- **Q-Learning Algorithm**: Tabular Q-Learning with customizable parameters
-- **Smart Exploration**: Multiple strategies for balancing exploration vs exploitation
-- **Progressive Rewards**: Bonus system for consecutive successful moves
-- **Loop Detection**: Automatic detection and penalization of repetitive behavior
+- **Advanced Q-Learning**: Tabular Q-Learning with learning rate decay for fine-tuning.
+- **Dynamic Curiosity Strategy**: Exploration is driven by state visitation counts and action novelty, making it highly effective for complex environments.
+- **Progressive Checkpoint Rewards**: A sophisticated reward system that provides increasing bonuses for reaching sequential checkpoints, guiding the agent toward the final goal.
+- **Loop Detection & Penalization**: Automatically penalizes repetitive, inefficient behavior.
 
-### 🤖 Robotics
-- **Differential Drive Control**: Realistic robot physics and control
-- **Collision Handling**: Automatic collision detection and recovery
-- **Real-time Communication**: DDS-based communication with Godot simulation
-- **Position Tracking**: Precise odometry and state estimation
+### 🤖 Robotics & Simulation
+- **Differential Drive Physics**: The agent controls a simulated robot with realistic two-wheeled physics.
+- **Decoupled Architecture**: Python-based RL brain communicates with a Godot Engine simulation via a DDS layer.
+- **Two Simulation Modes**:
+  - **Training Mode**: A "teleport" mode for rapid, physics-less training episodes.
+  - **Testing Mode**: A full physics simulation for realistic evaluation of the trained policy.
+- **Collision Handling**: Automatic collision detection in the simulation environment.
 
-### 🛠️ Development
-- **Single Configuration**: YAML-based configuration management
-- **Comprehensive Logging**: Training progress and performance metrics
-- **Model Persistence**: Save and load trained agents
-- **Interactive Interface**: User-friendly training and testing interface
+### 🛠️ Development & Usability
+- **Centralized Configuration**: A single, comprehensive `config.yaml` file to manage all parameters.
+- **CLI & Interactive Modes**: Run training via command-line arguments for automation or use the interactive menu for experimentation.
+- **Model Persistence**: Save and resume training progress, including the Q-table and strategy state.
+- **Detailed Logging**: Formatted and detailed console output, with logs saved to file for later analysis.
 
-### 📊 Analysis
-- **Jupyter Integration**: Rich visualization and analysis tools
-- **Performance Metrics**: Success rate, reward progression, exploration coverage
-- **Training Visualization**: Real-time plots of learning progress
-- **Strategy Comparison**: Tools for comparing different exploration approaches
+## 🏗️ System Architecture
+
+The system is composed of two main components that communicate in real-time:
+
+1.  **The RL Agent (Python)**: This is the "brain" of the operation.
+    - It runs the Q-Learning algorithm.
+    - It implements the `CuriosityStrategy` to decide on actions.
+    - It processes rewards from the environment to update its Q-table.
+    - It sends movement commands and mode changes to the simulation.
+
+2.  **The Simulation Environment (Godot Engine)**: This is the "body" and the world.
+    - It renders the maze and the robot.
+    - It handles physics simulation (in test mode).
+    - It detects collisions, checkpoints, and goal events.
+    - It sends sensor data (collision status, events) back to the agent.
+
+This decoupled design allows for flexible development, where the learning logic is completely separate from the simulation environment.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Python 3.8+** with pip
+- **Python 3.8+** with `pip`
 - **Godot Engine 4.x**
 - **Git** for cloning the repository
 
 ### Installation
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/your-username/q-learning-maze-robot.git
 cd q-learning-maze-robot
 
-# Install Python dependencies
+# 2. Install Python dependencies
 pip install -r requirements.txt
-
-# Optional: Install in development mode
-pip install -e .
 ```
 
 ### Running the System
 
-1. **Start Godot Simulation**:
-   ```bash
-   # Open Godot project
-   godot GodotProject/project.godot
-   
-   # Or from Godot Editor: Open Project → Select GodotProject/
-   # Then click Play to start the maze simulation
-   ```
+1.  **Start the Godot Simulation**:
+    - Open the Godot Engine.
+    - Click `Import` or `Open Project` and select the `GodotProject/project.godot` file.
+    - Once the project is open, press the **Play** button (▶️) in the top-right corner to start the simulation.
 
-2. **Launch Q-Learning System**:
-   ```bash
-   python main.py
-   ```
+2.  **Launch the RL Agent**:
+    - In your terminal, run the main Python script:
+      ```bash
+      python main.py
+      ```
 
-3. **Start Training**:
-   - Select option `1` (Train)
-   - Enter number of episodes (default: 200)
-   - Watch the agent learn to navigate the maze!
+3.  **Begin Training**:
+    - The script will present an interactive menu.
+    - Select option `1` to start a new training session or `3` to continue from a saved model.
+    - Watch the logs in your terminal as the agent learns!
 
-### First Training Session
+## 🎮 Usage
+
+The system can be operated in two ways:
+
+### Interactive Menu
+
+Run `python main.py` without arguments to access the menu:
+- **1. 🎓 Train**: Start a new training run from scratch (will overwrite existing model).
+- **2. 🧪 Test**: Evaluate the performance of the latest saved agent in a full physics simulation.
+- **3. 📚 Continue**: Load the existing model and continue training.
+- **4. 📊 Stats**: Display statistics of the saved model.
+- **5. 🚪 Exit**: Close the program.
+
+### Command-Line Interface (for automation)
+
+You can run training or testing sessions directly from the command line, which is ideal for scripting.
 
 ```bash
-# Quick training with default settings
-python main.py
-# Choose: 1 → Enter → Wait for training completion
+# Continue training for 500 episodes
+python main.py --mode continue --episodes 500
 
-# Test the trained agent
-# Choose: 2 → Enter → Watch the agent navigate
+# Run a test with 10 episodes
+python main.py --mode test --test_episodes 10
+
+# Show agent statistics
+python main.py --mode stats
 ```
-
-## 📁 Project Structure
-```bash
-q-learning-maze-robot/
-├── README.md                      # This file
-├── config.yaml                    # Central configuration file for all parameters 
-├── main.py                        # Entry point for the Q-Learning system
-├── lib/                           # User-defined libraries
-    ├── data
-    ├── dds
-    ├── system
-    └── utils
-├── requirements.txt               # Python dependencies 
-├── .gitignore                     
-├── GodotProject/                  # Godot Engine project files
-│   ├── Components/                
-│   ├── scripts/                   
-│   └── project.godot              
-├── src/                           # Core of the Q-Learning system
-│   ├── __init__.py                
-│   ├── agent.py                   # Q-Learning agent - learning, action selection, Q-table management
-│   ├── environment.py             # Maze environment - state management, reward calculation, collision handling
-│   ├── strategies.py              # Exploration strategies - Epsilon-Greedy, UCB, Curiosity
-│   ├── trainer.py                 # Training orchestrator - episode loop, model saving
-│   └── utils.py                   # Utilities - config manager, centralized logger
-├── robot/                         # Physical robot interface
-│   ├── __init__.py                
-│   └── RoboticAgent.py            # Differential robot control - DDS, motion planning
-├── notebooks/                     # Interactive analysis and testing
-│   ├── __init__.py                  
-│   └── robot_testing.ipynb        # Jupyter notebook - visualizations, movement testing
-├── models/                        # Persistent trained models
-│   └── .gitkeep                   
-└── logs/                          # Training log files
-  └── .gitkeep                   
-```
-
-### Key Components
-
-| Component | Description |
-|-----------|-------------|
-| `src/agent.py` | Q-Learning agent implementation |
-| `src/strategies.py` | Exploration strategies (Epsilon-Greedy, UCB, Curiosity) |
-| `src/environment.py` | Maze environment and reward system |
-| `src/trainer.py` | Training and testing orchestration |
-| `robot/RoboticAgent.py` | Low-level robot control and communication |
-| `config.yaml` | Single configuration file for all parameters |
-| `notebooks/robot_testing.ipynb` | Analysis and visualization tools |
-| `GodotProject/` | Godot simulation environment |
-
-## 🧠 Exploration Strategies
-
-The system supports three different exploration strategies, each with unique advantages:
-
-### Epsilon-Greedy
-
-**Description**: Classic strategy balancing exploration and exploitation with decaying randomness.
-
-**Best for**: Good general-purpose strategy, simple and effective.
-
-**Parameters**: `epsilon, epsilon_decay, epsilon_min`
-
-**Configuration**:
-```yaml
-strategy:
-  name: "epsilon_greedy"
-```
-
-### Upper Confidence Bound (UCB)
-
-**Description**: Intelligent exploration prioritizing actions with high uncertainty.
-
-**Best for**: When you want smarter exploration based on action confidence.
-
-**Parameters**: `ucb_factor, epsilon`
-
-**Configuration**:
-```yaml
-strategy:
-  name: "ucb"
-```
-
-### Curiosity-Based
-
-**Description**: Dynamic exploration driven by state novelty and visitation frequency.
-
-**Best for**: Best for sparse reward environments, encourages thorough exploration.
-
-**Parameters**: `base_epsilon, novelty_bonus`
-
-**Configuration**:
-```yaml
-strategy:
-  name: "curiosity"
-```
-
-### Strategy Comparison
-
-| Strategy | Exploration Type | Learning Speed | Best Use Case |
-|----------|------------------|----------------|---------------|
-| Epsilon-Greedy | Random | Fast | General purpose, quick results |
-| UCB | Uncertainty-based | Medium | When action confidence matters |
-| Curiosity | Novelty-driven | Slow | Sparse rewards, thorough exploration |
+Create a `run_training.sh` script for long, automated training sessions.
 
 ## ⚙️ Configuration
 
-All system parameters are configured through the single `config.yaml` file:
+All system parameters are managed in `config.yaml`. This allows you to easily experiment with different settings without changing the code.
 
-### Basic Configuration Structure
+### Example `config.yaml` for Curiosity Strategy
 
 ```yaml
-# Main experiment settings
-experiment:
-  name: "q_learning_maze_robot"
-  log_level: "INFO"
-
-# Q-Learning parameters
+# Q-Learning Agent Parameters
 agent:
-  learning_rate: 0.1
-  discount_factor: 0.95
+  learning_rate: 0.12          # Initial learning rate
+  min_learning_rate: 0.01      # Minimum learning rate after decay
+  lr_decay: 0.997              # Multiplicative decay factor per episode
+  discount_factor: 0.96        # Importance of future rewards
 
-# Exploration strategy
-strategy:
-  name: "epsilon_greedy"  # or "ucb" or "curiosity"
-  # Strategy-specific parameters...
-
-# Environment settings
-environment:
-  max_steps: 100
-  collision_limit: 10
-
-# Reward structure
-rewards:
-  success: 5.0
-  collision: -10.0
-  goal_reached: 100.0
-
-# Training configuration
-training:
-  episodes: 200
-  save_every: 50
-```
-
-### Strategy-Specific Examples
-
-#### Epsilon_Greedy Strategy
-```yaml
-strategy:
-  name: "epsilon_greedy"
-  epsilon: 0.8
-  epsilon_decay: 0.995
-  epsilon_min: 0.1
-
-training:
-  episodes: 300
-  save_every: 50
-
-rewards:
-  success: 5.0
-  collision: -10.0
-  goal_reached: 100.0
-```
-
-#### Ucb Strategy
-```yaml
-strategy:
-  name: "ucb"
-  ucb_factor: 2.0
-  epsilon: 0.1
-
-training:
-  episodes: 200
-  save_every: 25
-
-environment:
-  max_steps: 150
-```
-
-#### Curiosity Strategy
-```yaml
+# Curiosity-Based Exploration Strategy
 strategy:
   name: "curiosity"
-  epsilon: 0.3
-  novelty_bonus: 5.0
+  epsilon: 0.5                 # Base random exploration chance
+  novelty_bonus: 5.0           # Bonus added to Q-values of less-tried actions
 
+# Reward Structure
 rewards:
-  exploration_bonus: 5.0
-  success: 8.0
+  collision: -12.0
+  goal_reached: 1000.0
+  loop_penalty: -14.0
 
+# Environment Configuration
+environment:
+  steps: 200                   # Max steps per episode before termination
+
+# Training Configuration
 training:
-  episodes: 400
+  episodes: 250                # Default number of episodes per training run
+  save_every: 10               # Save the model every N episodes
+  test_episodes: 8
+  model_path: "models/q_agent.pkl"
 ```
 
-### Key Parameters
+## 📊 Analysis and Visualization
 
-| Parameter | Description | Default | Range |
-|-----------|-------------|---------|-------|
-| `agent.learning_rate` | Q-Learning update rate | 0.1 | 0.001-1.0 |
-| `agent.discount_factor` | Future reward importance | 0.95 | 0.0-1.0 |
-| `strategy.epsilon` | Random action probability | 0.8 | 0.0-1.0 |
-| `rewards.success` | Reward for successful move | 5.0 | Any float |
-| `training.episodes` | Number of training episodes | 200 | 1+ |
+The project includes a Jupyter Notebook for plotting and analyzing training performance.
 
-## 🎮 Usage Examples
+1.  **Launch Jupyter**:
+    ```bash
+    jupyter notebook
+    ```
+2.  **Open the Notebook**:
+    - Navigate to and open `logs/plot_training_reward.ipynb`.
+3.  **Run the Cells**:
+    - The notebook will automatically find all `.log` files, parse the rewards, and generate an interactive plot showing:
+      - Reward per episode.
+      - A moving average to visualize the learning trend.
 
-### Basic Training
-```bash
-# Start Godot simulation first
-# Open GodotProject/project.godot and run
+This is essential for understanding if the agent is consistently improving over time.
 
-# Run the Q-Learning system
-python main.py
+## 📁 Project Structure
 
-# Follow the interactive menu:
-# 1. Train - Start training
-# 2. Test - Evaluate agent
-# 3. Continue - Resume training
-# 4. Stats - View statistics
 ```
-
-### Configuration Management
-```bash
-# Edit configuration
-nano config.yaml
-
-# Change strategy
-sed -i 's/epsilon_greedy/ucb/' config.yaml
-
-# Run with modified config
-python main.py
+q-learning-maze-robot/
+├── config.yaml                    # Central configuration file
+├── main.py                        # Main entry point for the system
+├── README.md                      # This file
+├── requirements.txt               # Python dependencies
+├── GodotProject/                  # Godot Engine simulation project
+├── lib/                           # Shared libraries (DDS, system utilities)
+├── logs/                          # Stores training logs and analysis notebooks
+│   └── plot_training_reward.ipynb
+├── models/                        # Stores saved agent models (.pkl)
+├── robot/                         # Robot control and DDS interface
+│   └── robotic_agent.py
+└── src/                           # Core RL components
+    ├── agent.py                   # Q-Learning agent implementation
+    ├── environment.py             # Environment logic and reward calculation
+    ├── strategies.py              # Curiosity-driven exploration strategy
+    └── trainer.py                 # Training and testing orchestrator
 ```
-
-### Analysis and Visualization
-```bash
-# Start Jupyter for analysis
-jupyter notebook
-
-# Open analysis notebook
-# Navigate to notebooks/robot_testing.ipynb
-
-# Run cells to analyze training results
-```
-
-## 📊 Results and Analysis
-
-### Training Metrics
-
-The system tracks comprehensive metrics during training:
-
-- **Episode Rewards**: Total reward accumulated per episode
-- **Success Rate**: Percentage of episodes reaching the goal
-- **Steps per Episode**: Efficiency of navigation
-- **Exploration Coverage**: Number of unique states visited
-- **Strategy Parameters**: Evolution of exploration parameters
-
-### Visualization Tools
-
-#### Jupyter Notebook Analysis
-```bash
-jupyter notebook notebooks/robot_testing.ipynb
-```
-
-**Available Visualizations**:
-- Training progress plots
-- Success rate trends
-- Q-value distribution analysis
-- Robot trajectory visualization
-- Strategy comparison charts
-
-
-### Performance Benchmarks
-
-Typical performance metrics for a well-trained agent:
-| Metric | Epsilon-Greedy | UCB | Curiosity |
-|--------|----------------|-----|-----------|
-| Success Rate | - | - | - |
-| Average Steps | - | - | - |
-| Training Episodes | - | - | - |
-| Exploration Coverage | - | - | - |
-
-> **Note**: Results may vary based on maze complexity and configuration.
 
 ## 🤝 Contributing
 
-We welcome contributions to improve the Q-Learning Maze Robot project!
-
-### Contribution Guidelines
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Make** your changes following the coding standards
-4. **Add** tests for new functionality
-5. **Commit** changes: `git commit -m 'Add amazing feature'`
-6. **Push** to branch: `git push origin feature/amazing-feature`
-7. **Open** a Pull Request
-
-### Code Standards
-
-- **Python Style**: Follow PEP 8, use `black` for formatting
-- **Documentation**: Add docstrings for all public methods
-- **Type Hints**: Use type annotations where applicable
-- **Testing**: Write unit tests for new features
-
-### Areas for Contribution
-
-- 🧠 **New Exploration Strategies**: Implement novel RL exploration methods
-- 🎮 **Environment Variations**: Create new maze layouts or robot types
-- 📊 **Analysis Tools**: Enhanced visualization and metrics
-- 🚀 **Performance Optimization**: Speed up training and simulation
-- 📖 **Documentation**: Improve guides and examples
-
-### Reporting Issues
-
-Please use the [GitHub Issues](https://github.com/your-username/q-learning-maze-robot/issues) page to report:
-
-- 🐛 Bugs and errors
-- 💡 Feature requests
-- 📚 Documentation improvements
-- ❓ Questions and support requests
+Contributions are welcome! Whether it's a new feature, a bug fix, or improved documentation, please feel free to fork the repository and submit a pull request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Thanks to the Godot community for the excellent simulation engine
-- Inspired by classic reinforcement learning research
-- Built with love for the robotics and AI community
-
----
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

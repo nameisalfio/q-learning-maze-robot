@@ -17,7 +17,7 @@ def main():
     dds = DDS()
     time_obj = Time()
     
-    # --- INIZIO MODIFICHE PER ARGOMENTI DA RIGA DI COMANDO ---
+    # --- ARGOMENTI DA RIGA DI COMANDO ---
     parser = argparse.ArgumentParser(description="Q-Learning Maze Robot CLI")
     parser.add_argument(
         "--mode", 

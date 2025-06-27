@@ -96,9 +96,7 @@ class DiffDriveRoboticAgent:
         
         # Publish current position
         pose = self.robot.get_pose()
-        self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
-        self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
-        self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+        self._publish_pose(pose)
 
     def _backup_from_collision(self, start_pos, collision_pos):
         """Execute backup maneuver after collision."""
@@ -140,9 +138,7 @@ class DiffDriveRoboticAgent:
             
             # Publish position during backup
             pose = self.robot.get_pose()
-            self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+            self._publish_pose(pose)
 
             distance_to_target = math.sqrt((pose[0] - backup_target_x)**2 + (pose[1] - backup_target_y)**2)
             if distance_to_target < self.target_tolerance:
@@ -231,9 +227,7 @@ class DiffDriveRoboticAgent:
             
                 # Publish position
                 pose = self.robot.get_pose()
-                self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
+                self._publish_pose(pose)
 
                 # Check if target reached
                 distance_to_target = math.sqrt((pose[0] - target_x)**2 + (pose[1] - target_y)**2)
@@ -267,10 +261,7 @@ class DiffDriveRoboticAgent:
             if tmp_x < -4.0 or tmp_x > 90.0 or tmp_y > 4.50 or tmp_y < -78.0: 
                 return MoveResult.COLLISION, None # robot out of bounds, issue a timeout to avoid giving it a reward
 
-            self.dds.publish('X', tmp_x, DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Y', tmp_y, DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
-            self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
+            self._publish_pose([tmp_x, tmp_y, new_pose[2]])
             time.sleep(0.063) # a bit of delay to sync with Godot
 
             # Check for collision
@@ -280,10 +271,7 @@ class DiffDriveRoboticAgent:
                 #time.sleep(2)  # a bit of delay to sync with Godot
                 
                 # Execute backup and wait for completion
-                self.dds.publish('X', old_pose[0], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Y', old_pose[1], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Theta', old_pose[2], DDS.DDS_TYPE_FLOAT)
+                self._publish_pose(old_pose)
 
                 print("Collision resolved with backup procedure.")
                 time.sleep(0.012)
@@ -292,10 +280,7 @@ class DiffDriveRoboticAgent:
                 self.robot.x_r = new_pose[0]
                 self.robot.y_r = new_pose[1]
                 self.robot.theta_r = new_pose[2]
-                self.dds.publish('X', new_pose[0], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Y', new_pose[1], DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Z', 0.0, DDS.DDS_TYPE_FLOAT)
-                self.dds.publish('Theta', new_pose[2], DDS.DDS_TYPE_FLOAT)
+                self._publish_pose(new_pose)
                 time.sleep(0.063)  # a bit of delay to sync with Godot
             
             goal_reached = self.dds.read("GoalReached")
@@ -316,6 +301,12 @@ class DiffDriveRoboticAgent:
             # Movement completed successfully
             print(f"Movement completed successfully to ({target_x:.2f}, {target_y:.2f})")
             return MoveResult.SUCCESS, None
+
+    def _publish_pose(self, pose):
+        """Helper to publish robot's pose to DDS."""
+        self.dds.publish('X', pose[0], DDS.DDS_TYPE_FLOAT)
+        self.dds.publish('Y', pose[1], DDS.DDS_TYPE_FLOAT)
+        self.dds.publish('Theta', pose[2], DDS.DDS_TYPE_FLOAT)
 
     def get_current_position(self):
         """Get current robot position."""
