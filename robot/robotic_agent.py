@@ -59,17 +59,17 @@ class DiffDriveRoboticAgent:
         # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
-            _kp=2.0,
-            _ki=0.08,
+            _kp=1.0,
+            _ki=0.0,
             _kd=0.0,
-            _sat=13.0
+            _sat=10.0
         )
 
         self.robot = TwoWheelsCart2DEncodersOdometry(
             _mass=1.0,
             _radius=0.3,
-            _lin_friction=0.9,
-            _ang_friction=0.8,
+            _lin_friction=0.8,
+            _ang_friction=0.7,
             _r_traction_left=0.04,
             _r_traction_right=0.04,
             _traction_wheelbase=0.4,
@@ -81,8 +81,8 @@ class DiffDriveRoboticAgent:
 
         self.polar_controller = Polar2DController(
             KP_linear=1.4,
-            v_max=2.0,     
-            KP_heading=2.0,   
+            v_max=1.7,
+            KP_heading=2.0,
             w_max=2.0
         )
 
