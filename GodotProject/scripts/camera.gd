@@ -19,7 +19,7 @@ func _process(delta):
 		var desired_pos = Vector3(target_pos.x, target_pos.y + height, target_pos.z)
 		global_transform.origin = global_transform.origin.lerp(desired_pos, delta * smooth_speed)
 
-		# Zoom dinamico
+		# zoom tramite pulsanti + e - della tastiera, principalmente per debug
 		if Input.is_action_pressed("zoom_in"):
 			size = max(min_zoom, size - zoom_speed * delta)
 		elif Input.is_action_pressed("zoom_out"):

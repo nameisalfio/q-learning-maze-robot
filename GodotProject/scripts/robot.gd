@@ -41,6 +41,8 @@ func robot_position_move(delta):
 	if z == null:
 		z = 0
 	var theta = DDS.read("Theta")
+	
+	theRobot.global_rotation = Vector3(0.0, 0.0, 0.0)
 		
 	if (x != null) and (y != null) and (z != null) and (theta != null):
 		theRobot.global_position.x = x
@@ -52,10 +54,6 @@ func robot_position_move(delta):
 
 func _physics_process(_delta):
 	pass
-	#DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
-	#var mode = DDS.read("mode")
-	#if mode == 0:
-	#	robot_position_move(_delta)
 
 func _process(_delta):
 	# solo debug
@@ -72,9 +70,6 @@ func _process(_delta):
 	_edit_xy_text(theRobot.global_position.x,-theRobot.global_position.z)
 	
 	DDS.publish("tick", DDS.DDS_TYPE_FLOAT, _delta)
-	#var mode = DDS.read("mode")
-	#if mode == 1:
-	theRobot.global_rotation = Vector3(0.0, 0.0, 0.0)
 	robot_position_move(_delta)
 
 func _edit_xy_text(x, y):

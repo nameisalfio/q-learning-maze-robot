@@ -39,6 +39,7 @@ func _process(delta):
 				print("Checkpoint %s disattivato!" % name)
 			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, 0)
 			
+# GENERAZIONE LABIRINTO
 func generate_maze():
 	seed(9875)
 	maze = []
@@ -158,7 +159,8 @@ func _place_wall(position: Vector3, size: Vector3, material: Material):
 	wall_body.add_child(collider)
 
 	add_child(wall_body)
-
+	
+# GOAL AREA
 func create_goal_area(position: Vector3):
 	# Crea piattaforma su cui il robot può stare
 	var platform = StaticBody3D.new()
@@ -209,25 +211,8 @@ func _on_goal_area_entered(body, area):
 		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 1)
 		await get_tree().create_timer(0.3).timeout  # pausa non bloccante di 0.3s
 		DDS.publish("GoalReached", DDS.DDS_TYPE_INT, 0)
-		
-func _on_checkpoint_entered(body, area):
-	if body.is_in_group("robot"):
-		var name = area.get_meta("name")  # es: "checkpoint_1"
-
-		if not activated_checkpoints[name]:
-			activated_checkpoints[name] = true
-			var mat = area.get_meta("material")
-			mat.albedo_color = Color(0.4, 1.0, 0.4)  # verde acceso
-			print("Checkpoint %s attivato!" % name)
-
-			# Estrai numero del checkpoint (dopo "_")
-			var parts = name.split("_")
-			var checkpoint_num = int(parts[-1])  # prende l'ultimo elemento
-
-			print(checkpoint_num)
-			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, checkpoint_num)
-		
-		
+	
+# CHECKPOINTS	
 func create_checkpoint_area(index: int, position: Vector3):
 	var checkpoint_name = "checkpoint_%d" % index
 	activated_checkpoints[checkpoint_name] = false
@@ -272,3 +257,20 @@ func create_checkpoint_area(index: int, position: Vector3):
 
 	checkpoint_areas[checkpoint_name] = area
 	add_child(area)
+	
+func _on_checkpoint_entered(body, area):
+	if body.is_in_group("robot"):
+		var name = area.get_meta("name")  # es: "checkpoint_1"
+
+		if not activated_checkpoints[name]:
+			activated_checkpoints[name] = true
+			var mat = area.get_meta("material")
+			mat.albedo_color = Color(0.4, 1.0, 0.4)  # verde acceso
+			print("Checkpoint %s attivato!" % name)
+
+			# Estrai numero del checkpoint (dopo "_")
+			var parts = name.split("_")
+			var checkpoint_num = int(parts[-1])  # prende l'ultimo elemento
+
+			print(checkpoint_num)
+			DDS.publish("checkpoint_reached", DDS.DDS_TYPE_INT, checkpoint_num)
