@@ -15,7 +15,7 @@ class MazeEnvironment:
         self.config = config
         
         # Environment parameters
-        self.steps = config.get('environment.steps', 150)
+        self.steps = config.get('environment.steps', 100)
         
         # Reward configuration
         self.rewards = {
@@ -177,15 +177,15 @@ class MazeEnvironment:
         return max(pos_counts.values()) >= 3
     
     def _check_done(self, result: MoveResult) -> bool:
-        """Controlla se l'episodio deve terminare considerando min_steps."""
+        """Controlla se l'episodio deve terminare."""
         
-        # Goal raggiunto - termina sempre (indipendentemente da min_steps)
+        # Goal raggiunto - termina sempre
         if result == MoveResult.GOAL_REACHED:
             return True
         
-        # Dopo min_steps, usa le condizioni normali
+        # controlla se siamo arrivati alla fine degli step disponibili
         if self.steps_count >= self.steps:
-            print(f"⏱️ Episodio terminato: raggiunto max_steps ({self.steps})")
+            print(f"⏱️ Episodio terminato: raggiunto il numero massimo di step ({self.steps})")
             return True
         
         return False

@@ -29,7 +29,7 @@ class RLTrainer:
         strategy = create_strategy(self.config)
         self.agent = QLearningAgent(self.config, strategy)
         
-        self.model_path = self.config.get('training.model_path', 'models/q_agent.pkl')
+        self.model_path = str(self.config.get('training.model_path', 'models/q_agent.pkl'))
         
         # Verification logging
         self.logger.info(f"Strategy initialized: {type(strategy).__name__}")
@@ -41,16 +41,12 @@ class RLTrainer:
         save_every = save_every or self.config.get('training.save_every', 50)
         
         # Get environment parameters for display
-        min_steps = self.config.get('environment.min_steps', 75)
-        max_steps = self.config.get('environment.max_steps', 150)
         
         self.logger.info("=" * 80)
         self.logger.info("🚀 STARTING TRAINING SESSION")
         self.logger.info("=" * 80)
         self.logger.info(f"Episodes: {n_episodes}")
         self.logger.info(f"Strategy: {self.config.get('strategy.name', 'unknown')}")
-        self.logger.info(f"Min steps per episode: {min_steps}")
-        self.logger.info(f"Max steps per episode: {max_steps}")
         self.logger.info(f"Model path: {self.model_path}")
         self.logger.info("=" * 80)
         
@@ -66,13 +62,12 @@ class RLTrainer:
             'total_checkpoints': 0,
             'unique_checkpoints': set(),
             'checkpoint_episodes': 0,
-            'min_steps_reached': 0  
         }
         
         try:
             self.robot.set_train_mode()
             for episode in range(n_episodes):
-                self._print_episode_header(episode + 1, n_episodes, min_steps, max_steps)
+                self._print_episode_header(episode + 1, n_episodes)
                 
                 # Reset environment for new episode
                 state = self.environment.reset()
@@ -102,10 +97,6 @@ class RLTrainer:
                 
                 # Episode completed statistics
                 steps_taken = info['steps']
-                min_steps_reached = steps_taken >= min_steps
-                if min_steps_reached:
-                    checkpoint_stats['min_steps_reached'] += 1
-                
                 self.agent.episode_rewards.append(total_reward)
                 self.agent.episode_steps.append(steps_taken)
                 success = (info['result'] == MoveResult.GOAL_REACHED)
@@ -125,10 +116,12 @@ class RLTrainer:
                 
                 # Enhanced episode summary
                 self._print_episode_summary(episode + 1, info, total_reward, max_streak, 
-                                          episode_checkpoints, min_steps_reached, min_steps)
+                                          episode_checkpoints)
                 
                 # Periodic model saving and stats
                 if (episode + 1) % save_every == 0:
+                    model_path_with_number = self.model_path.split(".")[0] + f"_{episode+1}" + self.model_path.split(".")[1]
+                    self.agent.save_model(model_path_with_number)
                     self.agent.save_model(self.model_path)
                     self._print_stats_with_checkpoints(checkpoint_stats, episode + 1)
                     
@@ -163,8 +156,6 @@ class RLTrainer:
         
         successes = 0
         total_steps = 0
-        min_steps = self.config.get('environment.min_steps', 75)
-        min_steps_achieved = 0
         
         try:
             for episode in range(n_episodes):
@@ -188,23 +179,18 @@ class RLTrainer:
                         print(f"   Step {step_count}: Position {info['position'][:2]}")
                 
                 total_steps += info['steps']
-                steps_achieved_min = info['steps'] >= min_steps
-                if steps_achieved_min:
-                    min_steps_achieved += 1
                 
                 if info['result'] == MoveResult.GOAL_REACHED:
                     successes += 1
                     print(f"✅ Goal reached in {info['steps']} steps!")
                 else:
-                    status = "Min steps achieved" if steps_achieved_min else "Short episode"
-                    print(f"⚠️ Test incomplete: {info['result'].value} ({status})")
+                    print(f"⚠️ Test incomplete: {info['result'].value}")
             
         finally:
             print(f"\n📊 TEST RESULTS:")
             print("=" * 50)
             self.logger.info(f"Success rate: {successes}/{n_episodes} ({successes/n_episodes:.1%})")
             self.logger.info(f"Average steps: {total_steps/n_episodes:.1f}")
-            self.logger.info(f"Min steps achieved: {min_steps_achieved}/{n_episodes} ({min_steps_achieved/n_episodes:.1%})")
             print("=" * 50)
     
     def show_stats(self):
@@ -217,8 +203,7 @@ class RLTrainer:
         else:
             self.logger.error("No trained model found!")
     
-    def _print_episode_header(self, episode_num: int, total_episodes: int, 
-                            min_steps: int, max_steps: int):
+    def _print_episode_header(self, episode_num: int, total_episodes: int):
         """Print formatted episode header with strategy information."""
         
         # Get current strategy info
@@ -234,17 +219,10 @@ class RLTrainer:
         # Strategy-specific details
         if strategy_name == 'curiosity':
             states_discovered = strategy_info.get('states_discovered', 0)
-            base_epsilon = strategy_info.get('base_epsilon', 0.0)
+            base_epsilon = strategy_info.get('epsilon', 0.7)
             print(f"🧠 Curiosity Details: Base ε={base_epsilon:.3f} | States Discovered: {states_discovered}")
-        elif strategy_name == 'epsilon_greedy':
-            epsilon = strategy_info.get('epsilon', 0.0)
-            print(f"🎲 Epsilon-Greedy Details: Current ε={epsilon:.3f}")
-        elif strategy_name == 'ucb':
-            ucb_factor = strategy_info.get('ucb_factor', 0.0)
-            print(f"🎯 UCB Details: Factor={ucb_factor:.1f}")
         
         # Episode requirements
-        print(f"📏 Episode Requirements: Min={min_steps} steps | Max={max_steps} steps")
         print(f"🎮 Starting position: (0.0, 0.0)")
         print(f"{'-' * 100}")
         
@@ -252,24 +230,16 @@ class RLTrainer:
         self.logger.info(f"Episode {episode_num}/{total_episodes} started - Strategy: {strategy_name}")
     
     def _print_episode_summary(self, episode_num: int, info: dict, total_reward: float,
-                             max_streak: int, episode_checkpoints: list, 
-                             min_steps_reached: bool, min_steps: int):
+                             max_streak: int, episode_checkpoints: list):
         """Print comprehensive episode summary."""
         
         steps_taken = info['steps']
         result = info['result']
         
-        # Choose symbol based on result and min_steps
+        # Choose symbol based on result
         if result == MoveResult.GOAL_REACHED:
             symbol = "🏆"
             status = "GOAL REACHED"
-        elif min_steps_reached:
-            if episode_checkpoints:
-                symbol = "📍"
-                status = "MIN_STEPS + CHECKPOINTS"
-            else:
-                symbol = "✅"
-                status = "MIN_STEPS REACHED"
         else:
             if episode_checkpoints:
                 symbol = "🔶"
@@ -282,7 +252,7 @@ class RLTrainer:
         summary_line = "-" * 100
         print(f"{summary_line}")
         print(f"{symbol} EPISODE {episode_num} COMPLETED | Status: {status}")
-        print(f"📊 Reward: {total_reward:6.1f} | Steps: {steps_taken:3d}/{min_steps} | Max Streak: {max_streak}")
+        print(f"📊 Reward: {total_reward:6.1f} | Steps: {steps_taken:3d} | Max Streak: {max_streak}")
         
         # Checkpoint info
         if episode_checkpoints:
@@ -291,13 +261,11 @@ class RLTrainer:
         
         # Performance indicators
         performance_indicators = []
-        if min_steps_reached:
-            performance_indicators.append("✅ Min Steps")
         if episode_checkpoints:
             performance_indicators.append(f"📍 {len(set(episode_checkpoints))} Checkpoints")
-        if max_streak >= 5:
+        if max_streak >= 30:
             performance_indicators.append(f"🔥 {max_streak} Streak")
-        if info['total_collisions'] <= 3:
+        if info['total_collisions'] <= 40:
             performance_indicators.append("🛡️ Low Collisions")
         
         if performance_indicators:
@@ -310,16 +278,13 @@ class RLTrainer:
                         f"Reward: {total_reward:.1f} | Steps: {steps_taken}")
     
     def _print_stats_with_checkpoints(self, checkpoint_stats: dict, episodes_completed: int):
-        """Print training statistics including checkpoint and min_steps information."""
+        """Print training statistics including checkpoint information."""
         if not self.agent.episode_rewards:
             return
         
         recent_rewards = self.agent.episode_rewards[-50:]
         recent_steps = self.agent.episode_steps[-50:]
         recent_success = self.agent.success_episodes[-50:]
-        
-        min_steps = self.config.get('environment.min_steps', 75)
-        recent_min_steps = sum(1 for steps in recent_steps if steps >= min_steps)
         
         print("\n" + "=" * 80)
         print("📊 TRAINING STATISTICS")
@@ -328,7 +293,6 @@ class RLTrainer:
         self.logger.info(f"Average reward (last 50): {np.mean(recent_rewards):.2f}")
         self.logger.info(f"Average steps (last 50): {np.mean(recent_steps):.1f}")
         self.logger.info(f"Success rate (last 50): {sum(recent_success)/len(recent_success):.1%}")
-        self.logger.info(f"Min steps achieved (last 50): {recent_min_steps}/50 ({recent_min_steps/50:.1%})")
         self.logger.info(f"States explored: {len(self.agent.q_table)}")
         
         # Checkpoint statistics
@@ -337,7 +301,6 @@ class RLTrainer:
         self.logger.info(f"Total checkpoints reached: {checkpoint_stats['total_checkpoints']}")
         self.logger.info(f"Unique checkpoints discovered: {len(checkpoint_stats['unique_checkpoints'])}")
         self.logger.info(f"Episodes with checkpoints: {checkpoint_stats['checkpoint_episodes']}/{episodes_completed}")
-        self.logger.info(f"Episodes reaching min_steps: {checkpoint_stats['min_steps_reached']}/{episodes_completed}")
         
         if checkpoint_stats['unique_checkpoints']:
             self.logger.info(f"Checkpoint values found: {sorted(checkpoint_stats['unique_checkpoints'])}")
@@ -358,11 +321,9 @@ class RLTrainer:
             if total_episodes > 0:
                 checkpoint_discovery_rate = len(checkpoint_stats['unique_checkpoints']) / total_episodes
                 checkpoint_frequency = checkpoint_stats['total_checkpoints'] / total_episodes
-                min_steps_rate = checkpoint_stats['min_steps_reached'] / total_episodes
                 
                 self.logger.info(f"  Checkpoint discovery rate: {checkpoint_discovery_rate:.3f} unique/episode")
                 self.logger.info(f"  Checkpoint frequency: {checkpoint_frequency:.3f} checkpoints/episode")
-                self.logger.info(f"  Min steps achievement rate: {min_steps_rate:.1%}")
                 
                 if checkpoint_stats['unique_checkpoints']:
                     best_checkpoint = max(checkpoint_stats['unique_checkpoints'])

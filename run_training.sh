@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python main.py --mode continue --episodes 3000
+python main.py --mode train --episodes 10000

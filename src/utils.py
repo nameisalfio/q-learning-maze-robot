@@ -23,10 +23,10 @@ class Config:
     def _get_defaults(self) -> Dict[str, Any]:
         """Default configuration as fallback."""
         return {
-            'agent': {'learning_rate': 0.1, 'discount_factor': 0.95},
-            'strategy': {'name': 'epsilon_greedy', 'epsilon': 0.8},
-            'environment': {'max_steps': 100},
-            'training': {'episodes': 200, 'model_path': 'models/q_agent.pkl'}
+            'agent': {'learning_rate': 0.15, 'discount_factor': 0.98},
+            'strategy': {'name': 'curiosity', 'epsilon': 0.7},
+            'environment': {'steps': 100},
+            'training': {'episodes': 10000, 'model_path': 'models/q_agent.pkl'}
         }
     
     def get(self, key_path: str, default=None):

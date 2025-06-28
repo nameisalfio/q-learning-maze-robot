@@ -262,15 +262,13 @@ class DiffDriveRoboticAgent:
                 return MoveResult.COLLISION, None # robot out of bounds, issue a timeout to avoid giving it a reward
 
             self._publish_pose([tmp_x, tmp_y, new_pose[2]])
-            time.sleep(0.063) # a bit of delay to sync with Godot
+            time.sleep(0.052) # a bit of delay to sync with Godot
 
             # Check for collision
             collision = self.dds.read("Collision")
             if collision == 1:
                 print(f"\033[91mCollision detected! Status: {collision}.\033[0m")
-                #time.sleep(2)  # a bit of delay to sync with Godot
-                
-                # Execute backup and wait for completion
+                # esegui backup verso la posa precedente
                 self._publish_pose(old_pose)
 
                 print("Collision resolved with backup procedure.")
@@ -281,7 +279,7 @@ class DiffDriveRoboticAgent:
                 self.robot.y_r = new_pose[1]
                 self.robot.theta_r = new_pose[2]
                 self._publish_pose(new_pose)
-                time.sleep(0.063)  # a bit of delay to sync with Godot
+                time.sleep(0.052)  # a bit of delay to sync with Godot
             
             goal_reached = self.dds.read("GoalReached")
             if goal_reached == 1:
