@@ -46,10 +46,10 @@ class MoveResult(Enum):
 class DiffDriveRoboticAgent:
     """Differential drive robot agent for maze navigation."""
     
-    def __init__(self, dds, time):
+    def __init__(self, dds, time, fast_mode: bool = True):
         self.time = time
         self.dds = dds
-        self.mode = "train" # 'test' or 'train'
+        self.fast_mode = fast_mode # Nuovo attributo per controllare il movimento
 
         # Initialize DDS communication
         self.dds.start()
@@ -182,7 +182,7 @@ class DiffDriveRoboticAgent:
         max_iterations = 1500 * times
         iteration = 0
 
-        if self.mode == "test":
+        if not self.fast_mode: # Modalità FISICA REALE
             self.dds.wait('tick')
             while iteration < max_iterations:
                 godot_delta = self.dds.read('tick')
@@ -254,7 +254,7 @@ class DiffDriveRoboticAgent:
             self.stop_robot()
             return MoveResult.SUCCESS, None
 
-        if self.mode == "train":
+        if self.fast_mode: # Modalità VELOCE
             time.sleep(0.011)  # slight delay to sync with Godot
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
@@ -321,13 +321,3 @@ class DiffDriveRoboticAgent:
         self.dds.publish('Y', 0.0, DDS.DDS_TYPE_FLOAT)
         self.dds.publish('Theta', 0.0, DDS.DDS_TYPE_FLOAT)
         print("Robot state reset.")
-
-    def set_test_mode(self):
-        """Set robot to test mode."""
-        self.mode = "test"
-        self.dds.publish('mode', 0, DDS.DDS_TYPE_INT)  # 0 = test, 1 = train
-
-    def set_train_mode(self):
-        """Set robot to train mode."""
-        self.mode = "train"
-        self.dds.publish('mode', 1, DDS.DDS_TYPE_INT)

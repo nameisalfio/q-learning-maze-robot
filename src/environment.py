@@ -127,24 +127,26 @@ class MazeEnvironment:
     def _calculate_reward(self, result: MoveResult, checkpoint_value=None) -> float:
         """Calculate rewards."""
         
+        # Rende ogni passo leggermente costoso, incentivando l'efficienza.
+        total_reward = -1.0  # Inizia con una piccola penalità per ogni mossa.
+
         # === BASE REWARD ===
         base_rewards = {
             MoveResult.COLLISION: self.rewards[MoveResult.COLLISION], 
             MoveResult.GOAL_REACHED: self.rewards[MoveResult.GOAL_REACHED],
-            MoveResult.CHECKPOINT_REACHED: self.rewards.get(MoveResult.CHECKPOINT_REACHED, 50.0)  # New reward for checkpoint
         }
         
-        total_reward = base_rewards.get(result, 0.0)
+        total_reward += base_rewards.get(result, 0.0)
         
-        # === CHECKPOINT SYSTEM - VERY HIGH REWARD ===
+        # === CHECKPOINT SYSTEM - MODIFICATO ===
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
-            # Progressive reward for different checkpoints
-            checkpoint_bonus = self.checkpoint_bonuses[checkpoint_value]  # Base reward + bonus for checkpoint
+            # Il bonus ora è più significativo perché parte da una base negativa.
+            checkpoint_bonus = self.checkpoint_bonuses[checkpoint_value]
             total_reward += checkpoint_bonus
             
-            # Extra bonus if checkpoint is reached with a long streak
+            # Aumenta il bonus per la striscia di successi
             if self.consecutive_success_moves >= 5:
-                total_reward += 50.0
+                total_reward += 75.0 # Aumentato da 50.0
             print(f"🎯 CHECKPOINT {checkpoint_value} REACHED! Bonus: {checkpoint_bonus:.1f}, Total reward: {total_reward:.1f}")
         
         # === GOAL BONUS WITH CHECKPOINT ===

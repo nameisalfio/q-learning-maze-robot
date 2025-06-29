@@ -10,13 +10,6 @@ import argparse
 
 def main():
     """Main entry point for Q-Learning Maze Robot system."""
-    config = Config()
-    logger = Logger(log_level=config.get('experiment.log_level', 'INFO'))
-    
-    # Initialize robot system
-    dds = DDS()
-    time_obj = Time()
-    
     # --- ARGOMENTI DA RIGA DI COMANDO ---
     parser = argparse.ArgumentParser(description="Q-Learning Maze Robot CLI")
     parser.add_argument(
@@ -34,11 +27,36 @@ def main():
         type=int, 
         help="Number of episodes for testing"
     )
+    # --- NUOVO ARGOMENTO ---
+    parser.add_argument(
+        "--fast",
+        action='store_true',
+        help="Enable fast mode (no physics) for both training and testing."
+    )
     
     args = parser.parse_args()
 
+    config = Config()
+    logger = Logger(log_level=config.get('experiment.log_level', 'INFO'))
+    
+    # Initialize robot system
+    dds = DDS()
+    time_obj = Time()
+
     try:
-        trainer = RLTrainer(dds, time_obj)
+        # --- LOGICA PER DETERMINARE LA MODALITÀ SPOSTATA QUI ---
+        fast_mode = False
+        if args.fast:
+            # Se --fast è specificato, la modalità veloce è sempre attiva.
+            fast_mode = True
+        elif not args.mode:
+            # Se siamo in modalità interattiva (nessun --mode specificato), chiedi all'utente.
+            fast_choice = input("Use FAST mode (no physics)? [Y/n]: ").strip().lower()
+            fast_mode = fast_choice != 'n'
+        # Se siamo in modalità CLI senza --fast, fast_mode rimane False (modalità fisica).
+
+        # --- PASSA IL VALORE FINALE AL TRAINER ---
+        trainer = RLTrainer(dds, time_obj, fast_mode=fast_mode)
         
         # --- LOGICA PER GESTIRE MODALITÀ CLI O INTERATTIVA ---
         if args.mode:

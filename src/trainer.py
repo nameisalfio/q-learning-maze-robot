@@ -14,15 +14,18 @@ from lib.dds.dds import DDS
 class RLTrainer:
     """Main trainer for Q-Learning maze navigation with enhanced episode formatting."""
     
-    def __init__(self, dds, time_obj, config_path: str = "config.yaml"):
+    def __init__(self, dds, time_obj, fast_mode: bool, config_path: str = "config.yaml"):
         """Initialize the RL trainer with all necessary components."""
         self.dds = dds
         self.time = time_obj
-        self.config = Config(config_path)  # IMPORTANTE: Inizializza config qui
+        self.config = Config(config_path)
         self.logger = Logger(log_level=self.config.get('experiment.log_level', 'INFO'))
         
+        self.fast_mode = fast_mode
+        self.logger.info(f"Movement Mode: {'FAST (Teleport)' if self.fast_mode else 'REAL (Physics)'}")
+
         # Initialize system components
-        self.robot = DiffDriveRoboticAgent(dds, time_obj)
+        self.robot = DiffDriveRoboticAgent(dds, time_obj, fast_mode=self.fast_mode)
         self.environment = MazeEnvironment(self.robot, self.config)
         
         # Create strategy UNA VOLTA
@@ -65,7 +68,7 @@ class RLTrainer:
         }
         
         try:
-            self.robot.set_train_mode()
+            # RIMOSSO: self.robot.set_train_mode()
             for episode in range(n_episodes):
                 self._print_episode_header(episode + 1, n_episodes)
                 
@@ -120,7 +123,7 @@ class RLTrainer:
                 
                 # Periodic model saving and stats
                 if (episode + 1) % save_every == 0:
-                    model_path_with_number = self.model_path.split(".")[0] + f"_{episode+1}" + self.model_path.split(".")[1]
+                    model_path_with_number = self.model_path.split(".")[0] + f"_{episode+1}." + self.model_path.split(".")[1]
                     self.agent.save_model(model_path_with_number)
                     self.agent.save_model(self.model_path)
                     self._print_stats_with_checkpoints(checkpoint_stats, episode + 1)
@@ -135,7 +138,7 @@ class RLTrainer:
     def test(self, n_episodes: int = None):
         """Test the trained agent with strategy display."""
         n_episodes = n_episodes or self.config.get('training.test_episodes', 5)
-        self.robot.set_test_mode()
+        # RIMOSSO: self.robot.set_test_mode()
         
         print("\n" + "=" * 80)
         print("🧪 TESTING MODE")
@@ -159,7 +162,7 @@ class RLTrainer:
         
         try:
             for episode in range(n_episodes):
-                self.robot.set_test_mode()
+                # RIMOSSO: self.robot.set_test_mode()
                 
                 print(f"\n🧪 TEST EPISODE {episode + 1}/{n_episodes}")
                 print("-" * 50)

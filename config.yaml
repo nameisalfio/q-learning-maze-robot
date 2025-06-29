@@ -14,7 +14,7 @@ agent:
 strategy:
   name: "curiosity"
   epsilon: 0.7
-  novelty_bonus: 8.0        
+  novelty_bonus: 15.0   
 
 # Reward Structure
 rewards:
@@ -24,7 +24,7 @@ rewards:
 
 # Environment Configuration
 environment:
-  steps: 150
+  steps: 200
 
   checkpoint:
     base_bonus: 100.0
