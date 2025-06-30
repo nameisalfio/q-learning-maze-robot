@@ -10,7 +10,6 @@ import argparse
 
 def main():
     """Main entry point for Q-Learning Maze Robot system."""
-    # --- ARGOMENTI DA RIGA DI COMANDO ---
     parser = argparse.ArgumentParser(description="Q-Learning Maze Robot CLI")
     parser.add_argument(
         "--mode", 
@@ -20,14 +19,8 @@ def main():
     parser.add_argument(
         "--episodes", 
         type=int, 
-        help="Number of episodes for training or continuing"
+        help="Number of episodes"
     )
-    parser.add_argument(
-        "--test_episodes", 
-        type=int, 
-        help="Number of episodes for testing"
-    )
-    # --- NUOVO ARGOMENTO ---
     parser.add_argument(
         "--fast",
         action='store_true',
@@ -44,7 +37,7 @@ def main():
         elif args.mode == "test":
             session_type = "testing"
         else:
-            session_type = args.mode # es. 'stats'
+            session_type = args.mode
 
     logger = Logger(
         log_level=config.get('experiment.log_level', 'INFO'), 
@@ -67,7 +60,6 @@ def main():
             fast_mode = fast_choice != 'n'
         # Se siamo in modalità CLI senza --fast, fast_mode rimane False (modalità fisica).
 
-        # --- PASSA IL VALORE FINALE AL TRAINER ---
         trainer = RLTrainer(dds, time_obj, fast_mode=fast_mode)
         
         # --- LOGICA PER GESTIRE MODALITÀ CLI O INTERATTIVA ---
@@ -78,7 +70,7 @@ def main():
                 logger.info(f"Training for {num_episodes} episodes.")
                 trainer.train(n_episodes=num_episodes)
             elif args.mode == "test":
-                num_test_episodes = args.test_episodes if args.test_episodes is not None else config.get('training.test_episodes', 5)
+                num_test_episodes = args.episodes if args.episodes is not None else config.get('test_episodes', 5)
                 logger.info(f"Testing for {num_test_episodes} episodes.")
                 trainer.test(n_episodes=num_test_episodes)
             elif args.mode == "continue":

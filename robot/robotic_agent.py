@@ -59,7 +59,7 @@ class DiffDriveRoboticAgent:
         # Control systems
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
-            _kp=1.0,
+            _kp=1.3,
             _ki=5.0,
             _kd=0.0,
             _sat=10.0
@@ -160,7 +160,7 @@ class DiffDriveRoboticAgent:
         time.sleep(0.052) # leggero delay per sincronizzazione con Godot
 
         # Initialize motion planning
-        self.virtual_robot = StraightLine2DMotion(2.0, 2.5, 2.5)
+        self.virtual_robot = StraightLine2DMotion(2.5, 3.0, 3.0)
 
         current_pose = self.robot.get_pose()
         start_x = tmp_x = current_pose[0]

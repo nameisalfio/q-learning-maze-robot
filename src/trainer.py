@@ -1,5 +1,3 @@
-# SOSTITUISCI COMPLETAMENTE src/trainer.py
-
 import numpy as np
 import sys
 import os
@@ -9,7 +7,6 @@ from .agent import QLearningAgent
 from .environment import MazeEnvironment
 from .strategies import create_strategy
 from .utils import Config, Logger
-from lib.dds.dds import DDS
 
 class RLTrainer:
     """Main trainer for Q-Learning maze navigation with enhanced episode formatting."""
@@ -165,6 +162,7 @@ class RLTrainer:
                 print("-" * 50)
                 
                 state = self.environment.reset()
+                self.environment.reset_checkpoints()
                 done = False
                 step_count = 0
                 
@@ -179,7 +177,6 @@ class RLTrainer:
                         print(f"   Step {step_count}: Position {info['position'][:2]}")
                 
                 total_steps += info['steps']
-                self.environment.reset_checkpoints()
                 
                 if info['result'] == MoveResult.GOAL_REACHED:
                     successes += 1

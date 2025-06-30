@@ -67,9 +67,16 @@ class MazeEnvironment:
         print("Checkpoints reset.")
 
     def get_state(self) -> Tuple[float, float]:
-        """Get (x,y) state representation."""
+        """
+        Get a discretized (x,y) state representation.
+        This is crucial for bridging the gap between continuous real-mode
+        physics and discrete fast-mode training.
+        """
         x, y, _ = self.robot.get_current_position()
-        return x, y
+        discretized_x = round(x, 1)
+        discretized_y = round(y, 1)
+        
+        return discretized_x, discretized_y
 
     def step(self, action: int) -> Tuple[Tuple, float, bool, Dict]:
         """Execute action and return environment response with checkpoint support."""
