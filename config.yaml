@@ -13,14 +13,14 @@ agent:
 # Exploration Strategy Configuration
 strategy:
   name: "curiosity"
-  epsilon: 0.65
+  epsilon: 0.6
   novelty_bonus: 8.0
 
 # Reward Structure
 rewards:
-  collision: -14.0                 
+  collision: -13.0                 
   goal_reached: 1000.0           
-  loop_penalty: -14.0
+  loop_penalty: -13.0
 
 # Environment Configuration
 environment:
