@@ -1,0 +1,184 @@
+2025-06-23 11:35:27,357 - INFO - Strategy initialized: CuriosityStrategy
+2025-06-23 11:35:27,357 - INFO - Strategy info: {'base_epsilon': 0.65, 'novelty_bonus': 5.0, 'states_discovered': 0}
+2025-06-23 11:35:27,357 - INFO - CLI mode selected: continue
+2025-06-23 11:35:27,358 - INFO - Continuing training for 50 additional episodes.
+2025-06-23 11:35:27,358 - INFO - ================================================================================
+2025-06-23 11:35:27,358 - INFO - 🚀 STARTING TRAINING SESSION
+2025-06-23 11:35:27,358 - INFO - ================================================================================
+2025-06-23 11:35:27,358 - INFO - Episodes: 50
+2025-06-23 11:35:27,358 - INFO - Strategy: curiosity
+2025-06-23 11:35:27,358 - INFO - Min steps per episode: 100
+2025-06-23 11:35:27,358 - INFO - Max steps per episode: 200
+2025-06-23 11:35:27,358 - INFO - Model path: models/q_agent.pkl
+2025-06-23 11:35:27,358 - INFO - ================================================================================
+2025-06-23 11:35:27,369 - INFO - 🔗 Connected to Godot simulation!
+2025-06-23 11:35:27,369 - INFO - Episode 1/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:36:04,501 - INFO - 📍 Episode 1: MIN_STEPS + CHECKPOINTS | Reward: -2972.0 | Steps: 200
+2025-06-23 11:36:04,501 - INFO - Episode 2/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:36:40,505 - INFO - 📍 Episode 2: MIN_STEPS + CHECKPOINTS | Reward: -3844.0 | Steps: 200
+2025-06-23 11:36:40,505 - INFO - Episode 3/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:37:17,460 - INFO - 📍 Episode 3: MIN_STEPS + CHECKPOINTS | Reward: -3967.0 | Steps: 200
+2025-06-23 11:37:17,461 - INFO - Episode 4/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:37:54,725 - INFO - 📍 Episode 4: MIN_STEPS + CHECKPOINTS | Reward: -2548.0 | Steps: 200
+2025-06-23 11:37:54,725 - INFO - Episode 5/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:38:32,129 - INFO - 📍 Episode 5: MIN_STEPS + CHECKPOINTS | Reward: -3224.0 | Steps: 200
+2025-06-23 11:38:32,130 - INFO - Episode 6/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:39:09,029 - INFO - 📍 Episode 6: MIN_STEPS + CHECKPOINTS | Reward: -3559.0 | Steps: 200
+2025-06-23 11:39:09,030 - INFO - Episode 7/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:39:46,174 - INFO - 📍 Episode 7: MIN_STEPS + CHECKPOINTS | Reward: -2969.0 | Steps: 200
+2025-06-23 11:39:46,175 - INFO - Episode 8/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:40:23,198 - INFO - 📍 Episode 8: MIN_STEPS + CHECKPOINTS | Reward: -2855.0 | Steps: 200
+2025-06-23 11:40:23,200 - INFO - Episode 9/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:41:02,350 - INFO - 📍 Episode 9: MIN_STEPS + CHECKPOINTS | Reward: -3652.0 | Steps: 200
+2025-06-23 11:41:02,351 - INFO - Episode 10/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:41:41,905 - INFO - 📍 Episode 10: MIN_STEPS + CHECKPOINTS | Reward: -2428.0 | Steps: 200
+2025-06-23 11:41:41,911 - INFO - Episodes completed: 10
+2025-06-23 11:41:41,912 - INFO - Average reward (last 50): -2844.41
+2025-06-23 11:41:41,913 - INFO - Average steps (last 50): 199.3
+2025-06-23 11:41:41,913 - INFO - Success rate (last 50): 2.0%
+2025-06-23 11:41:41,913 - INFO - Min steps achieved (last 50): 50/50 (100.0%)
+2025-06-23 11:41:41,913 - INFO - States explored: 65
+2025-06-23 11:41:41,913 - INFO - Total checkpoints reached: 28
+2025-06-23 11:41:41,913 - INFO - Unique checkpoints discovered: 4
+2025-06-23 11:41:41,913 - INFO - Episodes with checkpoints: 10/10
+2025-06-23 11:41:41,913 - INFO - Episodes reaching min_steps: 10/10
+2025-06-23 11:41:41,913 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-23 11:41:41,913 - INFO - Episode 11/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:42:21,909 - INFO - 📍 Episode 11: MIN_STEPS + CHECKPOINTS | Reward: -2122.0 | Steps: 200
+2025-06-23 11:42:21,910 - INFO - Episode 12/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:43:01,196 - INFO - 📍 Episode 12: MIN_STEPS + CHECKPOINTS | Reward: -2495.0 | Steps: 200
+2025-06-23 11:43:01,197 - INFO - Episode 13/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:43:40,233 - INFO - 📍 Episode 13: MIN_STEPS + CHECKPOINTS | Reward: -3424.0 | Steps: 200
+2025-06-23 11:43:40,235 - INFO - Episode 14/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:44:18,042 - INFO - 📍 Episode 14: MIN_STEPS + CHECKPOINTS | Reward: -3280.0 | Steps: 200
+2025-06-23 11:44:18,042 - INFO - Episode 15/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:44:56,897 - INFO - 📍 Episode 15: MIN_STEPS + CHECKPOINTS | Reward: -3838.0 | Steps: 200
+2025-06-23 11:44:56,899 - INFO - Episode 16/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:45:36,786 - INFO - 📍 Episode 16: MIN_STEPS + CHECKPOINTS | Reward: -1880.0 | Steps: 200
+2025-06-23 11:45:36,787 - INFO - Episode 17/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:46:15,938 - INFO - 📍 Episode 17: MIN_STEPS + CHECKPOINTS | Reward: -2753.0 | Steps: 200
+2025-06-23 11:46:15,939 - INFO - Episode 18/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:46:55,320 - INFO - 📍 Episode 18: MIN_STEPS + CHECKPOINTS | Reward: -2930.0 | Steps: 200
+2025-06-23 11:46:55,322 - INFO - Episode 19/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:47:34,526 - INFO - 📍 Episode 19: MIN_STEPS + CHECKPOINTS | Reward: -2212.0 | Steps: 200
+2025-06-23 11:47:34,526 - INFO - Episode 20/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:48:13,703 - INFO - 📍 Episode 20: MIN_STEPS + CHECKPOINTS | Reward: -2500.0 | Steps: 200
+2025-06-23 11:48:13,706 - INFO - Episodes completed: 20
+2025-06-23 11:48:13,707 - INFO - Average reward (last 50): -2878.73
+2025-06-23 11:48:13,707 - INFO - Average steps (last 50): 199.3
+2025-06-23 11:48:13,707 - INFO - Success rate (last 50): 2.0%
+2025-06-23 11:48:13,707 - INFO - Min steps achieved (last 50): 50/50 (100.0%)
+2025-06-23 11:48:13,707 - INFO - States explored: 65
+2025-06-23 11:48:13,707 - INFO - Total checkpoints reached: 60
+2025-06-23 11:48:13,707 - INFO - Unique checkpoints discovered: 4
+2025-06-23 11:48:13,708 - INFO - Episodes with checkpoints: 20/20
+2025-06-23 11:48:13,708 - INFO - Episodes reaching min_steps: 20/20
+2025-06-23 11:48:13,708 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-23 11:48:13,708 - INFO - Episode 21/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:48:52,786 - INFO - 📍 Episode 21: MIN_STEPS + CHECKPOINTS | Reward: -3808.0 | Steps: 200
+2025-06-23 11:48:52,786 - INFO - Episode 22/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:49:31,568 - INFO - 📍 Episode 22: MIN_STEPS + CHECKPOINTS | Reward: -2719.0 | Steps: 200
+2025-06-23 11:49:31,569 - INFO - Episode 23/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:50:10,328 - INFO - 📍 Episode 23: MIN_STEPS + CHECKPOINTS | Reward: -3847.0 | Steps: 200
+2025-06-23 11:50:10,329 - INFO - Episode 24/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:50:48,549 - INFO - 📍 Episode 24: MIN_STEPS + CHECKPOINTS | Reward: -2281.0 | Steps: 200
+2025-06-23 11:50:48,550 - INFO - Episode 25/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:51:27,755 - INFO - 📍 Episode 25: MIN_STEPS + CHECKPOINTS | Reward: -2755.0 | Steps: 200
+2025-06-23 11:51:27,756 - INFO - Episode 26/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:52:07,390 - INFO - 📍 Episode 26: MIN_STEPS + CHECKPOINTS | Reward: -2173.0 | Steps: 200
+2025-06-23 11:52:07,393 - INFO - Episode 27/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:52:44,706 - INFO - 📍 Episode 27: MIN_STEPS + CHECKPOINTS | Reward: -3574.0 | Steps: 200
+2025-06-23 11:52:44,707 - INFO - Episode 28/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:53:23,501 - INFO - 📍 Episode 28: MIN_STEPS + CHECKPOINTS | Reward: -2791.0 | Steps: 200
+2025-06-23 11:53:23,502 - INFO - Episode 29/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:54:02,035 - INFO - 📍 Episode 29: MIN_STEPS + CHECKPOINTS | Reward: -2147.0 | Steps: 200
+2025-06-23 11:54:02,036 - INFO - Episode 30/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:54:40,562 - INFO - 📍 Episode 30: MIN_STEPS + CHECKPOINTS | Reward: -3626.0 | Steps: 200
+2025-06-23 11:54:40,567 - INFO - Episodes completed: 30
+2025-06-23 11:54:40,568 - INFO - Average reward (last 50): -2843.83
+2025-06-23 11:54:40,568 - INFO - Average steps (last 50): 199.3
+2025-06-23 11:54:40,568 - INFO - Success rate (last 50): 2.0%
+2025-06-23 11:54:40,568 - INFO - Min steps achieved (last 50): 50/50 (100.0%)
+2025-06-23 11:54:40,568 - INFO - States explored: 65
+2025-06-23 11:54:40,568 - INFO - Total checkpoints reached: 93
+2025-06-23 11:54:40,569 - INFO - Unique checkpoints discovered: 4
+2025-06-23 11:54:40,569 - INFO - Episodes with checkpoints: 30/30
+2025-06-23 11:54:40,569 - INFO - Episodes reaching min_steps: 30/30
+2025-06-23 11:54:40,569 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-23 11:54:40,569 - INFO - Episode 31/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:55:19,631 - INFO - 📍 Episode 31: MIN_STEPS + CHECKPOINTS | Reward: -2485.0 | Steps: 200
+2025-06-23 11:55:19,633 - INFO - Episode 32/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:55:57,982 - INFO - 📍 Episode 32: MIN_STEPS + CHECKPOINTS | Reward: -3607.0 | Steps: 200
+2025-06-23 11:55:57,982 - INFO - Episode 33/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:56:36,438 - INFO - 📍 Episode 33: MIN_STEPS + CHECKPOINTS | Reward: -2966.0 | Steps: 200
+2025-06-23 11:56:36,440 - INFO - Episode 34/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:57:15,050 - INFO - 📍 Episode 34: MIN_STEPS + CHECKPOINTS | Reward: -3328.0 | Steps: 200
+2025-06-23 11:57:15,052 - INFO - Episode 35/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:57:54,139 - INFO - 📍 Episode 35: MIN_STEPS + CHECKPOINTS | Reward: -2548.0 | Steps: 200
+2025-06-23 11:57:54,141 - INFO - Episode 36/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:58:32,114 - INFO - 📍 Episode 36: MIN_STEPS + CHECKPOINTS | Reward: -3610.0 | Steps: 200
+2025-06-23 11:58:32,115 - INFO - Episode 37/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:59:11,797 - INFO - 📍 Episode 37: MIN_STEPS + CHECKPOINTS | Reward: -1978.0 | Steps: 200
+2025-06-23 11:59:11,798 - INFO - Episode 38/50 started - Strategy: CuriosityStrategy
+2025-06-23 11:59:51,201 - INFO - 📍 Episode 38: MIN_STEPS + CHECKPOINTS | Reward: -2068.0 | Steps: 200
+2025-06-23 11:59:51,202 - INFO - Episode 39/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:00:29,769 - INFO - 📍 Episode 39: MIN_STEPS + CHECKPOINTS | Reward: -3229.0 | Steps: 200
+2025-06-23 12:00:29,770 - INFO - Episode 40/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:01:08,479 - INFO - 📍 Episode 40: MIN_STEPS + CHECKPOINTS | Reward: -2596.0 | Steps: 200
+2025-06-23 12:01:08,482 - INFO - Episodes completed: 40
+2025-06-23 12:01:08,482 - INFO - Average reward (last 50): -2826.39
+2025-06-23 12:01:08,482 - INFO - Average steps (last 50): 199.3
+2025-06-23 12:01:08,483 - INFO - Success rate (last 50): 2.0%
+2025-06-23 12:01:08,483 - INFO - Min steps achieved (last 50): 50/50 (100.0%)
+2025-06-23 12:01:08,483 - INFO - States explored: 65
+2025-06-23 12:01:08,483 - INFO - Total checkpoints reached: 124
+2025-06-23 12:01:08,483 - INFO - Unique checkpoints discovered: 4
+2025-06-23 12:01:08,483 - INFO - Episodes with checkpoints: 40/40
+2025-06-23 12:01:08,483 - INFO - Episodes reaching min_steps: 40/40
+2025-06-23 12:01:08,483 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-23 12:01:08,483 - INFO - Episode 41/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:01:47,919 - INFO - 📍 Episode 41: MIN_STEPS + CHECKPOINTS | Reward: -3029.0 | Steps: 200
+2025-06-23 12:01:47,920 - INFO - Episode 42/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:02:26,704 - INFO - 📍 Episode 42: MIN_STEPS + CHECKPOINTS | Reward: -2903.0 | Steps: 200
+2025-06-23 12:02:26,704 - INFO - Episode 43/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:03:05,986 - INFO - 📍 Episode 43: MIN_STEPS + CHECKPOINTS | Reward: -2572.0 | Steps: 200
+2025-06-23 12:03:05,987 - INFO - Episode 44/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:03:44,387 - INFO - 📍 Episode 44: MIN_STEPS + CHECKPOINTS | Reward: -4183.0 | Steps: 200
+2025-06-23 12:03:44,387 - INFO - Episode 45/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:04:19,299 - INFO - 🏆 Episode 45: GOAL REACHED | Reward: 271.5 | Steps: 179
+2025-06-23 12:04:19,300 - INFO - Episode 46/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:04:52,369 - INFO - 🏆 Episode 46: GOAL REACHED | Reward: 588.0 | Steps: 174
+2025-06-23 12:04:52,369 - INFO - Episode 47/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:05:29,699 - INFO - 📍 Episode 47: MIN_STEPS + CHECKPOINTS | Reward: -2353.0 | Steps: 200
+2025-06-23 12:05:29,701 - INFO - Episode 48/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:06:05,787 - INFO - 📍 Episode 48: MIN_STEPS + CHECKPOINTS | Reward: -3799.0 | Steps: 200
+2025-06-23 12:06:05,788 - INFO - Episode 49/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:06:43,133 - INFO - 📍 Episode 49: MIN_STEPS + CHECKPOINTS | Reward: -3101.0 | Steps: 200
+2025-06-23 12:06:43,134 - INFO - Episode 50/50 started - Strategy: CuriosityStrategy
+2025-06-23 12:07:20,238 - INFO - 📍 Episode 50: MIN_STEPS + CHECKPOINTS | Reward: -3778.0 | Steps: 200
+2025-06-23 12:07:20,242 - INFO - Episodes completed: 50
+2025-06-23 12:07:20,242 - INFO - Average reward (last 50): -2848.93
+2025-06-23 12:07:20,242 - INFO - Average steps (last 50): 199.1
+2025-06-23 12:07:20,243 - INFO - Success rate (last 50): 4.0%
+2025-06-23 12:07:20,243 - INFO - Min steps achieved (last 50): 50/50 (100.0%)
+2025-06-23 12:07:20,243 - INFO - States explored: 65
+2025-06-23 12:07:20,243 - INFO - Total checkpoints reached: 155
+2025-06-23 12:07:20,243 - INFO - Unique checkpoints discovered: 4
+2025-06-23 12:07:20,243 - INFO - Episodes with checkpoints: 50/50
+2025-06-23 12:07:20,243 - INFO - Episodes reaching min_steps: 50/50
+2025-06-23 12:07:20,243 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-23 12:07:20,244 - INFO - ✅ Training completed!
+2025-06-23 12:07:20,245 - INFO - === FINAL TRAINING STATISTICS ===
+2025-06-23 12:07:20,245 - INFO -   total_episodes: 1050
+2025-06-23 12:07:20,245 - INFO -   states_explored: 65
+2025-06-23 12:07:20,245 - INFO -   avg_reward: -3398.3542857142857
+2025-06-23 12:07:20,245 - INFO -   max_reward: 775.0
+2025-06-23 12:07:20,245 - INFO -   success_rate: 0.005714285714285714
+2025-06-23 12:07:20,245 - INFO -   strategy_info: {'base_epsilon': 0.65, 'novelty_bonus': 5.0, 'states_discovered': 65}
+2025-06-23 12:07:20,245 - INFO - === FINAL CHECKPOINT ANALYSIS ===
+2025-06-23 12:07:20,245 - INFO -   Checkpoint discovery rate: 0.004 unique/episode
+2025-06-23 12:07:20,246 - INFO -   Checkpoint frequency: 0.148 checkpoints/episode
+2025-06-23 12:07:20,246 - INFO -   Min steps achievement rate: 4.8%
+2025-06-23 12:07:20,246 - INFO -   Best checkpoint reached: 4
+2025-06-23 12:07:20,246 - INFO -   Maze progress: 80.0% (checkpoints discovered)
+2025-06-23 12:07:20,246 - INFO - DDS stopped.

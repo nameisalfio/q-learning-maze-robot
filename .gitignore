@@ -38,10 +38,6 @@ venv.bak/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Models and logs
-models/*.pkl
-logs/*.log
-
 # OS
 .DS_Store
 .DS_Store?
