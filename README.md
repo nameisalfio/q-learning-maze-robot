@@ -1,8 +1,6 @@
 # 🤖 Q-Learning Maze Robot
 
-A sophisticated reinforcement learning system for training a differential drive robot to navigate complex mazes. This project integrates a physics-based Godot simulation with an advanced Q-Learning agent featuring a dynamic, curiosity-driven exploration strategy.
-
-> **Note**: This project is designed for research and educational purposes in autonomous navigation, combining a real-time robotics simulation with a robust RL training pipeline.
+A reinforcement learning system for training a differential drive robot to navigate a complex maze. This project integrates a physics-based Godot simulation with an advanced Q-Learning agent featuring a dynamic, curiosity-driven exploration strategy.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Godot](https://img.shields.io/badge/Godot-4.x-blue.svg)](https://godotengine.org)
@@ -28,7 +26,8 @@ A sophisticated reinforcement learning system for training a differential drive 
     - [Interactive Menu](#interactive-menu)
     - [Command-Line Interface (for automation)](#command-line-interface-for-automation)
   - [⚙️ Configuration](#️-configuration)
-    - [Example `config.yaml` for Curiosity Strategy](#example-configyaml-for-curiosity-strategy)
+    - [Example `config.yaml`](#example-configyaml)
+    - [Reward Engineering](#reward-engineering)
   - [📊 Analysis and Visualization](#-analysis-and-visualization)
   - [📁 Project Structure](#-project-structure)
   - [🤝 Contributing](#-contributing)
@@ -36,7 +35,7 @@ A sophisticated reinforcement learning system for training a differential drive 
 
 ## 🎯 Overview
 
-This project implements a complete reinforcement learning pipeline for a robot navigating a maze. The core of the system is a **Q-Learning agent** that learns optimal paths through trial and error. It interacts with a **Godot Engine simulation** via a DDS (Data Distribution Service) communication layer, allowing for decoupled, real-time training and testing.
+This project implements a complete reinforcement learning pipeline for a robot navigating a maze. The core of the system is a **Q-Learning agent** that learns optimal paths through trial and error. It interacts with a **Godot Engine simulation** via a DDS (Data Distribution Service) communication layer based on the publisher-subscriber pattern.
 
 The agent's learning is guided by a **Curiosity-driven exploration strategy**, which dynamically adjusts its exploration rate based on state novelty. This encourages the robot to thoroughly explore the maze instead of getting stuck in local optima. The reward system is designed with **progressive checkpoints** to provide intermediate goals, making it feasible to solve large, complex mazes with sparse final rewards.
 
@@ -45,22 +44,22 @@ The agent's learning is guided by a **Curiosity-driven exploration strategy**, w
 ### 🧠 Machine Learning
 - **Advanced Q-Learning**: Tabular Q-Learning with learning rate decay for fine-tuning.
 - **Dynamic Curiosity Strategy**: Exploration is driven by state visitation counts and action novelty, making it highly effective for complex environments.
-- **Progressive Checkpoint Rewards**: A sophisticated reward system that provides increasing bonuses for reaching sequential checkpoints, guiding the agent toward the final goal.
-- **Loop Detection & Penalization**: Automatically penalizes repetitive, inefficient behavior.
+- **Progressive Checkpoint Rewards**: An escalating reward system that provides increasing bonuses for reaching sequential checkpoints, guiding the agent toward the final goal.
+- **Loop Detection & Penalization**: Automatically penalizes repetitive, inefficient behavior to encourage progress.
 
 ### 🤖 Robotics & Simulation
-- **Differential Drive Physics**: The agent controls a simulated robot with realistic two-wheeled physics.
+- **Differential Drive Physics**: The agent controls a simulated robot with realistic two-wheeled physics, managed by PID controllers.
 - **Decoupled Architecture**: Python-based RL brain communicates with a Godot Engine simulation via a DDS layer.
-- **Two Simulation Modes**:
-  - **Training Mode**: A "teleport" mode for rapid, physics-less training episodes.
-  - **Testing Mode**: A full physics simulation for realistic evaluation of the trained policy.
-- **Collision Handling**: Automatic collision detection in the simulation environment.
+- **Flexible Simulation Modes**: Choose at launch between two distinct movement modes, independent of training or testing:
+  - **Fast Mode**: A "teleport" mode for rapid, physics-less iteration, ideal for quickly training and testing learning logic.
+  - **Real Mode**: A full physics simulation using PID controllers for realistic evaluation of the trained policy.
+- **Collision Handling**: Automatic collision detection and also a backup-maneuver routine in Real Mode.
 
 ### 🛠️ Development & Usability
-- **Centralized Configuration**: A single, comprehensive `config.yaml` file to manage all parameters.
+- **Centralized Configuration**: A single, comprehensive `config.yaml` file to manage all high-level parameters.
 - **CLI & Interactive Modes**: Run training via command-line arguments for automation or use the interactive menu for experimentation.
 - **Model Persistence**: Save and resume training progress, including the Q-table and strategy state.
-- **Detailed Logging**: Formatted and detailed console output, with logs saved to file for later analysis.
+- **Detailed Logging**: Formatted and detailed console output, with logs saved to timestamped files for later analysis.
 
 ## 🏗️ System Architecture
 
@@ -70,11 +69,11 @@ The system is composed of two main components that communicate in real-time:
     - It runs the Q-Learning algorithm.
     - It implements the `CuriosityStrategy` to decide on actions.
     - It processes rewards from the environment to update its Q-table.
-    - It sends movement commands and mode changes to the simulation.
+    - It sends movement commands to the simulation.
 
 2.  **The Simulation Environment (Godot Engine)**: This is the "body" and the world.
     - It renders the maze and the robot.
-    - It handles physics simulation (in test mode).
+    - It handles a full physics simulation (in "Real Mode") or simple teleportation (in "Fast Mode").
     - It detects collisions, checkpoints, and goal events.
     - It sends sensor data (collision status, events) back to the agent.
 
@@ -109,12 +108,16 @@ pip install -r requirements.txt
 2.  **Launch the RL Agent**:
     - In your terminal, run the main Python script:
       ```bash
+      # Launch in interactive mode (will ask for Fast/Real mode)
       python main.py
+      
+      # Or launch directly in fast mode for training
+      python main.py --mode train --fast
       ```
 
 3.  **Begin Training**:
     - The script will present an interactive menu.
-    - Select option `1` to start a new training session or `3` to continue from a saved model.
+    - Select option `1` to start a new training session, `2` to test your trained model or `3` to continue training from a saved model.
     - Watch the logs in your terminal as the agent learns!
 
 ## 🎮 Usage
@@ -123,66 +126,81 @@ The system can be operated in two ways:
 
 ### Interactive Menu
 
-Run `python main.py` without arguments to access the menu:
+Run `python main.py` without arguments. You will first be prompted to choose the simulation mode (Fast or Real), and then you can access the main menu:
 - **1. 🎓 Train**: Start a new training run from scratch (will overwrite existing model).
-- **2. 🧪 Test**: Evaluate the performance of the latest saved agent in a full physics simulation.
+- **2. 🧪 Test**: Evaluate the performance of the latest saved agent.
 - **3. 📚 Continue**: Load the existing model and continue training.
 - **4. 📊 Stats**: Display statistics of the saved model.
 - **5. 🚪 Exit**: Close the program.
 
 ### Command-Line Interface (for automation)
 
-You can run training or testing sessions directly from the command line, which is ideal for scripting.
+You can run training or testing sessions directly from the command line. Use the `--fast` flag to enable the teleportation mode. If omitted, the full physics simulation is used. Training without `--fast` is not recommended, since it would take a very long time for the training to end.
 
 ```bash
-# Continue training for 500 episodes
+# Continue training for 500 episodes in REAL mode (physics)
 python main.py --mode continue --episodes 500
 
-# Run a test with 10 episodes
-python main.py --mode test --test_episodes 10
+# Run a test with 10 episodes in FAST mode (teleport)
+python main.py --mode test --test_episodes 10 --fast
 
 # Show agent statistics
 python main.py --mode stats
 ```
-Create a `run_training.sh` script for long, automated training sessions.
+You can create scripts like `run_training.sh` for long, automated training sessions.
 
 ## ⚙️ Configuration
 
 All system parameters are managed in `config.yaml`. This allows you to easily experiment with different settings without changing the code.
 
-### Example `config.yaml` for Curiosity Strategy
+### Example `config.yaml`
 
 ```yaml
+# Q-Learning Maze Robot Configuration
+experiment:
+  name: "q_learning_maze_robot"
+  log_level: "INFO"
+
 # Q-Learning Agent Parameters
 agent:
-  learning_rate: 0.12          # Initial learning rate
-  min_learning_rate: 0.01      # Minimum learning rate after decay
-  lr_decay: 0.997              # Multiplicative decay factor per episode
-  discount_factor: 0.96        # Importance of future rewards
+  learning_rate: 0.12
+  min_learning_rate: 0.02
+  lr_decay: 0.997
+  discount_factor: 0.96
 
-# Curiosity-Based Exploration Strategy
+# Exploration Strategy Configuration
 strategy:
   name: "curiosity"
-  epsilon: 0.5                 # Base random exploration chance
-  novelty_bonus: 5.0           # Bonus added to Q-values of less-tried actions
+  epsilon: 0.6
+  novelty_bonus: 8.0
 
 # Reward Structure
 rewards:
-  collision: -12.0
-  goal_reached: 1000.0
-  loop_penalty: -14.0
+  collision: -13.0                 
+  goal_reached: 1000.0           
+  loop_penalty: -13.0
 
 # Environment Configuration
 environment:
-  steps: 200                   # Max steps per episode before termination
+  steps: 200
 
 # Training Configuration
 training:
-  episodes: 250                # Default number of episodes per training run
-  save_every: 10               # Save the model every N episodes
-  test_episodes: 8
+  episodes: 10000
+  save_every: 50
+  test_episodes: 10
   model_path: "models/q_agent.pkl"
 ```
+
+### Reward Engineering
+
+The agent's learning is heavily influenced by the reward structure defined in `src/environment.py`. Key hardcoded elements include:
+- **Progressive Checkpoints**: The agent receives increasing rewards for reaching sequential checkpoints, guiding it through complex mazes:
+  - Checkpoint 1: +50.0
+  - Checkpoint 2: +150.0
+  - Checkpoint 3: +300.0
+  - Checkpoint 4: +500.0
+- **Success Streak Bonus**: A bonus of `+75.0` is awarded for reaching a checkpoint after 5 or more consecutive successful moves, promoting smooth and direct paths.
 
 ## 📊 Analysis and Visualization
 
@@ -193,7 +211,7 @@ The project includes a Jupyter Notebook for plotting and analyzing training perf
     jupyter notebook
     ```
 2.  **Open the Notebook**:
-    - Navigate to and open `logs/plot_training_reward.ipynb`.
+    - Navigate to and open `plot_training_reward.ipynb`.
 3.  **Run the Cells**:
     - The notebook will automatically find all `.log` files, parse the rewards, and generate an interactive plot showing:
       - Reward per episode.
@@ -209,9 +227,11 @@ q-learning-maze-robot/
 ├── main.py                        # Main entry point for the system
 ├── README.md                      # This file
 ├── requirements.txt               # Python dependencies
+├── run_training.sh                # Example script for automated training
 ├── GodotProject/                  # Godot Engine simulation project
 ├── lib/                           # Shared libraries (DDS, system utilities)
-├── logs/                          # Stores training logs and analysis notebooks
+├── logs/                          # Stores training logs
+├── notebooks/                     # Jupyter notebooks for testing and analysis
 │   └── plot_training_reward.ipynb
 ├── models/                        # Stores saved agent models (.pkl)
 ├── robot/                         # Robot control and DDS interface

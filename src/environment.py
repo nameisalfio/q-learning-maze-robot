@@ -136,9 +136,8 @@ class MazeEnvironment:
         
         total_reward += base_rewards.get(result, 0.0)
         
-        # === CHECKPOINT SYSTEM - MODIFICATO ===
+        # === CHECKPOINT SYSTEM ===
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
-            # Il bonus ora è più significativo perché parte da una base negativa.
             checkpoint_bonus = self.checkpoint_bonuses[checkpoint_value]
             total_reward += checkpoint_bonus
             
