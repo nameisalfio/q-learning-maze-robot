@@ -34,4 +34,4 @@ training:
   episodes: 10000
   save_every: 50
   test_episodes: 10
-  model_path: "models/q_agent.pkl"
+  model_path: "models/q_agent_manina.pkl"

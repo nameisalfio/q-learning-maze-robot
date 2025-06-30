@@ -49,7 +49,7 @@ class DiffDriveRoboticAgent:
     def __init__(self, dds, time, fast_mode: bool = True):
         self.time = time
         self.dds = dds
-        self.fast_mode = fast_mode # Nuovo attributo per controllare il movimento
+        self.fast_mode = fast_mode # Controlling if the robot is in fast mode 
 
         # Initialize DDS communication
         self.dds.start()
@@ -60,19 +60,24 @@ class DiffDriveRoboticAgent:
         self.wheel_speed_control = PolarWheelSpeedControl(
             _wheelbase=0.5,
             _kp=1.0,
-            _ki=0.0,
+            _ki=5.0,
             _kd=0.0,
             _sat=10.0
         )
 
         self.robot = TwoWheelsCart2DEncodersOdometry(
-            _mass=1.0,
-            _radius=0.3,
-            _lin_friction=0.8,
-            _ang_friction=0.7,
-            _r_traction_left=0.04,
-            _r_traction_right=0.04,
-            _traction_wheelbase=0.4,
+            # Robot parameters
+            _mass=1.0, # 1 kg
+            _radius=0.3, # 30 cm wheel radius
+            _lin_friction=0.8,  # Linear friction coefficient
+            _ang_friction=0.7, # Angular friction coefficient
+
+            # Wheel parameters
+            _r_traction_left=0.04, 
+            _r_traction_right=0.04, 
+            _traction_wheelbase=0.5, 
+
+            # Encoder parameters
             _r_encoder_left=0.03,
             _r_encoder_right=0.03,
             _encoder_wheelbase=0.5,
@@ -80,7 +85,7 @@ class DiffDriveRoboticAgent:
         )
 
         self.polar_controller = Polar2DController(
-            KP_linear=1.4,
+            KP_linear=1.4, 
             v_max=1.7,
             KP_heading=2.0,
             w_max=2.0

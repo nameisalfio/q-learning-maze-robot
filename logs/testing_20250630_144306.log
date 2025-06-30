@@ -1,0 +1,9 @@
+2025-06-30 14:43:06,284 - INFO - Movement Mode: FAST (Teleport)
+2025-06-30 14:43:06,284 - INFO - Strategy initialized: CuriosityStrategy
+2025-06-30 14:43:06,284 - INFO - Strategy info: {'base_epsilon': 0.6, 'novelty_bonus': 8.0, 'states_discovered': 0}
+2025-06-30 14:43:06,284 - INFO - CLI mode selected: test
+2025-06-30 14:43:06,284 - INFO - Testing for 10 episodes.
+2025-06-30 14:43:50,636 - INFO - Success rate: 5/10 (50.0%)
+2025-06-30 14:43:50,636 - INFO - Average steps: 17.5
+2025-06-30 14:43:50,636 - INFO - Shutting down...
+2025-06-30 14:43:50,636 - INFO - DDS stopped.
