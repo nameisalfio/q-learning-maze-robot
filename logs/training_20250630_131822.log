@@ -202,3 +202,11 @@
 2025-06-30 14:06:52,239 - INFO - Episode 90/150 started - Strategy: CuriosityStrategy
 2025-06-30 14:07:10,540 - INFO - ❌ Episode 90: FAILED (Short) | Reward: -6045.0 | Steps: 200
 2025-06-30 14:07:10,541 - INFO - Episode 91/150 started - Strategy: CuriosityStrategy
+2025-06-30 14:07:44,170 - INFO - 🔶 Episode 91: CHECKPOINTS (Short) | Reward: -3029.5 | Steps: 200
+2025-06-30 14:07:44,170 - INFO - Episode 92/150 started - Strategy: CuriosityStrategy
+2025-06-30 14:08:00,624 - INFO - ❌ Episode 92: FAILED (Short) | Reward: -6305.0 | Steps: 200
+2025-06-30 14:08:00,625 - INFO - Episode 93/150 started - Strategy: CuriosityStrategy
+2025-06-30 14:08:34,108 - INFO - 🔶 Episode 93: CHECKPOINTS (Short) | Reward: -4207.0 | Steps: 200
+2025-06-30 14:08:34,108 - INFO - Episode 94/150 started - Strategy: CuriosityStrategy
+2025-06-30 14:09:07,457 - INFO - 🔶 Episode 94: CHECKPOINTS (Short) | Reward: -3361.5 | Steps: 200
+2025-06-30 14:09:07,457 - INFO - Episode 95/150 started - Strategy: CuriosityStrategy
