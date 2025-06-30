@@ -104,7 +104,6 @@ class QLearningAgent:
             elif saved_strategy_state and hasattr(self.strategy, 'load_state'):
                  self.strategy.load_state(saved_strategy_state)
 
-
             for state in self.q_table:
                 if state not in self.action_counts:
                     self.action_counts[state] = np.zeros(self.n_actions)

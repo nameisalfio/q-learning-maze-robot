@@ -1,3 +1,8 @@
 #!/bin/bash
 
-python main.py --mode continue --episodes 7350
+python main.py --mode continue --fast --episodes 150
+python main.py --mode continue --fast --episodes 150
+python main.py --mode continue --fast --episodes 150
+python main.py --mode continue --fast --episodes 150
+python main.py --mode continue --fast --episodes 150
+python main.py --mode continue --fast --episodes 150

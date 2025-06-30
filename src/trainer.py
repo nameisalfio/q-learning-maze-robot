@@ -28,7 +28,7 @@ class RLTrainer:
         self.robot = DiffDriveRoboticAgent(dds, time_obj, fast_mode=self.fast_mode)
         self.environment = MazeEnvironment(self.robot, self.config)
         
-        # Create strategy UNA VOLTA
+        # Create strategy
         strategy = create_strategy(self.config)
         self.agent = QLearningAgent(self.config, strategy)
         
@@ -138,7 +138,6 @@ class RLTrainer:
     def test(self, n_episodes: int = None):
         """Test the trained agent with strategy display."""
         n_episodes = n_episodes or self.config.get('training.test_episodes', 5)
-        # RIMOSSO: self.robot.set_test_mode()
         
         print("\n" + "=" * 80)
         print("🧪 TESTING MODE")
@@ -161,9 +160,7 @@ class RLTrainer:
         total_steps = 0
         
         try:
-            for episode in range(n_episodes):
-                # RIMOSSO: self.robot.set_test_mode()
-                
+            for episode in range(n_episodes):                
                 print(f"\n🧪 TEST EPISODE {episode + 1}/{n_episodes}")
                 print("-" * 50)
                 
@@ -182,6 +179,7 @@ class RLTrainer:
                         print(f"   Step {step_count}: Position {info['position'][:2]}")
                 
                 total_steps += info['steps']
+                self.environment.reset_checkpoints()
                 
                 if info['result'] == MoveResult.GOAL_REACHED:
                     successes += 1

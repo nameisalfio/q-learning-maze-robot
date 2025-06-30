@@ -2,7 +2,6 @@ import time
 import math
 from collections import deque
 from typing import Tuple, Dict
-from dataclasses import dataclass
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -127,8 +126,7 @@ class MazeEnvironment:
     def _calculate_reward(self, result: MoveResult, checkpoint_value=None) -> float:
         """Calculate rewards."""
         
-        # Rende ogni passo leggermente costoso, incentivando l'efficienza.
-        total_reward = -1.0  # Inizia con una piccola penalità per ogni mossa.
+        total_reward = 0
 
         # === BASE REWARD ===
         base_rewards = {
@@ -146,7 +144,7 @@ class MazeEnvironment:
             
             # Aumenta il bonus per la striscia di successi
             if self.consecutive_success_moves >= 5:
-                total_reward += 75.0 # Aumentato da 50.0
+                total_reward += 75.0
             print(f"🎯 CHECKPOINT {checkpoint_value} REACHED! Bonus: {checkpoint_bonus:.1f}, Total reward: {total_reward:.1f}")
         
         # === GOAL BONUS WITH CHECKPOINT ===
