@@ -37,7 +37,19 @@ def main():
     args = parser.parse_args()
 
     config = Config()
-    logger = Logger(log_level=config.get('experiment.log_level', 'INFO'))
+    session_type = ""
+    if args.mode:
+        if args.mode in ["train", "continue"]:
+            session_type = "training"
+        elif args.mode == "test":
+            session_type = "testing"
+        else:
+            session_type = args.mode # es. 'stats'
+
+    logger = Logger(
+        log_level=config.get('experiment.log_level', 'INFO'), 
+        session_type=session_type
+    )
     
     # Initialize robot system
     dds = DDS()

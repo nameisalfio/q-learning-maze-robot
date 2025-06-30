@@ -43,14 +43,14 @@ class Config:
 class Logger:
     """Centralized logging system for training and evaluation."""
     
-    def __init__(self, name: str = "q_learning", log_level: str = "INFO"):
+    def __init__(self, name: str = "q_learning", log_level: str = "INFO", session_type: str = "session"):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(getattr(logging, log_level.upper()))
         
         if not self.logger.handlers:
-            self._setup_handlers()
+            self._setup_handlers(session_type)
     
-    def _setup_handlers(self):
+    def _setup_handlers(self, session_type: str):
         """Configure console and file logging handlers."""
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s'
@@ -64,7 +64,8 @@ class Logger:
         # File handler
         os.makedirs("logs", exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        file_handler = logging.FileHandler(f"logs/training_{timestamp}.log")
+        # --- CORREZIONE QUI: Usa session_type per il nome del file ---
+        file_handler = logging.FileHandler(f"logs/{session_type}_{timestamp}.log")
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
     
