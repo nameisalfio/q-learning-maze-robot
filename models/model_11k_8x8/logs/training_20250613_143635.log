@@ -1,8 +1,0 @@
-2025-06-13 14:36:35,698 - INFO - Strategy initialized: CuriosityStrategy
-2025-06-13 14:36:35,698 - INFO - Strategy info: {'base_epsilon': 0.4, 'states_discovered': 0}
-2025-06-13 14:36:38,617 - INFO - Starting training for 250 episodes
-2025-06-13 14:36:38,617 - INFO - Strategy: curiosity
-2025-06-13 14:36:38,618 - INFO - Connected to Godot simulation!
-2025-06-13 14:36:38,618 - INFO - Episode 1/250
-2025-06-13 14:36:47,130 - INFO - Training interrupted by user
-2025-06-13 14:36:47,131 - INFO - Training completed!

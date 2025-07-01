@@ -54,13 +54,13 @@ The agent's learning is guided by a **Curiosity-driven exploration strategy**, w
 - **Flexible Simulation Modes**: Choose at launch between two distinct movement modes, independent of training or testing:
   - **Fast Mode**: A "teleport" mode for rapid, physics-less iteration, ideal for quickly training and testing learning logic.
   - **Real Mode**: A full physics simulation using PID controllers for realistic evaluation of the trained policy.
-- **Collision Handling**: Automatic collision detection and also a backup-maneuver routine in Real Mode.
+- **Collision Handling**: Automatic collision detection and a backup-maneuver routine in Real Mode.
 
 ### 🛠️ Development & Usability
 - **Centralized Configuration**: A single, comprehensive `config.yaml` file to manage all high-level parameters.
 - **CLI & Interactive Modes**: Run training via command-line arguments for automation or use the interactive menu for experimentation.
 - **Model Persistence**: Save and resume training progress, including the Q-table and strategy state.
-- **Detailed Logging**: Formatted and detailed console output, with logs saved to timestamped files for later analysis.
+- **Detailed Logging**: Formatted and detailed console output, with logs saved to timestamped files (e.g., `logs/training_20250701_123000.log`) for later analysis.
 
 ## 🏗️ System Architecture
 
@@ -139,11 +139,11 @@ Run `python main.py` without arguments. You will first be prompted to choose the
 You can run training or testing sessions directly from the command line. Use the `--fast` flag to enable the teleportation mode. If omitted, the full physics simulation is used. Training without `--fast` is not recommended, since it would take a very long time for the training to end.
 
 ```bash
-# Continue training for 500 episodes in REAL mode (physics)
-python main.py --mode continue --episodes 500
+# Continue training for 500 episodes in FAST mode
+python main.py --mode continue --episodes 500 --fast
 
-# Run a test with 10 episodes in FAST mode (teleport)
-python main.py --mode test --test_episodes 10 --fast
+# Run a test with 10 episodes in REAL mode (physics)
+python main.py --mode test --episodes 10
 
 # Show agent statistics
 python main.py --mode stats
@@ -171,8 +171,7 @@ agent:
 
 # Exploration Strategy Configuration
 strategy:
-  name: "curiosity"
-  epsilon: 0.6
+  epsilon: 0.3
   novelty_bonus: 8.0
 
 # Reward Structure
@@ -188,9 +187,10 @@ environment:
 # Training Configuration
 training:
   episodes: 10000
-  save_every: 50
-  test_episodes: 10
+  save_every: 10
   model_path: "models/q_agent.pkl"
+
+test_episodes: 10
 ```
 
 ### Reward Engineering
@@ -201,7 +201,7 @@ The agent's learning is heavily influenced by the reward structure defined in `s
   - Checkpoint 2: +150.0
   - Checkpoint 3: +300.0
   - Checkpoint 4: +500.0
-- **Success Streak Bonus**: A bonus of `+75.0` is awarded for reaching a checkpoint after 5 or more consecutive successful moves, promoting smooth and direct paths.
+- **Goal Streak Bonus**: A bonus proportional to the number of consecutive successful moves is awarded *only* when the final goal is reached, promoting smooth and direct paths to the exit.
 
 ## 📊 Analysis and Visualization
 
@@ -214,7 +214,7 @@ The project includes a Jupyter Notebook for plotting and analyzing training perf
 2.  **Open the Notebook**:
     - Navigate to and open `plot_training_reward.ipynb`.
 3.  **Run the Cells**:
-    - The notebook will automatically find all `.log` files, parse the rewards, and generate an interactive plot showing:
+    - The notebook will automatically find all `.log` files in the `logs` directory, parse the rewards, and generate an interactive plot showing:
       - Reward per episode.
       - A moving average to visualize the learning trend.
 

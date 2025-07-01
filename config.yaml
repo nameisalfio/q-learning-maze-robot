@@ -24,7 +24,7 @@ rewards:
 
 # Environment Configuration
 environment:
-  steps: 200
+  steps: 225
 
   checkpoint:
     base_bonus: 100.0

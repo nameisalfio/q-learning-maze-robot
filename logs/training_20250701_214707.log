@@ -1,0 +1,171 @@
+2025-07-01 21:47:07,353 - INFO - Movement Mode: FAST (Teleport)
+2025-07-01 21:47:07,353 - INFO - CLI mode selected: continue
+2025-07-01 21:47:07,353 - INFO - Continuing training for 250 additional episodes.
+2025-07-01 21:47:07,353 - INFO - ================================================================================
+2025-07-01 21:47:07,353 - INFO - 🚀 STARTING TRAINING SESSION
+2025-07-01 21:47:07,353 - INFO - ================================================================================
+2025-07-01 21:47:07,353 - INFO - Episodes: 250
+2025-07-01 21:47:07,353 - INFO - Model path: models/q_agent.pkl
+2025-07-01 21:47:07,353 - INFO - ================================================================================
+2025-07-01 21:47:07,354 - INFO - 📁 Loaded existing model
+2025-07-01 21:47:07,362 - INFO - 🔗 Connected to Godot simulation!
+2025-07-01 21:47:07,362 - INFO - Episode 1/250 started - Strategy: curiosity
+2025-07-01 21:47:39,047 - INFO - 🏆 Episode 1: GOAL REACHED | Reward: -187.0 | Steps: 179
+2025-07-01 21:47:39,048 - INFO - Episode 2/250 started - Strategy: curiosity
+2025-07-01 21:48:04,045 - INFO - 🏆 Episode 2: GOAL REACHED | Reward: 518.0 | Steps: 140
+2025-07-01 21:48:04,045 - INFO - Episode 3/250 started - Strategy: curiosity
+2025-07-01 21:48:26,966 - INFO - 🏆 Episode 3: GOAL REACHED | Reward: 1060.0 | Steps: 124
+2025-07-01 21:48:26,966 - INFO - Episode 4/250 started - Strategy: curiosity
+2025-07-01 21:48:51,576 - INFO - 🏆 Episode 4: GOAL REACHED | Reward: 875.5 | Steps: 133
+2025-07-01 21:48:51,576 - INFO - Episode 5/250 started - Strategy: curiosity
+2025-07-01 21:49:18,250 - INFO - 🏆 Episode 5: GOAL REACHED | Reward: 584.0 | Steps: 147
+2025-07-01 21:49:18,250 - INFO - Episode 6/250 started - Strategy: curiosity
+2025-07-01 21:49:45,879 - INFO - 🏆 Episode 6: GOAL REACHED | Reward: 382.5 | Steps: 151
+2025-07-01 21:49:45,880 - INFO - Episode 7/250 started - Strategy: curiosity
+2025-07-01 21:50:10,374 - INFO - 🏆 Episode 7: GOAL REACHED | Reward: 466.5 | Steps: 136
+2025-07-01 21:50:10,374 - INFO - Episode 8/250 started - Strategy: curiosity
+2025-07-01 21:50:39,064 - INFO - 🏆 Episode 8: GOAL REACHED | Reward: 90.5 | Steps: 159
+2025-07-01 21:50:39,064 - INFO - Episode 9/250 started - Strategy: curiosity
+2025-07-01 21:51:02,289 - INFO - 🏆 Episode 9: GOAL REACHED | Reward: 992.5 | Steps: 127
+2025-07-01 21:51:02,290 - INFO - Episode 10/250 started - Strategy: curiosity
+2025-07-01 21:51:30,176 - INFO - 🏆 Episode 10: GOAL REACHED | Reward: 388.0 | Steps: 155
+2025-07-01 21:51:30,181 - INFO - Episodes completed: 10
+2025-07-01 21:51:30,182 - INFO - Average reward (last 50): 523.74
+2025-07-01 21:51:30,182 - INFO - Average steps (last 50): 141.4
+2025-07-01 21:51:30,182 - INFO - Success rate (last 50): 100.0%
+2025-07-01 21:51:30,182 - INFO - States explored: 114
+2025-07-01 21:51:30,182 - INFO - Total checkpoints reached: 40
+2025-07-01 21:51:30,182 - INFO - Unique checkpoints discovered: 4
+2025-07-01 21:51:30,182 - INFO - Episodes with checkpoints: 10/10
+2025-07-01 21:51:30,182 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 21:51:30,182 - INFO - Episode 11/250 started - Strategy: curiosity
+2025-07-01 21:51:52,006 - INFO - 🏆 Episode 11: GOAL REACHED | Reward: 850.5 | Steps: 120
+2025-07-01 21:51:52,007 - INFO - Episode 12/250 started - Strategy: curiosity
+2025-07-01 21:52:22,081 - INFO - 🏆 Episode 12: GOAL REACHED | Reward: 259.0 | Steps: 168
+2025-07-01 21:52:22,081 - INFO - Episode 13/250 started - Strategy: curiosity
+2025-07-01 21:52:48,267 - INFO - 🏆 Episode 13: GOAL REACHED | Reward: 460.0 | Steps: 145
+2025-07-01 21:52:48,268 - INFO - Episode 14/250 started - Strategy: curiosity
+2025-07-01 21:53:17,340 - INFO - 🏆 Episode 14: GOAL REACHED | Reward: -6.0 | Steps: 161
+2025-07-01 21:53:17,341 - INFO - Episode 15/250 started - Strategy: curiosity
+2025-07-01 21:53:41,445 - INFO - 🏆 Episode 15: GOAL REACHED | Reward: 676.5 | Steps: 134
+2025-07-01 21:53:41,445 - INFO - Episode 16/250 started - Strategy: curiosity
+2025-07-01 21:54:06,099 - INFO - 🏆 Episode 16: GOAL REACHED | Reward: 708.5 | Steps: 136
+2025-07-01 21:54:06,099 - INFO - Episode 17/250 started - Strategy: curiosity
+2025-07-01 21:54:31,576 - INFO - 🏆 Episode 17: GOAL REACHED | Reward: 901.0 | Steps: 140
+2025-07-01 21:54:31,576 - INFO - Episode 18/250 started - Strategy: curiosity
+2025-07-01 21:54:55,082 - INFO - 🏆 Episode 18: GOAL REACHED | Reward: 916.5 | Steps: 128
+2025-07-01 21:54:55,082 - INFO - Episode 19/250 started - Strategy: curiosity
+2025-07-01 21:55:17,713 - INFO - 🏆 Episode 19: GOAL REACHED | Reward: 1363.0 | Steps: 123
+2025-07-01 21:55:17,713 - INFO - Episode 20/250 started - Strategy: curiosity
+2025-07-01 21:55:51,245 - INFO - 🏆 Episode 20: GOAL REACHED | Reward: -853.5 | Steps: 192
+2025-07-01 21:55:51,249 - INFO - Episodes completed: 20
+2025-07-01 21:55:51,249 - INFO - Average reward (last 50): 534.47
+2025-07-01 21:55:51,250 - INFO - Average steps (last 50): 142.3
+2025-07-01 21:55:51,250 - INFO - Success rate (last 50): 100.0%
+2025-07-01 21:55:51,250 - INFO - States explored: 114
+2025-07-01 21:55:51,250 - INFO - Total checkpoints reached: 80
+2025-07-01 21:55:51,250 - INFO - Unique checkpoints discovered: 4
+2025-07-01 21:55:51,250 - INFO - Episodes with checkpoints: 20/20
+2025-07-01 21:55:51,250 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 21:55:51,250 - INFO - Episode 21/250 started - Strategy: curiosity
+2025-07-01 21:56:21,217 - INFO - 🏆 Episode 21: GOAL REACHED | Reward: 77.0 | Steps: 166
+2025-07-01 21:56:21,218 - INFO - Episode 22/250 started - Strategy: curiosity
+2025-07-01 21:56:47,364 - INFO - 🏆 Episode 22: GOAL REACHED | Reward: 552.5 | Steps: 144
+2025-07-01 21:56:47,364 - INFO - Episode 23/250 started - Strategy: curiosity
+2025-07-01 21:57:12,325 - INFO - 🏆 Episode 23: GOAL REACHED | Reward: 624.0 | Steps: 140
+2025-07-01 21:57:12,325 - INFO - Episode 24/250 started - Strategy: curiosity
+2025-07-01 21:57:38,314 - INFO - 🏆 Episode 24: GOAL REACHED | Reward: 493.0 | Steps: 144
+2025-07-01 21:57:38,315 - INFO - Episode 25/250 started - Strategy: curiosity
+2025-07-01 21:58:02,625 - INFO - 🏆 Episode 25: GOAL REACHED | Reward: 875.5 | Steps: 132
+2025-07-01 21:58:02,625 - INFO - Episode 26/250 started - Strategy: curiosity
+2025-07-01 21:58:25,530 - INFO - 🏆 Episode 26: GOAL REACHED | Reward: 961.5 | Steps: 125
+2025-07-01 21:58:25,531 - INFO - Episode 27/250 started - Strategy: curiosity
+2025-07-01 21:58:52,462 - INFO - 🏆 Episode 27: GOAL REACHED | Reward: 479.5 | Steps: 149
+2025-07-01 21:58:52,462 - INFO - Episode 28/250 started - Strategy: curiosity
+2025-07-01 21:59:23,530 - INFO - 🏆 Episode 28: GOAL REACHED | Reward: -145.0 | Steps: 173
+2025-07-01 21:59:23,530 - INFO - Episode 29/250 started - Strategy: curiosity
+2025-07-01 21:59:48,597 - INFO - 🏆 Episode 29: GOAL REACHED | Reward: 840.5 | Steps: 137
+2025-07-01 21:59:48,597 - INFO - Episode 30/250 started - Strategy: curiosity
+2025-07-01 22:00:13,461 - INFO - 🏆 Episode 30: GOAL REACHED | Reward: 715.5 | Steps: 137
+2025-07-01 22:00:13,464 - INFO - Episodes completed: 30
+2025-07-01 22:00:13,465 - INFO - Average reward (last 50): 463.24
+2025-07-01 22:00:13,465 - INFO - Average steps (last 50): 146.8
+2025-07-01 22:00:13,465 - INFO - Success rate (last 50): 100.0%
+2025-07-01 22:00:13,465 - INFO - States explored: 114
+2025-07-01 22:00:13,465 - INFO - Total checkpoints reached: 120
+2025-07-01 22:00:13,465 - INFO - Unique checkpoints discovered: 4
+2025-07-01 22:00:13,466 - INFO - Episodes with checkpoints: 30/30
+2025-07-01 22:00:13,466 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 22:00:13,466 - INFO - Episode 31/250 started - Strategy: curiosity
+2025-07-01 22:00:38,262 - INFO - 🏆 Episode 31: GOAL REACHED | Reward: 719.5 | Steps: 135
+2025-07-01 22:00:38,262 - INFO - Episode 32/250 started - Strategy: curiosity
+2025-07-01 22:00:59,773 - INFO - 🏆 Episode 32: GOAL REACHED | Reward: 1142.0 | Steps: 117
+2025-07-01 22:00:59,773 - INFO - Episode 33/250 started - Strategy: curiosity
+2025-07-01 22:01:24,143 - INFO - 🏆 Episode 33: GOAL REACHED | Reward: 940.5 | Steps: 133
+2025-07-01 22:01:24,143 - INFO - Episode 34/250 started - Strategy: curiosity
+2025-07-01 22:01:48,186 - INFO - 🏆 Episode 34: GOAL REACHED | Reward: 518.0 | Steps: 133
+2025-07-01 22:01:48,187 - INFO - Episode 35/250 started - Strategy: curiosity
+2025-07-01 22:02:16,454 - INFO - 🏆 Episode 35: GOAL REACHED | Reward: 206.0 | Steps: 158
+2025-07-01 22:02:16,455 - INFO - Episode 36/250 started - Strategy: curiosity
+2025-07-01 22:02:39,904 - INFO - 🏆 Episode 36: GOAL REACHED | Reward: 911.5 | Steps: 129
+2025-07-01 22:02:39,906 - INFO - Episode 37/250 started - Strategy: curiosity
+2025-07-01 22:03:05,126 - INFO - 🏆 Episode 37: GOAL REACHED | Reward: 908.0 | Steps: 137
+2025-07-01 22:03:05,127 - INFO - Episode 38/250 started - Strategy: curiosity
+2025-07-01 22:03:29,264 - INFO - 🏆 Episode 38: GOAL REACHED | Reward: 826.5 | Steps: 132
+2025-07-01 22:03:29,264 - INFO - Episode 39/250 started - Strategy: curiosity
+2025-07-01 22:03:51,596 - INFO - 🏆 Episode 39: GOAL REACHED | Reward: 1402.5 | Steps: 122
+2025-07-01 22:03:51,597 - INFO - Episode 40/250 started - Strategy: curiosity
+2025-07-01 22:04:13,440 - INFO - 🏆 Episode 40: GOAL REACHED | Reward: 889.5 | Steps: 120
+2025-07-01 22:04:13,443 - INFO - Episodes completed: 40
+2025-07-01 22:04:13,444 - INFO - Average reward (last 50): 529.09
+2025-07-01 22:04:13,444 - INFO - Average steps (last 50): 144.9
+2025-07-01 22:04:13,444 - INFO - Success rate (last 50): 100.0%
+2025-07-01 22:04:13,444 - INFO - States explored: 114
+2025-07-01 22:04:13,444 - INFO - Total checkpoints reached: 160
+2025-07-01 22:04:13,444 - INFO - Unique checkpoints discovered: 4
+2025-07-01 22:04:13,444 - INFO - Episodes with checkpoints: 40/40
+2025-07-01 22:04:13,444 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 22:04:13,444 - INFO - Episode 41/250 started - Strategy: curiosity
+2025-07-01 22:04:39,619 - INFO - 🏆 Episode 41: GOAL REACHED | Reward: 650.5 | Steps: 145
+2025-07-01 22:04:39,621 - INFO - Episode 42/250 started - Strategy: curiosity
+2025-07-01 22:05:05,952 - INFO - 🏆 Episode 42: GOAL REACHED | Reward: 714.5 | Steps: 144
+2025-07-01 22:05:05,952 - INFO - Episode 43/250 started - Strategy: curiosity
+2025-07-01 22:05:32,991 - INFO - 🏆 Episode 43: GOAL REACHED | Reward: 206.0 | Steps: 150
+2025-07-01 22:05:32,992 - INFO - Episode 44/250 started - Strategy: curiosity
+2025-07-01 22:05:54,951 - INFO - 🏆 Episode 44: GOAL REACHED | Reward: 1130.5 | Steps: 119
+2025-07-01 22:05:54,951 - INFO - Episode 45/250 started - Strategy: curiosity
+2025-07-01 22:06:26,038 - INFO - 🏆 Episode 45: GOAL REACHED | Reward: -533.5 | Steps: 173
+2025-07-01 22:06:26,038 - INFO - Episode 46/250 started - Strategy: curiosity
+2025-07-01 22:06:50,422 - INFO - 🏆 Episode 46: GOAL REACHED | Reward: 862.5 | Steps: 133
+2025-07-01 22:06:50,423 - INFO - Episode 47/250 started - Strategy: curiosity
+2025-07-01 22:07:13,077 - INFO - 🏆 Episode 47: GOAL REACHED | Reward: 968.5 | Steps: 124
+2025-07-01 22:07:13,077 - INFO - Episode 48/250 started - Strategy: curiosity
+2025-07-01 22:07:32,970 - INFO - 🏆 Episode 48: GOAL REACHED | Reward: 1389.5 | Steps: 107
+2025-07-01 22:07:32,970 - INFO - Episode 49/250 started - Strategy: curiosity
+2025-07-01 22:07:54,684 - INFO - 🏆 Episode 49: GOAL REACHED | Reward: 1416.5 | Steps: 117
+2025-07-01 22:07:54,684 - INFO - Episode 50/250 started - Strategy: curiosity
+2025-07-01 22:08:14,627 - INFO - 🏆 Episode 50: GOAL REACHED | Reward: 1457.0 | Steps: 107
+2025-07-01 22:08:14,630 - INFO - Episodes completed: 50
+2025-07-01 22:08:14,630 - INFO - Average reward (last 50): 652.92
+2025-07-01 22:08:14,630 - INFO - Average steps (last 50): 139.6
+2025-07-01 22:08:14,630 - INFO - Success rate (last 50): 100.0%
+2025-07-01 22:08:14,630 - INFO - States explored: 114
+2025-07-01 22:08:14,630 - INFO - Total checkpoints reached: 200
+2025-07-01 22:08:14,631 - INFO - Unique checkpoints discovered: 4
+2025-07-01 22:08:14,631 - INFO - Episodes with checkpoints: 50/50
+2025-07-01 22:08:14,631 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 22:08:14,631 - INFO - Episode 51/250 started - Strategy: curiosity
+2025-07-01 22:08:17,641 - INFO - ⚠️ Training interrupted by user
+2025-07-01 22:08:17,643 - INFO - ✅ Training completed!
+2025-07-01 22:08:17,643 - INFO - === FINAL TRAINING STATISTICS ===
+2025-07-01 22:08:17,643 - INFO -   total_episodes: 708
+2025-07-01 22:08:17,643 - INFO -   states_explored: 114
+2025-07-01 22:08:17,643 - INFO -   avg_reward: -2206.521892655367
+2025-07-01 22:08:17,643 - INFO -   max_reward: 1522.5
+2025-07-01 22:08:17,643 - INFO -   success_rate: 0.2245762711864407
+2025-07-01 22:08:17,643 - INFO -   strategy_info: {'epsilon': 0.3, 'novelty_bonus': 8.0, 'states_discovered': 114}
+2025-07-01 22:08:17,643 - INFO - === FINAL CHECKPOINT ANALYSIS ===
+2025-07-01 22:08:17,643 - INFO -   Checkpoint discovery rate: 0.006 unique/episode
+2025-07-01 22:08:17,643 - INFO -   Checkpoint frequency: 0.284 checkpoints/episode
+2025-07-01 22:08:17,643 - INFO -   Best checkpoint reached: 4
+2025-07-01 22:08:17,643 - INFO - DDS stopped.

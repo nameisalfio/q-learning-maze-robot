@@ -1,7 +1,7 @@
 extends Node3D
 
-@export var maze_width: int = 8
-@export var maze_height: int = 8
+@export var maze_width: int = 10
+@export var maze_height: int = 10
 @export var cell_size: float = 3.5
 @export var wall_height: float = 2.5
 @export var wall_thickness: float = 0.3
@@ -41,7 +41,7 @@ func _process(delta):
 			
 # GENERAZIONE LABIRINTO
 func generate_maze():
-	seed(9875)
+	seed(1234)
 	maze = []
 	visited = []
 	for y in maze_height:
@@ -132,11 +132,14 @@ func build_maze():
 	var goal_pos = Vector3(maze_width * cell_size, 0, (maze_height - 1) * cell_size)
 	create_goal_area(goal_pos)
 	
-	# Aggiungi i checkpoints
-	create_checkpoint_area(1, Vector3(10.5, 0.0, 7.0))
-	create_checkpoint_area(2, Vector3(7.0, 0.0, 14.0))
-	create_checkpoint_area(3, Vector3(10.5, 0.0, 24.5))
-	create_checkpoint_area(4, Vector3(24.5, 0, 14.0))
+	# Aggiungi i checkpoints	
+	for i in range(1, 4): # checkpoints da 1 a 3 sulla diagonale
+		var px = int(i * maze_width / (5))
+		var py = int(i * maze_height / (5))
+		var position = Vector3(px * cell_size, 0, py * cell_size)
+		create_checkpoint_area(i, position)
+		
+	create_checkpoint_area(4, Vector3(7.0, 0, 28.0))
 
 func _place_wall(position: Vector3, size: Vector3, material: Material):
 	var wall_body = StaticBody3D.new()
