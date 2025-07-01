@@ -38,6 +38,8 @@ This project implements a complete reinforcement learning pipeline for a robot n
 
 The agent's learning is guided by a **Curiosity-driven exploration strategy**, which dynamically adjusts its exploration rate based on state novelty. This encourages the robot to thoroughly explore the maze instead of getting stuck in local optima. The reward system is designed with **progressive checkpoints** to provide intermediate goals, making it feasible to solve large, complex mazes with sparse final rewards.
 
+![Q-Learning Maze Robot](assets/testing.png)
+
 ## ✨ Key Features
 
 ### 🧠 Machine Learning

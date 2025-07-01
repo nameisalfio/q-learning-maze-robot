@@ -1,0 +1,7 @@
+2025-07-01 09:01:45,459 - INFO - Movement Mode: REAL (Physics)
+2025-07-01 09:01:45,459 - INFO - Strategy initialized: CuriosityStrategy
+2025-07-01 09:01:45,459 - INFO - Strategy info: {'base_epsilon': 0.6, 'novelty_bonus': 8.0, 'states_discovered': 0}
+2025-07-01 09:01:45,459 - INFO - CLI mode selected: test
+2025-07-01 09:01:45,459 - INFO - Testing for 10 episodes.
+2025-07-01 09:01:47,200 - INFO - Shutting down...
+2025-07-01 09:01:47,200 - INFO - DDS stopped.
