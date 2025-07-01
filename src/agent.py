@@ -2,18 +2,23 @@ import numpy as np
 import pickle
 import os
 from typing import Tuple, Dict
-from .strategies import Strategy
+from .strategies import CuriosityStrategy
 
 class QLearningAgent:
     """Q-Learning agent for maze navigation."""
     
-    def __init__(self, config, strategy: Strategy):
+    def __init__(self, config):
         # Q-Learning parameters
         self.learning_rate = config.get('agent.learning_rate', 0.1)
         self.discount_factor = config.get('agent.discount_factor', 0.95)
         self.min_lr = config.get('agent.min_learning_rate', 0.01)
         self.lr_decay = config.get('agent.lr_decay', 0.995)
-        self.strategy = strategy
+        
+        # La strategia viene creata direttamente qui
+        self.strategy = CuriosityStrategy(
+            epsilon=config.get('strategy.epsilon', 0.3),
+            novelty_bonus=config.get('strategy.novelty_bonus', 3.0)
+        )
         
         # Q-table and action tracking
         self.q_table = {}
@@ -63,10 +68,6 @@ class QLearningAgent:
         
         self.q_table[state][action] += self.learning_rate * (target - current_q)
     
-    def update_strategy(self):
-        """Update exploration strategy parameters."""
-        self.strategy.update()
-    
     def save_model(self, filepath: str):
         """Save the trained model to file."""
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -101,8 +102,6 @@ class QLearningAgent:
             saved_strategy_state = model_data.get('strategy_state')
             if saved_strategy_state and hasattr(self.strategy, 'load_strategy_state'):
                 self.strategy.load_strategy_state(saved_strategy_state)
-            elif saved_strategy_state and hasattr(self.strategy, 'load_state'):
-                 self.strategy.load_state(saved_strategy_state)
 
             for state in self.q_table:
                 if state not in self.action_counts:

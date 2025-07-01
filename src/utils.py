@@ -64,7 +64,6 @@ class Logger:
         # File handler
         os.makedirs("logs", exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        # --- CORREZIONE QUI: Usa session_type per il nome del file ---
         file_handler = logging.FileHandler(f"logs/{session_type}_{timestamp}.log")
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)

@@ -1,34 +1,12 @@
 import random
 import numpy as np
-import math
-from abc import ABC, abstractmethod
 from typing import Dict, Any
 
-class Strategy(ABC):
-    """Abstract base class for exploration strategies."""
-    
-    @abstractmethod
-    def choose_action(self, q_values: np.ndarray, action_counts: np.ndarray = None, 
-                     state_info: Dict[str, Any] = None) -> int:
-        """Choose an action based on the strategy."""
-        pass
-    
-    @abstractmethod
-    def update(self):
-        """Update strategy parameters (e.g., epsilon decay)."""
-        pass
-    
-    @property
-    @abstractmethod
-    def info(self) -> Dict[str, float]:
-        """Return current strategy parameters."""
-        pass
-    
-class CuriosityStrategy(Strategy):
+class CuriosityStrategy:
     """Curiosity-driven exploration based on state novelty."""
     
-    def __init__(self, base_epsilon: float = 0.3, novelty_bonus: float = 3.0):
-        self.base_epsilon = base_epsilon
+    def __init__(self, epsilon: float = 0.3, novelty_bonus: float = 3.0):
+        self.epsilon = epsilon
         self.novelty_bonus = novelty_bonus
         self.state_visits = {} # Questo è lo stato cruciale da salvare/caricare
     
@@ -42,9 +20,9 @@ class CuriosityStrategy(Strategy):
             visits = self.state_visits.get(current_state, 0)
             self.state_visits[current_state] = visits + 1
             # dynamic_epsilon encourages random exploration more in newer states
-            dynamic_epsilon = min(0.4, self.base_epsilon + (0.6 / (visits + 1)))
+            dynamic_epsilon = self.epsilon + (10.0 / (visits + 1))
         else:
-            dynamic_epsilon = self.base_epsilon
+            dynamic_epsilon = self.epsilon
         
         # Prepare curiosity-adjusted Q-values for exploitation phase
         # This makes the "greedy" choice also sensitive to action novelty
@@ -68,36 +46,26 @@ class CuriosityStrategy(Strategy):
             # Exploitation phase: Use curiosity-adjusted Q-values
             return int(np.argmax(curiosity_adjusted_q_values))
     
-    def update(self):
-        """Curiosity parameters update dynamically."""
-        pass # Nessun decadimento esplicito di base_epsilon qui
-    
     @property
     def info(self) -> Dict[str, float]:
         # Questo è ciò che viene salvato attualmente tramite agent.save_model
         return {
-            "base_epsilon": self.base_epsilon,
-            "novelty_bonus": self.novelty_bonus, # Aggiungiamo anche questo per completezza
+            "epsilon": self.epsilon,
+            "novelty_bonus": self.novelty_bonus,
             "states_discovered": len(self.state_visits)
         }
 
     def get_strategy_state(self) -> Dict[str, Any]:
         """Get the internal state of the strategy for saving."""
         return {
-            'base_epsilon': self.base_epsilon,
+            'epsilon': self.epsilon,
             'novelty_bonus': self.novelty_bonus,
             'state_visits': self.state_visits.copy() # Salva una copia
         }
 
     def load_strategy_state(self, strategy_state: Dict[str, Any]):
         """Load the internal state of the strategy."""
-        self.base_epsilon = strategy_state.get('base_epsilon', self.base_epsilon)
+        self.epsilon = strategy_state.get('epsilon', self.epsilon)
         self.novelty_bonus = strategy_state.get('novelty_bonus', self.novelty_bonus)
         self.state_visits = strategy_state.get('state_visits', {}).copy() # Carica una copia
         print(f"CuriosityStrategy state loaded. States discovered: {len(self.state_visits)}")
-
-def create_strategy(config) -> Strategy:
-    return CuriosityStrategy(
-        base_epsilon=config.get('strategy.epsilon', 0.3),
-        novelty_bonus=config.get('strategy.novelty_bonus', 3.0)
-    )

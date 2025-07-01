@@ -13,7 +13,7 @@ agent:
 # Exploration Strategy Configuration
 strategy:
   name: "curiosity"
-  epsilon: 0.6
+  epsilon: 0.3
   novelty_bonus: 8.0
 
 # Reward Structure
@@ -32,7 +32,7 @@ environment:
 # Training Configuration
 training:
   episodes: 10000
-  save_every: 50
+  save_every: 10
   model_path: "models/q_agent.pkl"
 
 test_episodes: 10

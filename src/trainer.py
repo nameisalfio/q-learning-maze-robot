@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from robot.robotic_agent import DiffDriveRoboticAgent, MoveResult
 from .agent import QLearningAgent
 from .environment import MazeEnvironment
-from .strategies import create_strategy
 from .utils import Config, Logger
 
 class RLTrainer:
@@ -25,28 +24,20 @@ class RLTrainer:
         self.robot = DiffDriveRoboticAgent(dds, time_obj, fast_mode=self.fast_mode)
         self.environment = MazeEnvironment(self.robot, self.config)
         
-        # Create strategy
-        strategy = create_strategy(self.config)
-        self.agent = QLearningAgent(self.config, strategy)
+        # Initialize the Q-Learning agent
+        self.agent = QLearningAgent(self.config)
         
         self.model_path = str(self.config.get('training.model_path', 'models/q_agent.pkl'))
-        
-        # Verification logging
-        self.logger.info(f"Strategy initialized: {type(strategy).__name__}")
-        self.logger.info(f"Strategy info: {strategy.info}")
     
     def train(self, n_episodes: int = None, save_every: int = None):
         """Train the Q-Learning agent with enhanced episode formatting."""
         n_episodes = n_episodes or self.config.get('training.episodes', 200)
         save_every = save_every or self.config.get('training.save_every', 50)
         
-        # Get environment parameters for display
-        
         self.logger.info("=" * 80)
         self.logger.info("🚀 STARTING TRAINING SESSION")
         self.logger.info("=" * 80)
         self.logger.info(f"Episodes: {n_episodes}")
-        self.logger.info(f"Strategy: {self.config.get('strategy.name', 'unknown')}")
         self.logger.info(f"Model path: {self.model_path}")
         self.logger.info("=" * 80)
         
@@ -65,7 +56,6 @@ class RLTrainer:
         }
         
         try:
-            # RIMOSSO: self.robot.set_train_mode()
             for episode in range(n_episodes):
                 self._print_episode_header(episode + 1, n_episodes)
                 
@@ -107,9 +97,6 @@ class RLTrainer:
                     checkpoint_stats['checkpoint_episodes'] += 1
 
                 self.environment.reset_checkpoints()
-                
-                # Update exploration strategy
-                self.agent.update_strategy()
 
                 # update learning rate
                 self.agent.update_learning_rate()
@@ -144,8 +131,6 @@ class RLTrainer:
         
         # Display strategy info
         strategy_info = self.agent.strategy.info if hasattr(self.agent.strategy, 'info') else {}
-        strategy_name = strategy_info.get('strategy', type(self.agent.strategy).__name__)
-        print(f"🎯 Testing Strategy: {strategy_name.upper()}")
         print(f"📊 Strategy Details: {strategy_info}")
         print("=" * 80)
         
@@ -204,7 +189,7 @@ class RLTrainer:
         
         # Get current strategy info
         strategy_info = self.agent.strategy.info if hasattr(self.agent.strategy, 'info') else {}
-        strategy_name = strategy_info.get('strategy', type(self.agent.strategy).__name__)
+        strategy_name = 'curiosity'
         
         # Create header
         header_line = "=" * 100
@@ -213,13 +198,9 @@ class RLTrainer:
         print(f"{header_line}")
         
         # Strategy-specific details
-        if strategy_name == 'curiosity':
-            states_discovered = strategy_info.get('states_discovered', 0)
-            base_epsilon = strategy_info.get('epsilon', 0.7)
-            print(f"🧠 Curiosity Details: Base ε={base_epsilon:.3f} | States Discovered: {states_discovered}")
-        
-        # Episode requirements
-        print(f"🎮 Starting position: (0.0, 0.0)")
+        states_discovered = strategy_info.get('states_discovered', 0)
+        epsilon = strategy_info.get('epsilon', 0.7)
+        print(f"🧠 Curiosity Details: Base ε={epsilon:.3f} | States Discovered: {states_discovered}")
         print(f"{'-' * 100}")
         
         # Log to file as well
@@ -323,6 +304,4 @@ class RLTrainer:
                 
                 if checkpoint_stats['unique_checkpoints']:
                     best_checkpoint = max(checkpoint_stats['unique_checkpoints'])
-                    progress_percentage = len(checkpoint_stats['unique_checkpoints']) / 5 * 100  # Assuming 5 total checkpoints
                     self.logger.info(f"  Best checkpoint reached: {best_checkpoint}")
-                    self.logger.info(f"  Maze progress: {progress_percentage:.1f}% (checkpoints discovered)")

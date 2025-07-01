@@ -14,16 +14,15 @@ class MazeEnvironment:
         self.config = config
         
         # Environment parameters
-        self.steps = config.get('environment.steps', 100)
+        self.steps = config.get('environment.steps', 200)
         
         # Reward configuration
         self.rewards = {
-            MoveResult.COLLISION: config.get('rewards.collision', -10.0),
+            MoveResult.COLLISION: config.get('rewards.collision', -13.0),
             MoveResult.GOAL_REACHED: config.get('rewards.goal_reached', 1000.0),
-            MoveResult.CHECKPOINT_REACHED: config.get('rewards.checkpoint_reached', 200.0)
         }
         
-        self.loop_penalty = config.get('rewards.loop_penalty', -12.0)
+        self.loop_penalty = config.get('rewards.loop_penalty', -13.0)
         
         # Environment state
         self.current_position = None
@@ -32,7 +31,6 @@ class MazeEnvironment:
         self.consecutive_success_moves = 0
         self.collision_count = 0
         self.recent_positions = deque(maxlen=6)
-        self.visited_states = {}
         
         # Checkpoint tracking
         self.checkpoint_bonuses = {
@@ -41,7 +39,6 @@ class MazeEnvironment:
             3: 300.0,
             4: 500.0
         }
-        self.goal_reached_reward = config.get("rewards.goal_reached", 1000.0)
     
     def reset(self) -> Tuple:
         """Reset environment to initial state."""
@@ -68,7 +65,7 @@ class MazeEnvironment:
 
     def get_state(self) -> Tuple[float, float]:
         """
-        Get a discretized (x,y) state representation.
+        Get the discretized robot's (x,y) state representation.
         This is crucial for bridging the gap between continuous real-mode
         physics and discrete fast-mode training.
         """
@@ -100,8 +97,6 @@ class MazeEnvironment:
         # Update position
         x, y, theta = self.robot.get_current_position()
         self.current_position = (x, y, theta)
-        state = self.get_state()
-        self.visited_states[state] = self.visited_states.get(state, 0) + 1
         self.recent_positions.append(self.current_position)
 
         # Calcola reward, passando il flag se vuoi
@@ -143,26 +138,19 @@ class MazeEnvironment:
         
         total_reward += base_rewards.get(result, 0.0)
         
-        # === CHECKPOINT SYSTEM ===
+        # checkpoint reward
         if result == MoveResult.CHECKPOINT_REACHED and checkpoint_value is not None:
             checkpoint_bonus = self.checkpoint_bonuses[checkpoint_value]
             total_reward += checkpoint_bonus
-            
-            # Aumenta il bonus per la striscia di successi
-            if self.consecutive_success_moves >= 5:
-                total_reward += 75.0
             print(f"🎯 CHECKPOINT {checkpoint_value} REACHED! Bonus: {checkpoint_bonus:.1f}, Total reward: {total_reward:.1f}")
         
-        # === GOAL BONUS WITH CHECKPOINT ===
+        # Streak bonus if goal is reached
         if result == MoveResult.GOAL_REACHED:
             # Extra bonus if goal is reached with a long streak
-            streak_bonus = min(self.consecutive_success_moves * 5.0, 100.0)
-            total_reward += (streak_bonus + self.goal_reached_reward)
-            print(f"🏆 GOAL WITH STREAK {self.consecutive_success_moves}! Total: {total_reward:.1f}")
-        
-        # === PENALTIES FOR UNDESIRED BEHAVIORS ===
-        
-        # Loop detection penalty (more severe)
+            streak_bonus = self.consecutive_success_moves * 20.0
+            total_reward += streak_bonus
+                
+        # Loop detection penalty
         if self._is_in_loop():
             loop_penalty = self.loop_penalty * 1.5  # Increased penalty
             total_reward += loop_penalty
@@ -183,15 +171,15 @@ class MazeEnvironment:
         return max(pos_counts.values()) >= 3
     
     def _check_done(self, result: MoveResult) -> bool:
-        """Controlla se l'episodio deve terminare."""
-        
-        # Goal raggiunto - termina sempre
+        """Check if the episode is done."""
+
+        # Goal reached
         if result == MoveResult.GOAL_REACHED:
             return True
-        
-        # controlla se siamo arrivati alla fine degli step disponibili
+
+        # Check if we have reached the end of the available steps
         if self.steps_count >= self.steps:
-            print(f"⏱️ Episodio terminato: raggiunto il numero massimo di step ({self.steps})")
+            print(f"⏱️ Episode ended: reached maximum steps ({self.steps})")
             return True
         
         return False

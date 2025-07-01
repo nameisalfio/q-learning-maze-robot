@@ -49,20 +49,18 @@ def main():
     time_obj = Time()
 
     try:
-        # --- LOGICA PER DETERMINARE LA MODALITÀ SPOSTATA QUI ---
         fast_mode = False
         if args.fast:
-            # Se --fast è specificato, la modalità veloce è sempre attiva.
+            # If --fast is specified, set fast_mode to True.
             fast_mode = True
         elif not args.mode:
-            # Se siamo in modalità interattiva (nessun --mode specificato), chiedi all'utente.
+            # If we are in interactive mode (no --mode specified), ask the user.
             fast_choice = input("Use FAST mode (no physics)? [Y/n]: ").strip().lower()
             fast_mode = fast_choice != 'n'
-        # Se siamo in modalità CLI senza --fast, fast_mode rimane False (modalità fisica).
+        # If we are in CLI mode without --fast, fast_mode remains False (physical mode).
 
         trainer = RLTrainer(dds, time_obj, fast_mode=fast_mode)
         
-        # --- LOGICA PER GESTIRE MODALITÀ CLI O INTERATTIVA ---
         if args.mode:
             logger.info(f"CLI mode selected: {args.mode}")
             if args.mode == "train":
@@ -84,7 +82,7 @@ def main():
                 logger.info("Exiting via CLI command.")
                 print("Goodbye!")
         else:
-            # Modalità interattiva se non vengono forniti argomenti CLI per la modalità
+            # Interactive mode if no CLI arguments are provided for mode
             while True:
                 print(f"\n{'='*50}")
                 print("Q-LEARNING MAZE ROBOT")
@@ -103,8 +101,8 @@ def main():
                     episodes = int(episodes_input) if episodes_input else config.get('training.episodes', 200)
                     trainer.train(n_episodes=episodes)
                 elif choice == "2":
-                    tests_input = input(f"Test episodes (default from config: {config.get('training.test_episodes', 5)}): ")
-                    tests = int(tests_input) if tests_input else config.get('training.test_episodes', 5)
+                    tests_input = input(f"Test episodes (default from config: {config.get('test_episodes', 5)}): ")
+                    tests = int(tests_input) if tests_input else config.get('test_episodes', 5)
                     trainer.test(n_episodes=tests)
                 elif choice == "3":
                     episodes_input = input("Additional episodes (default 100): ")
