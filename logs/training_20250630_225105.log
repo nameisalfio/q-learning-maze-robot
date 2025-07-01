@@ -1,0 +1,355 @@
+2025-06-30 22:51:05,888 - INFO - Movement Mode: FAST (Teleport)
+2025-06-30 22:51:05,889 - INFO - Strategy initialized: CuriosityStrategy
+2025-06-30 22:51:05,889 - INFO - Strategy info: {'base_epsilon': 0.6, 'novelty_bonus': 8.0, 'states_discovered': 0}
+2025-06-30 22:51:05,889 - INFO - CLI mode selected: continue
+2025-06-30 22:51:05,889 - INFO - Continuing training for 150 additional episodes.
+2025-06-30 22:51:05,889 - INFO - ================================================================================
+2025-06-30 22:51:05,889 - INFO - 🚀 STARTING TRAINING SESSION
+2025-06-30 22:51:05,889 - INFO - ================================================================================
+2025-06-30 22:51:05,889 - INFO - Episodes: 150
+2025-06-30 22:51:05,889 - INFO - Strategy: curiosity
+2025-06-30 22:51:05,889 - INFO - Model path: models/q_agent.pkl
+2025-06-30 22:51:05,889 - INFO - ================================================================================
+2025-06-30 22:51:05,890 - INFO - 📁 Loaded existing model
+2025-06-30 22:51:05,892 - INFO - 🔗 Connected to Godot simulation!
+2025-06-30 22:51:05,892 - INFO - Episode 1/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:51:39,573 - INFO - 🔶 Episode 1: CHECKPOINTS (Short) | Reward: -2763.5 | Steps: 200
+2025-06-30 22:51:39,574 - INFO - Episode 2/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:52:13,020 - INFO - 🔶 Episode 2: CHECKPOINTS (Short) | Reward: -3341.5 | Steps: 200
+2025-06-30 22:52:13,020 - INFO - Episode 3/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:52:47,139 - INFO - 🔶 Episode 3: CHECKPOINTS (Short) | Reward: -2997.5 | Steps: 200
+2025-06-30 22:52:47,140 - INFO - Episode 4/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:53:20,295 - INFO - 🔶 Episode 4: CHECKPOINTS (Short) | Reward: -3731.5 | Steps: 200
+2025-06-30 22:53:20,295 - INFO - Episode 5/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:53:53,381 - INFO - 🔶 Episode 5: CHECKPOINTS (Short) | Reward: -3147.0 | Steps: 200
+2025-06-30 22:53:53,382 - INFO - Episode 6/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:54:18,796 - INFO - 🏆 Episode 6: GOAL REACHED | Reward: 151.5 | Steps: 151
+2025-06-30 22:54:18,796 - INFO - Episode 7/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:54:53,204 - INFO - 🔶 Episode 7: CHECKPOINTS (Short) | Reward: -2555.5 | Steps: 200
+2025-06-30 22:54:53,204 - INFO - Episode 8/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:55:26,386 - INFO - 🔶 Episode 8: CHECKPOINTS (Short) | Reward: -2828.5 | Steps: 200
+2025-06-30 22:55:26,386 - INFO - Episode 9/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:56:00,161 - INFO - 🔶 Episode 9: CHECKPOINTS (Short) | Reward: -3309.0 | Steps: 200
+2025-06-30 22:56:00,162 - INFO - Episode 10/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:56:34,336 - INFO - 🔶 Episode 10: CHECKPOINTS (Short) | Reward: -2688.5 | Steps: 200
+2025-06-30 22:56:34,336 - INFO - Episode 11/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:57:08,429 - INFO - 🔶 Episode 11: CHECKPOINTS (Short) | Reward: -3153.5 | Steps: 200
+2025-06-30 22:57:08,430 - INFO - Episode 12/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:57:42,255 - INFO - 🔶 Episode 12: CHECKPOINTS (Short) | Reward: -3562.5 | Steps: 200
+2025-06-30 22:57:42,255 - INFO - Episode 13/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:58:15,774 - INFO - 🔶 Episode 13: CHECKPOINTS (Short) | Reward: -4181.0 | Steps: 200
+2025-06-30 22:58:15,775 - INFO - Episode 14/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:58:44,111 - INFO - 🏆 Episode 14: GOAL REACHED | Reward: -432.0 | Steps: 167
+2025-06-30 22:58:44,112 - INFO - Episode 15/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:59:17,812 - INFO - 🔶 Episode 15: CHECKPOINTS (Short) | Reward: -3328.5 | Steps: 200
+2025-06-30 22:59:17,813 - INFO - Episode 16/150 started - Strategy: CuriosityStrategy
+2025-06-30 22:59:51,628 - INFO - 🔶 Episode 16: CHECKPOINTS (Short) | Reward: -2965.0 | Steps: 200
+2025-06-30 22:59:51,628 - INFO - Episode 17/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:00:25,666 - INFO - 🔶 Episode 17: CHECKPOINTS (Short) | Reward: -3260.0 | Steps: 200
+2025-06-30 23:00:25,667 - INFO - Episode 18/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:00:59,687 - INFO - 🔶 Episode 18: CHECKPOINTS (Short) | Reward: -3146.5 | Steps: 200
+2025-06-30 23:00:59,688 - INFO - Episode 19/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:01:34,561 - INFO - 🔶 Episode 19: CHECKPOINTS (Short) | Reward: -3485.5 | Steps: 200
+2025-06-30 23:01:34,561 - INFO - Episode 20/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:02:09,158 - INFO - 🔶 Episode 20: CHECKPOINTS (Short) | Reward: -3019.5 | Steps: 200
+2025-06-30 23:02:09,159 - INFO - Episode 21/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:02:43,966 - INFO - 🔶 Episode 21: CHECKPOINTS (Short) | Reward: -4109.5 | Steps: 200
+2025-06-30 23:02:43,966 - INFO - Episode 22/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:03:17,566 - INFO - 🔶 Episode 22: CHECKPOINTS (Short) | Reward: -3973.0 | Steps: 200
+2025-06-30 23:03:17,566 - INFO - Episode 23/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:03:51,002 - INFO - 🔶 Episode 23: CHECKPOINTS (Short) | Reward: -3302.5 | Steps: 200
+2025-06-30 23:03:51,002 - INFO - Episode 24/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:04:24,491 - INFO - 🔶 Episode 24: CHECKPOINTS (Short) | Reward: -4129.0 | Steps: 200
+2025-06-30 23:04:24,491 - INFO - Episode 25/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:04:57,717 - INFO - 🔶 Episode 25: CHECKPOINTS (Short) | Reward: -4070.5 | Steps: 200
+2025-06-30 23:04:57,717 - INFO - Episode 26/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:05:31,463 - INFO - 🔶 Episode 26: CHECKPOINTS (Short) | Reward: -3315.5 | Steps: 200
+2025-06-30 23:05:31,463 - INFO - Episode 27/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:06:05,158 - INFO - 🔶 Episode 27: CHECKPOINTS (Short) | Reward: -3851.5 | Steps: 200
+2025-06-30 23:06:05,158 - INFO - Episode 28/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:06:37,675 - INFO - 🔶 Episode 28: CHECKPOINTS (Short) | Reward: -4012.0 | Steps: 200
+2025-06-30 23:06:37,675 - INFO - Episode 29/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:07:11,268 - INFO - 🔶 Episode 29: CHECKPOINTS (Short) | Reward: -3575.5 | Steps: 200
+2025-06-30 23:07:11,268 - INFO - Episode 30/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:07:44,822 - INFO - 🔶 Episode 30: CHECKPOINTS (Short) | Reward: -4246.0 | Steps: 200
+2025-06-30 23:07:44,823 - INFO - Episode 31/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:08:17,049 - INFO - 🏆 Episode 31: GOAL REACHED | Reward: -89.0 | Steps: 184
+2025-06-30 23:08:17,049 - INFO - Episode 32/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:08:43,877 - INFO - 🏆 Episode 32: GOAL REACHED | Reward: 650.5 | Steps: 145
+2025-06-30 23:08:43,878 - INFO - Episode 33/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:09:19,664 - INFO - 🔶 Episode 33: CHECKPOINTS (Short) | Reward: -3757.5 | Steps: 200
+2025-06-30 23:09:19,664 - INFO - Episode 34/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:09:55,628 - INFO - 🔶 Episode 34: CHECKPOINTS (Short) | Reward: -3030.0 | Steps: 200
+2025-06-30 23:09:55,629 - INFO - Episode 35/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:10:31,934 - INFO - 🔶 Episode 35: CHECKPOINTS (Short) | Reward: -3608.0 | Steps: 200
+2025-06-30 23:10:31,934 - INFO - Episode 36/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:11:07,171 - INFO - 🔶 Episode 36: CHECKPOINTS (Short) | Reward: -3162.5 | Steps: 200
+2025-06-30 23:11:07,172 - INFO - Episode 37/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:11:42,378 - INFO - 🔶 Episode 37: CHECKPOINTS (Short) | Reward: -4038.0 | Steps: 200
+2025-06-30 23:11:42,379 - INFO - Episode 38/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:12:18,425 - INFO - 🔶 Episode 38: CHECKPOINTS (Short) | Reward: -3530.0 | Steps: 200
+2025-06-30 23:12:18,426 - INFO - Episode 39/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:12:54,403 - INFO - 🔶 Episode 39: CHECKPOINTS (Short) | Reward: -3260.0 | Steps: 200
+2025-06-30 23:12:54,403 - INFO - Episode 40/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:13:30,089 - INFO - 🔶 Episode 40: CHECKPOINTS (Short) | Reward: -2783.0 | Steps: 200
+2025-06-30 23:13:30,090 - INFO - Episode 41/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:14:05,419 - INFO - 🔶 Episode 41: CHECKPOINTS (Short) | Reward: -4220.0 | Steps: 200
+2025-06-30 23:14:05,419 - INFO - Episode 42/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:14:40,954 - INFO - 🔶 Episode 42: CHECKPOINTS (Short) | Reward: -3043.0 | Steps: 200
+2025-06-30 23:14:40,955 - INFO - Episode 43/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:15:17,440 - INFO - 🔶 Episode 43: CHECKPOINTS (Short) | Reward: -2731.0 | Steps: 200
+2025-06-30 23:15:17,441 - INFO - Episode 44/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:15:51,308 - INFO - 🔶 Episode 44: CHECKPOINTS (Short) | Reward: -3218.0 | Steps: 200
+2025-06-30 23:15:51,309 - INFO - Episode 45/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:16:25,203 - INFO - 🔶 Episode 45: CHECKPOINTS (Short) | Reward: -3354.5 | Steps: 200
+2025-06-30 23:16:25,203 - INFO - Episode 46/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:16:58,628 - INFO - 🔶 Episode 46: CHECKPOINTS (Short) | Reward: -3699.0 | Steps: 200
+2025-06-30 23:16:58,628 - INFO - Episode 47/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:17:31,798 - INFO - 🔶 Episode 47: CHECKPOINTS (Short) | Reward: -3770.5 | Steps: 200
+2025-06-30 23:17:31,798 - INFO - Episode 48/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:18:05,760 - INFO - 🔶 Episode 48: CHECKPOINTS (Short) | Reward: -3757.5 | Steps: 200
+2025-06-30 23:18:05,760 - INFO - Episode 49/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:18:39,436 - INFO - 🔶 Episode 49: CHECKPOINTS (Short) | Reward: -3712.0 | Steps: 200
+2025-06-30 23:18:39,436 - INFO - Episode 50/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:19:13,330 - INFO - 🔶 Episode 50: CHECKPOINTS (Short) | Reward: -3401.0 | Steps: 200
+2025-06-30 23:19:13,342 - INFO - Episodes completed: 50
+2025-06-30 23:19:13,342 - INFO - Average reward (last 50): -3156.88
+2025-06-30 23:19:13,343 - INFO - Average steps (last 50): 196.9
+2025-06-30 23:19:13,343 - INFO - Success rate (last 50): 8.0%
+2025-06-30 23:19:13,343 - INFO - States explored: 102
+2025-06-30 23:19:13,343 - INFO - Total checkpoints reached: 155
+2025-06-30 23:19:13,343 - INFO - Unique checkpoints discovered: 4
+2025-06-30 23:19:13,343 - INFO - Episodes with checkpoints: 50/50
+2025-06-30 23:19:13,343 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-30 23:19:13,343 - INFO - Episode 51/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:19:46,797 - INFO - 🔶 Episode 51: CHECKPOINTS (Short) | Reward: -3582.0 | Steps: 200
+2025-06-30 23:19:46,797 - INFO - Episode 52/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:20:20,873 - INFO - 🔶 Episode 52: CHECKPOINTS (Short) | Reward: -2458.0 | Steps: 200
+2025-06-30 23:20:20,873 - INFO - Episode 53/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:20:56,368 - INFO - 🔶 Episode 53: CHECKPOINTS (Short) | Reward: -3367.5 | Steps: 200
+2025-06-30 23:20:56,369 - INFO - Episode 54/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:21:31,163 - INFO - 🔶 Episode 54: CHECKPOINTS (Short) | Reward: -4079.0 | Steps: 200
+2025-06-30 23:21:31,164 - INFO - Episode 55/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:22:06,165 - INFO - 🔶 Episode 55: CHECKPOINTS (Short) | Reward: -3797.5 | Steps: 200
+2025-06-30 23:22:06,165 - INFO - Episode 56/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:22:40,557 - INFO - 🔶 Episode 56: CHECKPOINTS (Short) | Reward: -3712.0 | Steps: 200
+2025-06-30 23:22:40,558 - INFO - Episode 57/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:23:14,355 - INFO - 🔶 Episode 57: CHECKPOINTS (Short) | Reward: -3874.5 | Steps: 200
+2025-06-30 23:23:14,356 - INFO - Episode 58/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:23:47,709 - INFO - 🔶 Episode 58: CHECKPOINTS (Short) | Reward: -3286.0 | Steps: 200
+2025-06-30 23:23:47,709 - INFO - Episode 59/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:24:21,317 - INFO - 🔶 Episode 59: CHECKPOINTS (Short) | Reward: -3907.0 | Steps: 200
+2025-06-30 23:24:21,317 - INFO - Episode 60/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:24:55,450 - INFO - 🔶 Episode 60: CHECKPOINTS (Short) | Reward: -3266.5 | Steps: 200
+2025-06-30 23:24:55,451 - INFO - Episode 61/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:25:28,840 - INFO - 🔶 Episode 61: CHECKPOINTS (Short) | Reward: -3601.5 | Steps: 200
+2025-06-30 23:25:28,841 - INFO - Episode 62/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:26:01,680 - INFO - 🔶 Episode 62: CHECKPOINTS (Short) | Reward: -3752.0 | Steps: 200
+2025-06-30 23:26:01,681 - INFO - Episode 63/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:26:35,077 - INFO - 🔶 Episode 63: CHECKPOINTS (Short) | Reward: -3331.5 | Steps: 200
+2025-06-30 23:26:35,077 - INFO - Episode 64/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:27:09,041 - INFO - 🔶 Episode 64: CHECKPOINTS (Short) | Reward: -3960.0 | Steps: 200
+2025-06-30 23:27:09,041 - INFO - Episode 65/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:27:44,291 - INFO - 🔶 Episode 65: CHECKPOINTS (Short) | Reward: -2731.0 | Steps: 200
+2025-06-30 23:27:44,291 - INFO - Episode 66/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:28:20,226 - INFO - 🔶 Episode 66: CHECKPOINTS (Short) | Reward: -3244.0 | Steps: 200
+2025-06-30 23:28:20,227 - INFO - Episode 67/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:28:54,491 - INFO - 🏆 Episode 67: GOAL REACHED | Reward: -729.0 | Steps: 189
+2025-06-30 23:28:54,491 - INFO - Episode 68/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:29:30,954 - INFO - 🔶 Episode 68: CHECKPOINTS (Short) | Reward: -2594.5 | Steps: 200
+2025-06-30 23:29:30,954 - INFO - Episode 69/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:30:06,263 - INFO - 🔶 Episode 69: CHECKPOINTS (Short) | Reward: -3757.5 | Steps: 200
+2025-06-30 23:30:06,263 - INFO - Episode 70/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:30:41,850 - INFO - 🔶 Episode 70: CHECKPOINTS (Short) | Reward: -4025.0 | Steps: 200
+2025-06-30 23:30:41,851 - INFO - Episode 71/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:31:17,257 - INFO - 🔶 Episode 71: CHECKPOINTS (Short) | Reward: -3921.0 | Steps: 200
+2025-06-30 23:31:17,258 - INFO - Episode 72/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:31:50,488 - INFO - 🔶 Episode 72: CHECKPOINTS (Short) | Reward: -4090.0 | Steps: 200
+2025-06-30 23:31:50,489 - INFO - Episode 73/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:32:23,549 - INFO - 🔶 Episode 73: CHECKPOINTS (Short) | Reward: -4067.0 | Steps: 200
+2025-06-30 23:32:23,549 - INFO - Episode 74/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:32:56,782 - INFO - 🔶 Episode 74: CHECKPOINTS (Short) | Reward: -4194.0 | Steps: 200
+2025-06-30 23:32:56,783 - INFO - Episode 75/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:33:30,969 - INFO - 🔶 Episode 75: CHECKPOINTS (Short) | Reward: -4148.5 | Steps: 200
+2025-06-30 23:33:30,969 - INFO - Episode 76/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:34:04,417 - INFO - 🔶 Episode 76: CHECKPOINTS (Short) | Reward: -3445.5 | Steps: 200
+2025-06-30 23:34:04,417 - INFO - Episode 77/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:34:38,552 - INFO - 🔶 Episode 77: CHECKPOINTS (Short) | Reward: -2708.0 | Steps: 200
+2025-06-30 23:34:38,552 - INFO - Episode 78/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:35:12,613 - INFO - 🔶 Episode 78: CHECKPOINTS (Short) | Reward: -3218.0 | Steps: 200
+2025-06-30 23:35:12,614 - INFO - Episode 79/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:35:45,548 - INFO - 🔶 Episode 79: CHECKPOINTS (Short) | Reward: -3817.0 | Steps: 200
+2025-06-30 23:35:45,549 - INFO - Episode 80/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:36:19,662 - INFO - 🔶 Episode 80: CHECKPOINTS (Short) | Reward: -2900.0 | Steps: 200
+2025-06-30 23:36:19,663 - INFO - Episode 81/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:36:46,860 - INFO - 🏆 Episode 81: GOAL REACHED | Reward: -245.0 | Steps: 159
+2025-06-30 23:36:46,862 - INFO - Episode 82/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:37:20,564 - INFO - 🔶 Episode 82: CHECKPOINTS (Short) | Reward: -4090.0 | Steps: 200
+2025-06-30 23:37:20,565 - INFO - Episode 83/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:37:54,355 - INFO - 🔶 Episode 83: CHECKPOINTS (Short) | Reward: -3861.5 | Steps: 200
+2025-06-30 23:37:54,356 - INFO - Episode 84/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:38:25,530 - INFO - 🏆 Episode 84: GOAL REACHED | Reward: -701.5 | Steps: 185
+2025-06-30 23:38:25,530 - INFO - Episode 85/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:38:58,635 - INFO - 🔶 Episode 85: CHECKPOINTS (Short) | Reward: -4103.0 | Steps: 200
+2025-06-30 23:38:58,636 - INFO - Episode 86/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:39:27,615 - INFO - 🏆 Episode 86: GOAL REACHED | Reward: 139.0 | Steps: 167
+2025-06-30 23:39:27,617 - INFO - Episode 87/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:40:03,205 - INFO - 🔶 Episode 87: CHECKPOINTS (Short) | Reward: -3497.5 | Steps: 200
+2025-06-30 23:40:03,206 - INFO - Episode 88/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:40:38,048 - INFO - 🔶 Episode 88: CHECKPOINTS (Short) | Reward: -4155.0 | Steps: 200
+2025-06-30 23:40:38,049 - INFO - Episode 89/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:41:13,815 - INFO - 🔶 Episode 89: CHECKPOINTS (Short) | Reward: -3588.5 | Steps: 200
+2025-06-30 23:41:13,816 - INFO - Episode 90/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:41:48,435 - INFO - 🔶 Episode 90: CHECKPOINTS (Short) | Reward: -4291.5 | Steps: 200
+2025-06-30 23:41:48,435 - INFO - Episode 91/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:42:24,100 - INFO - 🔶 Episode 91: CHECKPOINTS (Short) | Reward: -3179.5 | Steps: 200
+2025-06-30 23:42:24,101 - INFO - Episode 92/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:42:59,414 - INFO - 🔶 Episode 92: CHECKPOINTS (Short) | Reward: -3804.0 | Steps: 200
+2025-06-30 23:42:59,416 - INFO - Episode 93/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:43:35,121 - INFO - 🔶 Episode 93: CHECKPOINTS (Short) | Reward: -3192.0 | Steps: 200
+2025-06-30 23:43:35,121 - INFO - Episode 94/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:44:10,589 - INFO - 🔶 Episode 94: CHECKPOINTS (Short) | Reward: -3569.0 | Steps: 200
+2025-06-30 23:44:10,590 - INFO - Episode 95/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:44:46,536 - INFO - 🔶 Episode 95: CHECKPOINTS (Short) | Reward: -3875.5 | Steps: 200
+2025-06-30 23:44:46,537 - INFO - Episode 96/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:45:21,425 - INFO - 🔶 Episode 96: CHECKPOINTS (Short) | Reward: -3927.5 | Steps: 200
+2025-06-30 23:45:21,426 - INFO - Episode 97/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:45:57,488 - INFO - 🔶 Episode 97: CHECKPOINTS (Short) | Reward: -3309.0 | Steps: 200
+2025-06-30 23:45:57,489 - INFO - Episode 98/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:46:32,236 - INFO - 🔶 Episode 98: CHECKPOINTS (Short) | Reward: -3390.0 | Steps: 200
+2025-06-30 23:46:32,238 - INFO - Episode 99/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:47:07,238 - INFO - 🔶 Episode 99: CHECKPOINTS (Short) | Reward: -3439.0 | Steps: 200
+2025-06-30 23:47:07,240 - INFO - Episode 100/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:47:43,064 - INFO - 🔶 Episode 100: CHECKPOINTS (Short) | Reward: -3869.0 | Steps: 200
+2025-06-30 23:47:43,074 - INFO - Episodes completed: 100
+2025-06-30 23:47:43,074 - INFO - Average reward (last 50): -3350.28
+2025-06-30 23:47:43,074 - INFO - Average steps (last 50): 198.0
+2025-06-30 23:47:43,074 - INFO - Success rate (last 50): 8.0%
+2025-06-30 23:47:43,075 - INFO - States explored: 102
+2025-06-30 23:47:43,075 - INFO - Total checkpoints reached: 297
+2025-06-30 23:47:43,075 - INFO - Unique checkpoints discovered: 4
+2025-06-30 23:47:43,075 - INFO - Episodes with checkpoints: 100/100
+2025-06-30 23:47:43,075 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-06-30 23:47:43,075 - INFO - Episode 101/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:48:18,429 - INFO - 🔶 Episode 101: CHECKPOINTS (Short) | Reward: -3121.0 | Steps: 200
+2025-06-30 23:48:18,431 - INFO - Episode 102/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:48:53,743 - INFO - 🔶 Episode 102: CHECKPOINTS (Short) | Reward: -4363.0 | Steps: 200
+2025-06-30 23:48:53,745 - INFO - Episode 103/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:49:29,343 - INFO - 🔶 Episode 103: CHECKPOINTS (Short) | Reward: -3283.0 | Steps: 200
+2025-06-30 23:49:29,344 - INFO - Episode 104/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:50:04,394 - INFO - 🔶 Episode 104: CHECKPOINTS (Short) | Reward: -3913.5 | Steps: 200
+2025-06-30 23:50:04,396 - INFO - Episode 105/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:50:39,659 - INFO - 🔶 Episode 105: CHECKPOINTS (Short) | Reward: -3751.0 | Steps: 200
+2025-06-30 23:50:39,660 - INFO - Episode 106/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:51:15,287 - INFO - 🔶 Episode 106: CHECKPOINTS (Short) | Reward: -3439.0 | Steps: 200
+2025-06-30 23:51:15,287 - INFO - Episode 107/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:51:50,618 - INFO - 🔶 Episode 107: CHECKPOINTS (Short) | Reward: -4147.5 | Steps: 200
+2025-06-30 23:51:50,619 - INFO - Episode 108/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:52:26,750 - INFO - 🔶 Episode 108: CHECKPOINTS (Short) | Reward: -3146.5 | Steps: 200
+2025-06-30 23:52:26,751 - INFO - Episode 109/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:53:01,878 - INFO - 🔶 Episode 109: CHECKPOINTS (Short) | Reward: -3731.5 | Steps: 200
+2025-06-30 23:53:01,879 - INFO - Episode 110/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:53:36,720 - INFO - 🔶 Episode 110: CHECKPOINTS (Short) | Reward: -3848.5 | Steps: 200
+2025-06-30 23:53:36,722 - INFO - Episode 111/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:54:09,242 - INFO - 🔶 Episode 111: CHECKPOINTS (Short) | Reward: -3960.0 | Steps: 200
+2025-06-30 23:54:09,242 - INFO - Episode 112/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:54:43,018 - INFO - 🔶 Episode 112: CHECKPOINTS (Short) | Reward: -4017.5 | Steps: 200
+2025-06-30 23:54:43,018 - INFO - Episode 113/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:55:16,502 - INFO - 🔶 Episode 113: CHECKPOINTS (Short) | Reward: -3979.5 | Steps: 200
+2025-06-30 23:55:16,502 - INFO - Episode 114/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:55:49,979 - INFO - 🔶 Episode 114: CHECKPOINTS (Short) | Reward: -4148.5 | Steps: 200
+2025-06-30 23:55:49,979 - INFO - Episode 115/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:56:23,463 - INFO - 🏆 Episode 115: GOAL REACHED | Reward: -946.5 | Steps: 200
+2025-06-30 23:56:23,464 - INFO - Episode 116/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:56:57,609 - INFO - 🔶 Episode 116: CHECKPOINTS (Short) | Reward: -2851.0 | Steps: 200
+2025-06-30 23:56:57,610 - INFO - Episode 117/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:57:31,596 - INFO - 🔶 Episode 117: CHECKPOINTS (Short) | Reward: -3647.0 | Steps: 200
+2025-06-30 23:57:31,596 - INFO - Episode 118/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:58:04,536 - INFO - 🔶 Episode 118: CHECKPOINTS (Short) | Reward: -3374.0 | Steps: 200
+2025-06-30 23:58:04,537 - INFO - Episode 119/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:58:38,537 - INFO - 🔶 Episode 119: CHECKPOINTS (Short) | Reward: -2653.0 | Steps: 200
+2025-06-30 23:58:38,538 - INFO - Episode 120/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:59:12,287 - INFO - 🔶 Episode 120: CHECKPOINTS (Short) | Reward: -3809.5 | Steps: 200
+2025-06-30 23:59:12,287 - INFO - Episode 121/150 started - Strategy: CuriosityStrategy
+2025-06-30 23:59:45,457 - INFO - 🔶 Episode 121: CHECKPOINTS (Short) | Reward: -3679.5 | Steps: 200
+2025-06-30 23:59:45,457 - INFO - Episode 122/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:00:19,205 - INFO - 🔶 Episode 122: CHECKPOINTS (Short) | Reward: -2952.0 | Steps: 200
+2025-07-01 00:00:19,205 - INFO - Episode 123/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:00:52,765 - INFO - 🔶 Episode 123: CHECKPOINTS (Short) | Reward: -2874.0 | Steps: 200
+2025-07-01 00:00:52,766 - INFO - Episode 124/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:01:26,837 - INFO - 🔶 Episode 124: CHECKPOINTS (Short) | Reward: -2731.0 | Steps: 200
+2025-07-01 00:01:26,837 - INFO - Episode 125/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:02:00,405 - INFO - 🔶 Episode 125: CHECKPOINTS (Short) | Reward: -3631.5 | Steps: 200
+2025-07-01 00:02:00,406 - INFO - Episode 126/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:02:33,702 - INFO - 🔶 Episode 126: CHECKPOINTS (Short) | Reward: -3497.5 | Steps: 200
+2025-07-01 00:02:33,702 - INFO - Episode 127/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:03:06,660 - INFO - 🔶 Episode 127: CHECKPOINTS (Short) | Reward: -4337.0 | Steps: 200
+2025-07-01 00:03:06,660 - INFO - Episode 128/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:03:40,003 - INFO - 🔶 Episode 128: CHECKPOINTS (Short) | Reward: -4239.5 | Steps: 200
+2025-07-01 00:03:40,003 - INFO - Episode 129/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:04:16,004 - INFO - 🔶 Episode 129: CHECKPOINTS (Short) | Reward: -3409.5 | Steps: 200
+2025-07-01 00:04:16,005 - INFO - Episode 130/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:04:51,463 - INFO - 🔶 Episode 130: CHECKPOINTS (Short) | Reward: -3367.5 | Steps: 200
+2025-07-01 00:04:51,463 - INFO - Episode 131/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:05:27,393 - INFO - 🔶 Episode 131: CHECKPOINTS (Short) | Reward: -2451.5 | Steps: 200
+2025-07-01 00:05:27,393 - INFO - Episode 132/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:06:04,924 - INFO - 🔶 Episode 132: CHECKPOINTS (Short) | Reward: -3361.0 | Steps: 200
+2025-07-01 00:06:04,924 - INFO - Episode 133/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:06:40,677 - INFO - 🔶 Episode 133: CHECKPOINTS (Short) | Reward: -2588.0 | Steps: 200
+2025-07-01 00:06:40,677 - INFO - Episode 134/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:07:16,984 - INFO - 🔶 Episode 134: CHECKPOINTS (Short) | Reward: -2773.0 | Steps: 200
+2025-07-01 00:07:16,985 - INFO - Episode 135/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:07:52,976 - INFO - 🔶 Episode 135: CHECKPOINTS (Short) | Reward: -3396.5 | Steps: 200
+2025-07-01 00:07:52,977 - INFO - Episode 136/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:08:28,251 - INFO - 🔶 Episode 136: CHECKPOINTS (Short) | Reward: -4038.0 | Steps: 200
+2025-07-01 00:08:28,251 - INFO - Episode 137/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:09:04,072 - INFO - 🔶 Episode 137: CHECKPOINTS (Short) | Reward: -4129.0 | Steps: 200
+2025-07-01 00:09:04,072 - INFO - Episode 138/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:09:40,462 - INFO - 🔶 Episode 138: CHECKPOINTS (Short) | Reward: -2659.5 | Steps: 200
+2025-07-01 00:09:40,463 - INFO - Episode 139/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:10:16,012 - INFO - 🔶 Episode 139: CHECKPOINTS (Short) | Reward: -3471.5 | Steps: 200
+2025-07-01 00:10:16,013 - INFO - Episode 140/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:10:51,988 - INFO - 🔶 Episode 140: CHECKPOINTS (Short) | Reward: -3927.5 | Steps: 200
+2025-07-01 00:10:51,990 - INFO - Episode 141/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:11:27,560 - INFO - 🔶 Episode 141: CHECKPOINTS (Short) | Reward: -3277.0 | Steps: 200
+2025-07-01 00:11:27,560 - INFO - Episode 142/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:12:02,422 - INFO - 🏆 Episode 142: GOAL REACHED | Reward: -436.5 | Steps: 191
+2025-07-01 00:12:02,424 - INFO - Episode 143/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:12:37,587 - INFO - 🔶 Episode 143: CHECKPOINTS (Short) | Reward: -4382.5 | Steps: 200
+2025-07-01 00:12:37,587 - INFO - Episode 144/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:13:12,609 - INFO - 🔶 Episode 144: CHECKPOINTS (Short) | Reward: -3108.0 | Steps: 200
+2025-07-01 00:13:12,611 - INFO - Episode 145/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:13:47,998 - INFO - 🔶 Episode 145: CHECKPOINTS (Short) | Reward: -3718.5 | Steps: 200
+2025-07-01 00:13:48,000 - INFO - Episode 146/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:14:24,014 - INFO - 🔶 Episode 146: CHECKPOINTS (Short) | Reward: -2939.0 | Steps: 200
+2025-07-01 00:14:24,014 - INFO - Episode 147/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:14:59,982 - INFO - 🔶 Episode 147: CHECKPOINTS (Short) | Reward: -2961.5 | Steps: 200
+2025-07-01 00:14:59,983 - INFO - Episode 148/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:15:35,924 - INFO - 🔶 Episode 148: CHECKPOINTS (Short) | Reward: -3465.0 | Steps: 200
+2025-07-01 00:15:35,925 - INFO - Episode 149/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:16:11,268 - INFO - 🔶 Episode 149: CHECKPOINTS (Short) | Reward: -3999.0 | Steps: 200
+2025-07-01 00:16:11,269 - INFO - Episode 150/150 started - Strategy: CuriosityStrategy
+2025-07-01 00:16:45,952 - INFO - 🔶 Episode 150: CHECKPOINTS (Short) | Reward: -3778.0 | Steps: 200
+2025-07-01 00:16:45,969 - INFO - Episodes completed: 150
+2025-07-01 00:16:45,971 - INFO - Average reward (last 50): -3394.21
+2025-07-01 00:16:45,972 - INFO - Average steps (last 50): 199.8
+2025-07-01 00:16:45,972 - INFO - Success rate (last 50): 4.0%
+2025-07-01 00:16:45,972 - INFO - States explored: 102
+2025-07-01 00:16:45,973 - INFO - Total checkpoints reached: 450
+2025-07-01 00:16:45,973 - INFO - Unique checkpoints discovered: 4
+2025-07-01 00:16:45,973 - INFO - Episodes with checkpoints: 150/150
+2025-07-01 00:16:45,974 - INFO - Checkpoint values found: [1, 2, 3, 4]
+2025-07-01 00:16:45,977 - INFO - ✅ Training completed!
+2025-07-01 00:16:45,979 - INFO - === FINAL TRAINING STATISTICS ===
+2025-07-01 00:16:45,979 - INFO -   total_episodes: 11280
+2025-07-01 00:16:45,980 - INFO -   states_explored: 102
+2025-07-01 00:16:45,980 - INFO -   avg_reward: -3031.708244680851
+2025-07-01 00:16:45,980 - INFO -   max_reward: 2582.0
+2025-07-01 00:16:45,980 - INFO -   success_rate: 0.0449468085106383
+2025-07-01 00:16:45,980 - INFO -   strategy_info: {'base_epsilon': 0.65, 'novelty_bonus': 5.0, 'states_discovered': 102}
+2025-07-01 00:16:45,980 - INFO - === FINAL CHECKPOINT ANALYSIS ===
+2025-07-01 00:16:45,980 - INFO -   Checkpoint discovery rate: 0.000 unique/episode
+2025-07-01 00:16:45,980 - INFO -   Checkpoint frequency: 0.040 checkpoints/episode
+2025-07-01 00:16:45,980 - INFO -   Best checkpoint reached: 4
+2025-07-01 00:16:45,980 - INFO -   Maze progress: 80.0% (checkpoints discovered)
+2025-07-01 00:16:45,981 - INFO - DDS stopped.

@@ -118,10 +118,8 @@ class RLTrainer:
                 self._print_episode_summary(episode + 1, info, total_reward, max_streak, 
                                           episode_checkpoints)
                 
-                # Periodic model saving and stats
+                # Model saving and stats
                 if (episode + 1) % save_every == 0:
-                    model_path_with_number = self.model_path.split(".")[0] + f"_{episode+1}." + self.model_path.split(".")[1]
-                    self.agent.save_model(model_path_with_number)
                     self.agent.save_model(self.model_path)
                     self._print_stats_with_checkpoints(checkpoint_stats, episode + 1)
                     
