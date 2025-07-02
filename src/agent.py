@@ -14,7 +14,7 @@ class QLearningAgent:
         self.min_lr = config.get('agent.min_learning_rate', 0.01)
         self.lr_decay = config.get('agent.lr_decay', 0.995)
         
-        # La strategia viene creata direttamente qui
+        # Instantiate the exploration strategy
         self.strategy = CuriosityStrategy(
             epsilon=config.get('strategy.epsilon', 0.3),
             novelty_bonus=config.get('strategy.novelty_bonus', 3.0)

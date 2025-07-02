@@ -8,7 +8,7 @@ class CuriosityStrategy:
     def __init__(self, epsilon: float = 0.3, novelty_bonus: float = 3.0):
         self.epsilon = epsilon
         self.novelty_bonus = novelty_bonus
-        self.state_visits = {} # Questo è lo stato cruciale da salvare/caricare
+        self.state_visits = {} # It is crucial to track how many times each state has been visited
     
     def choose_action(self, q_values: np.ndarray, action_counts: np.ndarray = None,
                      state_info: Dict[str, Any] = None) -> int:
@@ -48,7 +48,6 @@ class CuriosityStrategy:
     
     @property
     def info(self) -> Dict[str, float]:
-        # Questo è ciò che viene salvato attualmente tramite agent.save_model
         return {
             "epsilon": self.epsilon,
             "novelty_bonus": self.novelty_bonus,
@@ -60,12 +59,12 @@ class CuriosityStrategy:
         return {
             'epsilon': self.epsilon,
             'novelty_bonus': self.novelty_bonus,
-            'state_visits': self.state_visits.copy() # Salva una copia
+            'state_visits': self.state_visits.copy()
         }
 
     def load_strategy_state(self, strategy_state: Dict[str, Any]):
         """Load the internal state of the strategy."""
         self.epsilon = strategy_state.get('epsilon', self.epsilon)
         self.novelty_bonus = strategy_state.get('novelty_bonus', self.novelty_bonus)
-        self.state_visits = strategy_state.get('state_visits', {}).copy() # Carica una copia
+        self.state_visits = strategy_state.get('state_visits', {}).copy()
         print(f"CuriosityStrategy state loaded. States discovered: {len(self.state_visits)}")

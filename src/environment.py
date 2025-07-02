@@ -1,5 +1,4 @@
 import time
-import math
 from collections import deque
 from typing import Tuple, Dict
 import sys
@@ -76,21 +75,21 @@ class MazeEnvironment:
         return discretized_x, discretized_y
 
     def step(self, action: int) -> Tuple[Tuple, float, bool, Dict]:
-        """Execute action and return environment response with checkpoint support."""
+        """Execute action and return the environment's response."""
         self.steps_count += 1
         self.previous_position = self.current_position
         
         action_names = ["UP", "DOWN", "LEFT", "RIGHT"]
         direction = action_names[action]
         
-        # Execute robot movement - now returns tuple (result, checkpoint)
+        # Execute robot movement - returns tuple (result, checkpoint_value) if checkpoint is reached
+        # or just result if no checkpoint is reached
         move_result = self.robot.move(direction)
         
-        # Handle the new return format
+        # Handle the result
         if isinstance(move_result, tuple):
             result, checkpoint_value = move_result
         else:
-            # Backward compatibility
             result = move_result
             checkpoint_value = None
         
@@ -99,7 +98,7 @@ class MazeEnvironment:
         self.current_position = (x, y, theta)
         self.recent_positions.append(self.current_position)
 
-        # Calcola reward, passando il flag se vuoi
+        # Calculate reward
         reward = self._calculate_reward(result, checkpoint_value)
 
         # Update success streak

@@ -1,8 +1,3 @@
-# Q-Learning Maze Robot Configuration
-experiment:
-  name: "q_learning_maze_robot"
-  log_level: "INFO"
-
 # Q-Learning Agent Parameters
 agent:
   learning_rate: 0.12
@@ -31,7 +26,7 @@ environment:
 
 # Training Configuration
 training:
-  episodes: 10000
+  episodes: 1000
   save_every: 10
   model_path: "models/q_agent.pkl"
 

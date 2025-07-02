@@ -1,5 +1,4 @@
 import sys
-import os
 sys.path.append('.')
 
 from src.trainer import RLTrainer
@@ -9,7 +8,6 @@ from lib.utils.time import Time
 import argparse
 
 def main():
-    """Main entry point for Q-Learning Maze Robot system."""
     parser = argparse.ArgumentParser(description="Q-Learning Maze Robot CLI")
     parser.add_argument(
         "--mode", 
@@ -40,7 +38,7 @@ def main():
             session_type = args.mode
 
     logger = Logger(
-        log_level=config.get('experiment.log_level', 'INFO'), 
+        log_level='INFO', 
         session_type=session_type
     )
     
@@ -57,8 +55,8 @@ def main():
             # If we are in interactive mode (no --mode specified), ask the user.
             fast_choice = input("Use FAST mode (no physics)? [Y/n]: ").strip().lower()
             fast_mode = fast_choice != 'n'
+        
         # If we are in CLI mode without --fast, fast_mode remains False (physical mode).
-
         trainer = RLTrainer(dds, time_obj, fast_mode=fast_mode)
         
         if args.mode:
@@ -78,9 +76,6 @@ def main():
             elif args.mode == "stats":
                 logger.info("Showing model statistics.")
                 trainer.show_stats()
-            elif args.mode == "exit":
-                logger.info("Exiting via CLI command.")
-                print("Goodbye!")
         else:
             # Interactive mode if no CLI arguments are provided for mode
             while True:

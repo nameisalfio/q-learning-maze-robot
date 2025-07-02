@@ -167,11 +167,6 @@ All system parameters are managed in `config.yaml`. This allows you to easily ex
 ### Example `config.yaml`
 
 ```yaml
-# Q-Learning Maze Robot Configuration
-experiment:
-  name: "q_learning_maze_robot"
-  log_level: "INFO"
-
 # Q-Learning Agent Parameters
 agent:
   learning_rate: 0.12

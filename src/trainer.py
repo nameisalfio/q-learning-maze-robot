@@ -8,14 +8,14 @@ from .environment import MazeEnvironment
 from .utils import Config, Logger
 
 class RLTrainer:
-    """Main trainer for Q-Learning maze navigation with enhanced episode formatting."""
+    """Trainer class for Q-Learning maze navigation."""
     
     def __init__(self, dds, time_obj, fast_mode: bool, config_path: str = "config.yaml"):
         """Initialize the RL trainer with all necessary components."""
         self.dds = dds
         self.time = time_obj
         self.config = Config(config_path)
-        self.logger = Logger(log_level=self.config.get('experiment.log_level', 'INFO'))
+        self.logger = Logger(log_level='INFO')
         
         self.fast_mode = fast_mode
         self.logger.info(f"Movement Mode: {'FAST (Teleport)' if self.fast_mode else 'REAL (Physics)'}")
@@ -30,7 +30,7 @@ class RLTrainer:
         self.model_path = str(self.config.get('training.model_path', 'models/q_agent.pkl'))
     
     def train(self, n_episodes: int = None, save_every: int = None):
-        """Train the Q-Learning agent with enhanced episode formatting."""
+        """Train the Q-Learning agent."""
         n_episodes = n_episodes or self.config.get('training.episodes', 200)
         save_every = save_every or self.config.get('training.save_every', 50)
         
@@ -118,7 +118,7 @@ class RLTrainer:
             self._print_final_stats_with_checkpoints(checkpoint_stats)
     
     def test(self, n_episodes: int = None):
-        """Test the trained agent with strategy display."""
+        """Test the trained Q-Learning agent."""
         n_episodes = n_episodes or self.config.get('training.test_episodes', 5)
         
         print("\n" + "=" * 80)
@@ -147,17 +147,11 @@ class RLTrainer:
                 state = self.environment.reset()
                 self.environment.reset_checkpoints()
                 done = False
-                step_count = 0
                 
                 while not done:
                     # Use greedy policy (no exploration)
                     action = self.agent.choose_action(state, training=False)
                     state, reward, done, info = self.environment.step(action)
-                    step_count += 1
-                    
-                    # Show progress every 20 steps
-                    if step_count % 20 == 0:
-                        print(f"   Step {step_count}: Position {info['position'][:2]}")
                 
                 total_steps += info['steps']
                 
@@ -165,7 +159,7 @@ class RLTrainer:
                     successes += 1
                     print(f"✅ Goal reached in {info['steps']} steps!")
                 else:
-                    print(f"⚠️ Test incomplete: {info['result'].value}")
+                    print(f"⚠️ Test unsuccessful: {info['result'].value}")
             
         finally:
             print(f"\n📊 TEST RESULTS:")
@@ -185,7 +179,7 @@ class RLTrainer:
             self.logger.error("No trained model found!")
     
     def _print_episode_header(self, episode_num: int, total_episodes: int):
-        """Print formatted episode header with strategy information."""
+        """Print formatted episode header."""
         
         # Get current strategy info
         strategy_info = self.agent.strategy.info if hasattr(self.agent.strategy, 'info') else {}

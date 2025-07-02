@@ -147,7 +147,7 @@ class DiffDriveRoboticAgent:
 
             distance_to_target = math.sqrt((pose[0] - backup_target_x)**2 + (pose[1] - backup_target_y)**2)
             if distance_to_target < self.target_tolerance:
-                print(f"Target raggiunto: ({pose[0]:.2f}, {pose[1]:.2f})")
+                print(f"Target reached: ({pose[0]:.2f}, {pose[1]:.2f})")
                 break
         
         self.stop_robot()
@@ -157,7 +157,7 @@ class DiffDriveRoboticAgent:
         if direction not in DIRECTIONS:
             raise ValueError("Invalid direction. Use 'UP', 'DOWN', 'LEFT', or 'RIGHT'.")
         
-        time.sleep(0.052) # leggero delay per sincronizzazione con Godot
+        time.sleep(0.052) # slight delay to sync with Godot
 
         # Initialize motion planning
         self.virtual_robot = StraightLine2DMotion(2.5, 3.0, 3.0)
@@ -187,7 +187,7 @@ class DiffDriveRoboticAgent:
         max_iterations = 1500 * times
         iteration = 0
 
-        if not self.fast_mode: # Modalità FISICA REALE
+        if not self.fast_mode: # REAL PHYSICS mode
             self.dds.wait('tick')
             while iteration < max_iterations:
                 godot_delta = self.dds.read('tick')
@@ -259,7 +259,7 @@ class DiffDriveRoboticAgent:
             self.stop_robot()
             return MoveResult.SUCCESS, None
 
-        if self.fast_mode: # Modalità VELOCE
+        if self.fast_mode: # FAST mode (teleportation)
             time.sleep(0.011)  # slight delay to sync with Godot
             old_pose = self.robot.get_pose()
             new_pose = (target_x, target_y, 0.0)
@@ -274,7 +274,7 @@ class DiffDriveRoboticAgent:
             collision = self.dds.read("Collision")
             if collision == 1:
                 print(f"\033[91mCollision detected! Status: {collision}.\033[0m")
-                # esegui backup verso la posa precedente
+                # Execute backup to previous pose
                 self._publish_pose(old_pose)
 
                 print("Collision resolved with backup procedure.")
