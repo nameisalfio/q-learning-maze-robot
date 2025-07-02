@@ -10,8 +10,9 @@ A reinforcement learning system for training a differential drive robot to navig
 ## Theoretical Background
 
 *Q-learning* algorithm is a model-free reinforcement learning algorithm that learns the value of an action in a particular state. It does this by updating a Q-table, which stores the expected utility of taking a given action in a given state. The agent explores the environment, receives rewards, and updates its Q-values based on the following equation:
+
 $$
-{Q(s, a)}_{t} \leftarrow {Q(s, a)}_{t-1} + \alpha \left( r_t + \gamma \quad \underset{a}{\mathrm{argmax}} \, Q(s_{t+1}, a) - {Q(s, a)}_{t-1} \right)
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \cdot Q\left(s_{t+1}, \underset{a'}{\arg\max} \, Q(s_{t+1}, a') \right) - Q(s_t, a_t) \right]
 $$
 
 where:
@@ -25,6 +26,7 @@ where:
 ## 📋 Table of Contents
 
 - [🤖 Q-Learning Maze Robot](#-q-learning-maze-robot)
+  - [Theoretical Background](#theoretical-background)
   - [📋 Table of Contents](#-table-of-contents)
   - [🎯 Overview](#-overview)
   - [✨ Key Features](#-key-features)
