@@ -253,16 +253,18 @@ q-learning-maze-robot/
 ├── GodotProject/                  # Godot Engine simulation project
 ├── lib/                           # Shared libraries (DDS, system utilities)
 ├── logs/                          # Stores training logs
-├── notebooks/                     # Jupyter notebooks for testing and analysis
-│   └── plot_training_reward.ipynb
 ├── models/                        # Stores saved agent models (.pkl)
+├── notebooks/                     # Jupyter notebooks for testing and analysis
+│   └── robot_testing.ipynb
+│   └── plot_training_reward.ipynb
 ├── robot/                         # Robot control and DDS interface
 │   └── robotic_agent.py
 └── src/                           # Core RL components
     ├── agent.py                   # Q-Learning agent implementation
     ├── environment.py             # Environment logic and reward calculation
     ├── strategies.py              # Curiosity-driven exploration strategy
-    └── trainer.py                 # Training and testing orchestrator
+    ├── trainer.py                 # Training and testing orchestrator
+    └── utils.py                   # Config and Logger utilities
 ```
 
 ## 🤝 Contributing
