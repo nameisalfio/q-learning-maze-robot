@@ -25,7 +25,6 @@ class MazeEnvironment:
         
         # Environment state
         self.current_position = None
-        self.previous_position = None
         self.steps_count = 0
         self.consecutive_success_moves = 0
         self.collision_count = 0
@@ -51,7 +50,6 @@ class MazeEnvironment:
         time.sleep(0.5)
         x, y, theta = self.robot.get_current_position()
         self.current_position = (x,y, theta)
-        self.previous_position = self.current_position
         
         return self.get_state()
     
@@ -77,7 +75,6 @@ class MazeEnvironment:
     def step(self, action: int) -> Tuple[Tuple, float, bool, Dict]:
         """Execute action and return the environment's response."""
         self.steps_count += 1
-        self.previous_position = self.current_position
         
         action_names = ["UP", "DOWN", "LEFT", "RIGHT"]
         direction = action_names[action]

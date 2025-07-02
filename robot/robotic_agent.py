@@ -6,7 +6,6 @@ from lib.system.cart import *
 from lib.system.controllers import *
 from lib.system.trajectory import *
 from lib.system.polar import *
-from lib.dds.dds import *
 from lib.utils.time import *
 from enum import Enum
 import math
@@ -62,15 +61,15 @@ class DiffDriveRoboticAgent:
             _kp=1.3,
             _ki=5.0,
             _kd=0.0,
-            _sat=10.0
+            _sat=15.0
         )
 
         self.robot = TwoWheelsCart2DEncodersOdometry(
             # Robot parameters
             _mass=1.0, # 1 kg
             _radius=0.3, # 30 cm wheel radius
-            _lin_friction=0.8,  # Linear friction coefficient
-            _ang_friction=0.7, # Angular friction coefficient
+            _lin_friction=0.7,  # Linear friction coefficient
+            _ang_friction=0.6, # Angular friction coefficient
 
             # Wheel parameters
             _r_traction_left=0.04, 

@@ -14,7 +14,6 @@ func _ready():
 	DDS.subscribe("Y")
 	DDS.subscribe("Z")
 	DDS.subscribe("Theta")
-	DDS.subscribe("mode")
 	
 	var area = $Area3D
 	area.connect("body_entered", Callable(self, "_on_collision_with_wall"))
