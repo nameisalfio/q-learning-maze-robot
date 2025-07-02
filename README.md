@@ -58,7 +58,7 @@ The agent's learning is guided by a **Curiosity-driven exploration strategy**, w
   <img src="assets/illustration.png" alt="Q-Learning Maze Robot" style="max-width: 100%; height: auto;">
 </div>
 
-The system has been tested on a 10x10 maze, achieving convergence in approximately 700 episodes, as shown in the plot below:
+The system has been tested on a 10x10 maze (shown above ⬆️), achieving convergence in approximately 700 episodes, as shown in the following convergence plot:
 
 <div style="text-align: center;">
   <img src="assets/convergence_plot_10x10_700.png" alt="Q-Learning Maze Robot" style="max-width: 100%; height: auto;">
