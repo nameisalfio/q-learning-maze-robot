@@ -1,7 +1,0 @@
-res://Components/DDS/dds.tscn
-res://DiffDriveRobot.tscn
-res://differential_drive_bot.tscn
-res://Maze.tscn
-res://scripts/generate_maze.gd
-res://scripts/robot.gd
-res://scripts/camera.gd
