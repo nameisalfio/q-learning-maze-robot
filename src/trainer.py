@@ -23,7 +23,6 @@ class RLTrainer:
         # Initialize system components
         self.robot = DiffDriveRoboticAgent(dds, time_obj, fast_mode=self.fast_mode)
         self.environment = MazeEnvironment(self.robot, self.config)
-        
         # Initialize the Q-Learning agent
         self.agent = QLearningAgent(self.config)
         
